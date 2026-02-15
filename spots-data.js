@@ -564,6 +564,88 @@ const allSpots = [
         price: 'Cheap',
         google_maps: '',
         bob_intel: ''
+    },
+
+    // ========== LATE-NIGHT / SEEDY BARS ==========
+    {
+        name: 'Café El Popular',
+        category: 'nightlife',
+        type: 'Late-Night Diner',
+        description: '24/7 diner serving full meals + drinks. Cash only, unpretentious. Perfect for after-hours.',
+        address: 'Centro Histórico',
+        distance: '15 min Uber',
+        hours: '24 hours',
+        phone: '',
+        price: '100-200 MXN',
+        google_maps: 'https://maps.google.com/?q=Cafe+El+Popular+Centro+Historico+Mexico+City',
+        bob_intel: 'Cash only. Classic late-night spot when everything else closes.'
+    },
+    {
+        name: 'Hanky Panky',
+        category: 'nightlife',
+        type: 'Speakeasy',
+        description: 'Hidden speakeasy. Nervous door approach, cocktails til sunrise.',
+        address: 'Turín 40, Juárez',
+        distance: '10 min walk from Sheraton',
+        hours: 'Mon-Sat 7pm-2am',
+        phone: '',
+        price: '200-400 MXN cocktails',
+        google_maps: 'https://maps.google.com/?q=Hanky+Panky+Turin+40+Juarez+Mexico+City',
+        bob_intel: ''
+    },
+    {
+        name: 'Centro de Salud',
+        category: 'nightlife',
+        type: 'Dive Bar',
+        description: 'Grungy rock/metal/alt venue. Berlin vibes, local scene.',
+        address: 'Centro Histórico',
+        distance: '15 min Uber',
+        hours: 'Thu-Sat 9pm-3am',
+        phone: '',
+        price: '100-250 MXN',
+        google_maps: 'https://maps.google.com/?q=Centro+de+Salud+bar+Mexico+City',
+        bob_intel: ''
+    },
+    {
+        name: 'Zinco Jazz Club',
+        category: 'nightlife',
+        type: 'Jazz Club',
+        description: '1930s bank vault converted to jazz club. Retro vibe, cocktails, food.',
+        address: 'Motolinía 20, Centro Histórico',
+        distance: '15 min Uber',
+        hours: 'Wed-Sat 9pm-2am',
+        phone: '',
+        price: '300-500 MXN',
+        google_maps: 'https://maps.google.com/?q=Zinco+Jazz+Club+Motolinia+Centro+Mexico+City',
+        bob_intel: ''
+    },
+    {
+        name: 'Cantina La No. 20',
+        category: 'nightlife',
+        type: 'Cantina',
+        description: 'Traditional cantina across from Sheraton. Late-night tacos, tequila.',
+        address: 'Near Paseo de la Reforma',
+        distance: '4 min walk from Sheraton',
+        hours: 'Late night',
+        phone: '',
+        price: '80-150 MXN',
+        google_maps: '',
+        bob_intel: 'Right across the street from Sheraton. Classic spot.'
+    },
+
+    // ========== XOCHIMILCO (2ND EMBARCADERO) ==========
+    {
+        name: 'Embarcadero Cuemanco',
+        category: 'tourist',
+        type: 'Boat Launch',
+        description: 'Quieter, more ecological Xochimilco embarcadero. Deeper canals, less touristy.',
+        address: 'Periférico Sur Adolfo Ruíz Cortines, Xochimilco, 16034 CDMX',
+        distance: '1 hour from Centro',
+        hours: 'Daily 8am-8pm',
+        phone: '',
+        price: '500-800 MXN per boat',
+        google_maps: 'https://maps.google.com/?q=Embarcadero+Cuemanco+Xochimilco+CDMX',
+        bob_intel: 'More nature-focused, less party vibe than Nativitas.'
     }
 ];
 
