@@ -913,7 +913,15 @@
         // Supabase Init
         const SUPABASE_URL = 'https://gwjtfcrgpxclixonogpe.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd3anRmY3JncHhjbGl4b25vZ3BlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAzMzQzOTUsImV4cCI6MjA4NTkxMDM5NX0.qM1-_VA1Dsx_nsWkeoAJvNWNgSuuwApPBGoJU32X3-I';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+        let supabase = null;
+        try {
+            if (window.supabase && window.supabase.createClient) {
+                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            }
+        } catch (err) {
+            console.warn('Supabase client init failed, using offline data:', err);
+        }
 
         // All spots data (from spots-data.js)
         const initialSpots = [
@@ -1914,18 +1922,33 @@
 
         // Load spots
         async function loadSpots() {
+            // If Supabase isn't available, use offline data immediately
+            if (!supabase) {
+                console.log('Using offline spot data (Supabase not available)');
+                allSpots = initialSpots;
+                renderSpots();
+                return;
+            }
+
             try {
-                const { data, error } = await supabase
+                // Add 3-second timeout to prevent infinite loading
+                const timeoutPromise = new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error('Timeout')), 3000)
+                );
+
+                const dataPromise = supabase
                     .from('cdmx_spots')
                     .select('*')
                     .order('name');
+
+                const { data, error } = await Promise.race([dataPromise, timeoutPromise]);
 
                 if (error) throw error;
 
                 allSpots = data && data.length > 0 ? data : initialSpots;
                 renderSpots();
             } catch (err) {
-                console.error('Error loading spots:', err);
+                console.warn('Using offline spot data (Supabase error/timeout):', err.message);
                 allSpots = initialSpots;
                 renderSpots();
             }
@@ -2098,6 +2121,10 @@
             };
 
             try {
+                if (!supabase) {
+                    throw new Error('Database not available. Please try again later.');
+                }
+
                 const { data, error } = await supabase
                     .from('cdmx_spots')
                     .insert([newSpot])
@@ -2112,7 +2139,7 @@
                 alert('✅ Spot added! Thanks for contributing!');
             } catch (err) {
                 console.error('Error adding spot:', err);
-                alert('❌ Error adding spot. Please try again.');
+                alert('❌ ' + (err.message || 'Error adding spot. Please try again.'));
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Submit Spot';
