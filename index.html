@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🇲🇽 CDMX Guide - Food, Music & Nightlife</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0a0f;
+            --surface: #12121a;
+            --surface2: #1a1a25;
+            --border: #2a2a3a;
+            --purple: #a855f7;
+            --teal: #06d6a0;
+            --text: #f0f0f5;
+            --text-dim: #8888a0;
+            --red: #ef4444;
+            --yellow: #fbbf24;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, rgba(168,85,247,0.1), rgba(6,214,160,0.1));
+            border-bottom: 2px solid var(--border);
+            padding: 2rem 1rem;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--purple), var(--teal));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+        }
+
+        /* Filters */
+        .filters {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            position: sticky;
+            top: 120px;
+            z-index: 99;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: transparent;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--purple);
+            color: var(--purple);
+        }
+
+        .filter-btn.active {
+            background: var(--purple);
+            border-color: var(--purple);
+            color: var(--bg);
+            font-weight: 600;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--purple);
+        }
+
+        /* Spots Grid */
+        .spots-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .category-section {
+            margin-bottom: 3rem;
+        }
+
+        .category-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--purple);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .spots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .spot-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .spot-card:hover {
+            border-color: var(--purple);
+            box-shadow: 0 4px 20px rgba(168,85,247,0.2);
+            transform: translateY(-2px);
+        }
+
+        .spot-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--teal);
+            margin-bottom: 0.5rem;
+        }
+
+        .spot-type {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            background: rgba(168,85,247,0.1);
+            color: var(--purple);
+            font-size: 0.8rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .spot-description {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .spot-details {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+
+        .spot-detail {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: start;
+            gap: 0.5rem;
+        }
+
+        .spot-detail .icon {
+            min-width: 20px;
+        }
+
+        .spot-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: transparent;
+            color: var(--purple);
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            background: rgba(168,85,247,0.1);
+            border-color: var(--purple);
+        }
+
+        .btn.teal {
+            color: var(--teal);
+            border-color: rgba(6,214,160,0.3);
+        }
+
+        .btn.teal:hover {
+            background: rgba(6,214,160,0.1);
+            border-color: var(--teal);
+        }
+
+        /* Rating */
+        .spot-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .stars {
+            color: var(--yellow);
+        }
+
+        .rating-count {
+            color: var(--text-dim);
+            font-size: 0.85rem;
+        }
+
+        /* Add Spot Button */
+        .add-spot-fab {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--purple), var(--teal));
+            color: white;
+            font-size: 2rem;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(168,85,247,0.4);
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .add-spot-fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(168,85,247,0.6);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            overflow-y: auto;
+            padding: 2rem 1rem;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--purple);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            color: var(--red);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--purple);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--purple), var(--teal));
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(168,85,247,0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 4rem 1rem;
+            color: var(--text-dim);
+        }
+
+        .loading-spinner {
+            border: 3px solid var(--border);
+            border-top: 3px solid var(--purple);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 1rem;
+            color: var(--text-dim);
+        }
+
+        .empty-state .emoji {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .spots-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filters {
+                top: 100px;
+            }
+        }
+
+        /* Bob's Intel Badge */
+        .bob-intel {
+            background: linear-gradient(135deg, rgba(168,85,247,0.2), rgba(6,214,160,0.2));
+            border: 1px solid var(--purple);
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .bob-intel strong {
+            color: var(--teal);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🇲🇽 Mexico City Guide</h1>
+        <p>Food, Music, Nightlife & Culture — Curated by locals and travelers</p>
+    </div>
+
+    <div class="filters">
+        <input type="text" class="search-box" id="searchInput" placeholder="🔍 Search spots...">
+        <button class="filter-btn active" data-category="all">All</button>
+        <button class="filter-btn" data-category="mexican">Mexican</button>
+        <button class="filter-btn" data-category="japanese">Japanese</button>
+        <button class="filter-btn" data-category="korean">Korean</button>
+        <button class="filter-btn" data-category="nightlife">Nightlife</button>
+        <button class="filter-btn" data-category="tourist">Tourist</button>
+        <button class="filter-btn" data-category="adult">Adult 18+</button>
+    </div>
+
+    <div class="spots-container" id="spotsContainer">
+        <div class="loading">
+            <div class="loading-spinner"></div>
+            <p>Loading spots...</p>
+        </div>
+    </div>
+
+    <button class="add-spot-fab" id="addSpotBtn">+</button>
+
+    <!-- Add Spot Modal -->
+    <div class="modal" id="addSpotModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">✨ Add a Spot</h2>
+                <button class="close-btn" id="closeModalBtn">×</button>
+            </div>
+            <form id="addSpotForm">
+                <div class="form-group">
+                    <label class="form-label">Name *</label>
+                    <input type="text" class="form-input" id="spotName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Category *</label>
+                    <select class="form-select" id="spotCategory" required>
+                        <option value="mexican">Mexican</option>
+                        <option value="japanese">Japanese</option>
+                        <option value="korean">Korean</option>
+                        <option value="chinese">Chinese</option>
+                        <option value="thai">Thai</option>
+                        <option value="nightlife">Nightlife</option>
+                        <option value="tourist">Tourist</option>
+                        <option value="adult">Adult 18+</option>
+                        <option value="breakfast">Breakfast</option>
+                        <option value="street">Street Vendor</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-textarea" id="spotDescription"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Address</label>
+                    <input type="text" class="form-input" id="spotAddress">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Hours</label>
+                    <input type="text" class="form-input" id="spotHours" placeholder="e.g., Mon-Fri 10am-10pm">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phone</label>
+                    <input type="text" class="form-input" id="spotPhone">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Price Range</label>
+                    <input type="text" class="form-input" id="spotPrice" placeholder="e.g., 200-500 MXN">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Your Take (Optional)</label>
+                    <textarea class="form-textarea" id="spotIntel" placeholder="Local tips, what to try, best times to visit..."></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Submit Spot</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Supabase Init
+        const SUPABASE_URL = 'https://gwjtfcrgpxclixonogpe.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd3anRmY3JncHhjbGl4b25vZ3BlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAzMzQzOTUsImV4cCI6MjA4NTkxMDM5NX0.qM1-_VA1Dsx_nsWkeoAJvNWNgSuuwApPBGoJU32X3-I';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // Initial spots data
+        const initialSpots = [
+            // Japanese
+            {
+                name: 'Taishu Teppan Sango',
+                category: 'japanese',
+                type: 'Teppanyaki',
+                description: 'Small teppanyaki spot with sushi and ramen. Bob tried it 2/14/26.',
+                address: 'Roma Norte',
+                hours: 'Check hours',
+                phone: '',
+                price: '~1,800 MXN for 2 people',
+                google_maps: '',
+                bob_intel: 'Bob ate here 2/14/26 — sushi + ramen, 1,795 MXN total.'
+            },
+            {
+                name: 'WANWAN Sakaba',
+                category: 'japanese',
+                type: 'Izakaya',
+                description: 'Japanese izakaya, Roma Norte. Bob\'s backup when Sango was full.',
+                address: 'Roma Norte',
+                hours: 'Check hours',
+                phone: '',
+                price: 'Mid-range',
+                google_maps: '',
+                bob_intel: 'Bob went here when Taishu Teppan Sango was full. Good fallback option.'
+            },
+            // Rock Bars
+            {
+                name: 'Cueva de Lobos',
+                category: 'nightlife',
+                type: 'Rock Bar',
+                description: 'Bob\'s favorite rock bar in CDMX. Live music, dive bar vibes.',
+                address: '',
+                hours: '',
+                phone: '',
+                price: '',
+                google_maps: '',
+                bob_intel: 'Bob\'s #1 rock bar pick. End an epic day trip here OR hit Queen\'s strip club.'
+            },
+            // Pulquerías
+            {
+                name: 'Pulquería Los Insurgentes',
+                category: 'nightlife',
+                type: 'Pulquería',
+                description: '4-story pulque bar with rooftop terrace, DJs, dance floor. Great for first-time pulque.',
+                address: 'Av. Insurgentes Sur 226, Roma Norte (~10 min Uber)',
+                hours: 'Fri 9am-11pm, Sat-Sun 9am-6pm (late nights vary)',
+                phone: '+52 55 5207 0917',
+                price: 'Budget-friendly',
+                google_maps: 'https://maps.google.com/?q=Pulqueria+Los+Insurgentes+Mexico+City',
+                bob_intel: 'Cool spot for first-time pulque. Poppin on weekends, chill on weekdays.'
+            },
+            // Strip Clubs
+            {
+                name: 'Queen\'s',
+                category: 'adult',
+                type: 'Strip Club',
+                description: 'Bob\'s recommended strip club. Upscale.',
+                address: '',
+                hours: '',
+                phone: '',
+                price: '',
+                google_maps: '',
+                bob_intel: 'Bob\'s pick for strip clubs. Can be the finale of an epic Teotihuacan → Xochimilco → Mariachi day.'
+            }
+        ];
+
+        let allSpots = [];
+        let currentFilter = 'all';
+
+        // Load spots
+        async function loadSpots() {
+            try {
+                const { data, error } = await supabase
+                    .from('cdmx_spots')
+                    .select('*')
+                    .order('name');
+
+                if (error) throw error;
+
+                allSpots = data && data.length > 0 ? data : initialSpots;
+                renderSpots();
+            } catch (err) {
+                console.error('Error loading spots:', err);
+                allSpots = initialSpots;
+                renderSpots();
+            }
+        }
+
+        // Render spots
+        function renderSpots() {
+            const container = document.getElementById('spotsContainer');
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+            let filtered = allSpots;
+
+            // Filter by category
+            if (currentFilter !== 'all') {
+                filtered = filtered.filter(s => s.category === currentFilter);
+            }
+
+            // Filter by search
+            if (searchTerm) {
+                filtered = filtered.filter(s => 
+                    s.name.toLowerCase().includes(searchTerm) ||
+                    (s.description && s.description.toLowerCase().includes(searchTerm)) ||
+                    (s.type && s.type.toLowerCase().includes(searchTerm))
+                );
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="emoji">🤷</div>
+                        <p>No spots found. Be the first to add one!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Group by category
+            const grouped = {};
+            filtered.forEach(spot => {
+                if (!grouped[spot.category]) grouped[spot.category] = [];
+                grouped[spot.category].push(spot);
+            });
+
+            let html = '';
+            Object.keys(grouped).forEach(cat => {
+                const categoryName = cat.charAt(0).toUpperCase() + cat.slice(1);
+                html += `
+                    <div class="category-section">
+                        <h2 class="category-title">${getCategoryEmoji(cat)} ${categoryName}</h2>
+                        <div class="spots-grid">
+                            ${grouped[cat].map(spot => renderSpotCard(spot)).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function renderSpotCard(spot) {
+            return `
+                <div class="spot-card">
+                    <div class="spot-name">${spot.name}</div>
+                    ${spot.type ? `<span class="spot-type">${spot.type}</span>` : ''}
+                    ${spot.description ? `<div class="spot-description">${spot.description}</div>` : ''}
+                    <div class="spot-details">
+                        ${spot.address ? `<div class="spot-detail"><span class="icon">📍</span>${spot.address}</div>` : ''}
+                        ${spot.hours ? `<div class="spot-detail"><span class="icon">🕐</span>${spot.hours}</div>` : ''}
+                        ${spot.phone ? `<div class="spot-detail"><span class="icon">📞</span>${spot.phone}</div>` : ''}
+                        ${spot.price ? `<div class="spot-detail"><span class="icon">💰</span>${spot.price}</div>` : ''}
+                    </div>
+                    ${spot.bob_intel ? `<div class="bob-intel"><strong>Bob's Intel:</strong> ${spot.bob_intel}</div>` : ''}
+                    <div class="spot-actions">
+                        ${spot.google_maps ? `<a href="${spot.google_maps}" target="_blank" class="btn">🗺️ Map</a>` : ''}
+                        ${spot.phone ? `<a href="tel:${spot.phone}" class="btn teal">📞 Call</a>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function getCategoryEmoji(cat) {
+            const emojis = {
+                mexican: '🌮',
+                japanese: '🍱',
+                korean: '🥘',
+                chinese: '🥢',
+                nightlife: '🍺',
+                tourist: '🗺️',
+                adult: '🔞',
+                breakfast: '☕',
+                street: '🚶'
+            };
+            return emojis[cat] || '🍴';
+        }
+
+        // Filter buttons
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.dataset.category;
+                renderSpots();
+            });
+        });
+
+        // Search
+        document.getElementById('searchInput').addEventListener('input', renderSpots);
+
+        // Modal
+        document.getElementById('addSpotBtn').addEventListener('click', () => {
+            document.getElementById('addSpotModal').classList.add('active');
+        });
+
+        document.getElementById('closeModalBtn').addEventListener('click', () => {
+            document.getElementById('addSpotModal').classList.remove('active');
+        });
+
+        document.getElementById('addSpotModal').addEventListener('click', (e) => {
+            if (e.target.id === 'addSpotModal') {
+                document.getElementById('addSpotModal').classList.remove('active');
+            }
+        });
+
+        // Form submit
+        document.getElementById('addSpotForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = e.target.querySelector('.submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+
+            const newSpot = {
+                name: document.getElementById('spotName').value,
+                category: document.getElementById('spotCategory').value,
+                description: document.getElementById('spotDescription').value,
+                address: document.getElementById('spotAddress').value,
+                hours: document.getElementById('spotHours').value,
+                phone: document.getElementById('spotPhone').value,
+                price: document.getElementById('spotPrice').value,
+                bob_intel: document.getElementById('spotIntel').value,
+                created_at: new Date().toISOString()
+            };
+
+            try {
+                const { data, error } = await supabase
+                    .from('cdmx_spots')
+                    .insert([newSpot])
+                    .select();
+
+                if (error) throw error;
+
+                allSpots.push(data[0]);
+                renderSpots();
+                document.getElementById('addSpotModal').classList.remove('active');
+                document.getElementById('addSpotForm').reset();
+                alert('✅ Spot added! Thanks for contributing!');
+            } catch (err) {
+                console.error('Error adding spot:', err);
+                alert('❌ Error adding spot. Please try again.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Spot';
+            }
+        });
+
+        // Init
+        loadSpots();
+    </script>
+</body>
+</html>
