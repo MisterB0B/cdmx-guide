@@ -1892,16 +1892,43 @@
             document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
         }
 
+        function containsProfanity(text) {
+            if (!text) return false;
+            const profanityList = [
+                'fuck', 'shit', 'bitch', 'ass', 'asshole', 'damn', 'cunt', 'dick', 'pussy', 
+                'cock', 'bastard', 'whore', 'slut', 'piss', 'nigger', 'nigga', 'fag', 'faggot',
+                'retard', 'rape', 'motherfucker', 'bullshit', 'puta', 'pendejo', 'chingada',
+                'verga', 'pinche', 'joder', 'mierda', 'coño', 'puto', 'cabron'
+            ];
+            const lowerText = text.toLowerCase();
+            return profanityList.some(word => {
+                const regex = new RegExp('\\b' + word + '\\b', 'i');
+                return regex.test(lowerText);
+            });
+        }
+
         async function submitReview(event) {
             event.preventDefault();
             
+            const comment = document.getElementById('comment').value;
+            const tips = document.getElementById('tips').value;
+            const recommended = document.getElementById('recommended').value;
+            const reviewerName = document.getElementById('reviewerName').value;
+
+            // Check for profanity
+            if (containsProfanity(comment) || containsProfanity(tips) || 
+                containsProfanity(recommended) || containsProfanity(reviewerName)) {
+                alert('❌ Please keep your review family-friendly. Profanity is not allowed.');
+                return;
+            }
+            
             const reviewData = {
                 spot_name: currentSpotName,
-                reviewer_name: document.getElementById('reviewerName').value || 'Anonymous',
+                reviewer_name: reviewerName || 'Anonymous',
                 rating: parseInt(document.getElementById('rating').value),
-                comment: document.getElementById('comment').value,
-                tips: document.getElementById('tips').value || null,
-                recommended_items: document.getElementById('recommended').value || null,
+                comment: comment,
+                tips: tips || null,
+                recommended_items: recommended || null,
                 verified: document.getElementById('verified').checked,
                 created_at: new Date().toISOString()
             };
