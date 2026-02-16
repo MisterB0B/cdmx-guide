@@ -1,4 +1,6 @@
 -- CDMX Guide Database Schema
+-- Run in BOB DODGE CREATIVE Supabase: https://jsfdzfwlyclethssaffk.supabase.co
+-- (Personal project, NOT Light Park Ops)
 
 -- Spots table
 CREATE TABLE IF NOT EXISTS cdmx_spots (
