@@ -1930,7 +1930,8 @@
         // Render spots
         function renderSpots() {
             const container = document.getElementById('spotsContainer');
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const searchInput = document.getElementById('searchInput');
+            const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
 
             let filtered = allSpots;
 
@@ -2119,8 +2120,12 @@
             }
         });
 
-        // Init
-        loadSpots();
+        // Init - wait for DOM to be ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadSpots);
+        } else {
+            loadSpots();
+        }
     </script>
 </body>
 </html>
