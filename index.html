@@ -1805,18 +1805,38 @@
 
             // Calculate distances and sort if Near Me is active
             if (nearMeActive && userLocation) {
-                // Sheraton Maria Isabel coordinates as reference for most spots
-                const sheratonLat = 19.4260;
-                const sheratonLng = -99.1670;
+                // Approximate neighborhood coordinates
+                const neighborhoodCoords = {
+                    'Sheraton': [19.4260, -99.1670],
+                    'Cuauhtémoc': [19.4260, -99.1550],
+                    'Juárez': [19.4280, -99.1640],
+                    'Juarez': [19.4280, -99.1640],
+                    'Roma Norte': [19.4155, -99.1630],
+                    'Roma Sur': [19.4100, -99.1630],
+                    'Condesa': [19.4125, -99.1720],
+                    'Centro': [19.4340, -99.1330],
+                    'Polanco': [19.4360, -99.1950],
+                    'Zona Rosa': [19.4250, -99.1620],
+                    'default': [19.4260, -99.1670] // Sheraton area
+                };
                 
                 filtered.forEach(spot => {
-                    // Use Sheraton as approximate location for spots near it
-                    // In future, add actual lat/lng to each spot
+                    // Try to match neighborhood from address
+                    let coords = neighborhoodCoords['default'];
+                    if (spot.address) {
+                        for (let [hood, latLng] of Object.entries(neighborhoodCoords)) {
+                            if (spot.address.includes(hood)) {
+                                coords = latLng;
+                                break;
+                            }
+                        }
+                    }
+                    
                     spot.calculatedDistance = calculateDistance(
                         userLocation.lat,
                         userLocation.lng,
-                        sheratonLat,
-                        sheratonLng
+                        coords[0],
+                        coords[1]
                     );
                 });
                 
