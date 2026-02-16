@@ -1922,8 +1922,18 @@
 
         // Load spots
         async function loadSpots() {
+            // Guaranteed fallback after 2 seconds
+            const fallbackTimer = setTimeout(() => {
+                if (allSpots.length === 0) {
+                    console.log('Timeout - loading offline data');
+                    allSpots = initialSpots;
+                    renderSpots();
+                }
+            }, 2000);
+
             // If Supabase isn't available, use offline data immediately
             if (!supabase) {
+                clearTimeout(fallbackTimer);
                 console.log('Using offline spot data (Supabase not available)');
                 allSpots = initialSpots;
                 renderSpots();
@@ -1931,24 +1941,20 @@
             }
 
             try {
-                // Add 3-second timeout to prevent infinite loading
-                const timeoutPromise = new Promise((_, reject) => 
-                    setTimeout(() => reject(new Error('Timeout')), 3000)
-                );
-
-                const dataPromise = supabase
+                const { data, error } = await supabase
                     .from('cdmx_spots')
                     .select('*')
                     .order('name');
 
-                const { data, error } = await Promise.race([dataPromise, timeoutPromise]);
+                clearTimeout(fallbackTimer);
 
                 if (error) throw error;
 
                 allSpots = data && data.length > 0 ? data : initialSpots;
                 renderSpots();
             } catch (err) {
-                console.warn('Using offline spot data (Supabase error/timeout):', err.message);
+                clearTimeout(fallbackTimer);
+                console.warn('Using offline spot data (Supabase error):', err.message);
                 allSpots = initialSpots;
                 renderSpots();
             }
