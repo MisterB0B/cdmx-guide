@@ -185,13 +185,18 @@
 
     <div class="filters">
         <input type="text" class="search-box" id="searchBox" placeholder="🔍 Search spots...">
-        <button class="filter-btn active" data-category="all">All</button>
-        <button class="filter-btn" data-category="mexican">🌮 Mexican</button>
-        <button class="filter-btn" data-category="japanese">🍣 Japanese</button>
-        <button class="filter-btn" data-category="korean">🍜 Korean</button>
-        <button class="filter-btn" data-category="nightlife">🎵 Nightlife</button>
-        <button class="filter-btn" data-category="tourist">🗺️ Tourist</button>
-        <button class="filter-btn" data-category="adult">🔞 Adult 18+</button>
+        <div id="mainCategories" style="display: flex; flex-wrap: wrap; gap: 0.5rem; width: 100%;">
+            <button class="filter-btn active" data-category="all">All</button>
+            <button class="filter-btn" data-category="asian">🥢 Asian</button>
+            <button class="filter-btn" data-category="latin">🌮 Latin American</button>
+            <button class="filter-btn" data-category="european">🍕 European</button>
+            <button class="filter-btn" data-category="nightlife">🎵 Nightlife</button>
+            <button class="filter-btn" data-category="adult">🔞 Adult 18+</button>
+            <button class="filter-btn" data-category="tourist">🗺️ Tourist</button>
+            <button class="filter-btn" data-category="breakfast">☕ Breakfast & Cafes</button>
+            <button class="filter-btn" data-category="street">🌮 Street Vendors</button>
+        </div>
+        <div id="subCategories" style="display: none; flex-wrap: wrap; gap: 0.5rem; width: 100%; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid #2a2a3a;"></div>
     </div>
 
     <div class="spots-container" id="spotsContainer">
@@ -203,7 +208,8 @@
             // ========== JAPANESE ==========
             {
                 name: 'Taishu Teppan Sango',
-                category: 'japanese',
+                mainCategory: 'asian',
+                subCategory: 'Japanese',
                 type: 'Teppanyaki',
                 description: 'Okonomiyaki, teppanyaki, izakaya. Small spot, gets busy.',
                 address: 'Río Pánuco 128, Col. Cuauhtémoc',
@@ -216,7 +222,8 @@
             },
             {
                 name: 'WANWAN Sakaba',
-                category: 'japanese',
+                mainCategory: 'asian',
+                subCategory: 'Japanese',
                 type: 'Izakaya',
                 description: 'Traditional izakaya with ramen and fried dishes.',
                 address: 'Londres 209, Juárez',
@@ -229,7 +236,8 @@
             },
             {
                 name: 'Kura Izakaya',
-                category: 'japanese',
+                mainCategory: 'asian',
+                subCategory: 'Japanese',
                 type: 'Izakaya',
                 description: 'Japanese-run izakaya. Pork belly, premium sashimi, full menu.',
                 address: 'Colima 378, Roma Norte',
@@ -242,7 +250,8 @@
             },
             {
                 name: 'Rokai',
-                category: 'japanese',
+                mainCategory: 'asian',
+                subCategory: 'Japanese',
                 type: 'Ramen',
                 description: 'Top ramen spot. Tonkotsu, miso, shoyu. Gyoza, karaage.',
                 address: 'Medellín 101, Roma Norte',
@@ -255,7 +264,8 @@
             },
             {
                 name: 'Kioko',
-                category: 'japanese',
+                mainCategory: 'asian',
+                subCategory: 'Japanese',
                 type: 'Japanese',
                 description: 'Upscale spot. Wagyu, sashimi, omakase. Great for date night.',
                 address: 'Michoacán 25, Condesa',
@@ -268,7 +278,8 @@
             },
             {
                 name: 'C.O.M.E',
-                category: 'japanese',
+                mainCategory: 'asian',
+                subCategory: 'Japanese',
                 type: 'Yakitori',
                 description: 'Budget yakitori, udon, mochi. Lunch specials ~90 MXN.',
                 address: 'Coahuila 143, Roma Sur',
@@ -282,7 +293,8 @@
             // ========== KOREAN ==========
             {
                 name: 'Kpop BBQ',
-                category: 'korean',
+                mainCategory: 'asian',
+                subCategory: 'Korean',
                 type: 'Korean BBQ',
                 description: 'All-you-can-eat KBBQ. Beef, pork, chicken. Banchan, soju.',
                 address: 'Insurgentes Sur 349, Hipódromo',
@@ -295,7 +307,8 @@
             },
             {
                 name: 'Seoul Town',
-                category: 'korean',
+                mainCategory: 'asian',
+                subCategory: 'Korean',
                 type: 'Korean BBQ',
                 description: 'Authentic KBBQ, banchan station, private booths.',
                 address: 'Dinamarca 106, Juárez',
@@ -308,7 +321,8 @@
             },
             {
                 name: 'Gogiyo',
-                category: 'korean',
+                mainCategory: 'asian',
+                subCategory: 'Korean',
                 type: 'Korean BBQ',
                 description: 'Korean-run spot. Premium cuts, kimchi pancake, bibimbap.',
                 address: 'Amsterdam 246, Hipódromo Condesa',
@@ -321,7 +335,8 @@
             },
             {
                 name: 'Mukbang Korean Restaurant',
-                category: 'korean',
+                mainCategory: 'asian',
+                subCategory: 'Korean',
                 type: 'Korean',
                 description: 'Full Korean menu. Bulgogi, jjigae, tteokbokki.',
                 address: 'Tlaxcala 173, Hipódromo',
@@ -334,7 +349,8 @@
             },
             {
                 name: 'Hanu Korean Restaurant',
-                category: 'korean',
+                mainCategory: 'asian',
+                subCategory: 'Korean',
                 type: 'Korean',
                 description: 'Casual Korean spot. Gimbap, ramyeon, fried chicken.',
                 address: 'Jalapa 97, Roma Norte',
@@ -348,7 +364,8 @@
             // ========== NIGHTLIFE ==========
             {
                 name: 'Cueva de Lobos',
-                category: 'nightlife',
+                mainCategory: 'nightlife',
+                subCategory: 'Rock Bar',
                 type: 'Rock Bar',
                 description: 'Rock bar with live bands, signature cocktails (Lobo Especial).',
                 address: 'C. Génova 30, Juárez',
@@ -361,7 +378,8 @@
             },
             {
                 name: 'Pulquería Los Insurgentes',
-                category: 'nightlife',
+                mainCategory: 'nightlife',
+                subCategory: 'Pulquería',
                 type: 'Pulquería',
                 description: '4-story pulque bar with rooftop terrace, DJs, dance floor. Great for first-time pulque.',
                 address: 'Av. Insurgentes Sur 226, Roma Norte',
@@ -374,7 +392,8 @@
             },
             {
                 name: 'Jazzatlán Capital',
-                category: 'nightlife',
+                mainCategory: 'nightlife',
+                subCategory: 'Jazz Bar',
                 type: 'Jazz Bar',
                 description: 'Live jazz and flamenco. Intimate, date-night vibe.',
                 address: 'Zona Rosa',
@@ -387,7 +406,8 @@
             },
             {
                 name: 'Multiforo Alicia',
-                category: 'nightlife',
+                mainCategory: 'nightlife',
+                subCategory: 'Underground Venue',
                 type: 'Underground Venue',
                 description: 'Underground punk, metal, indie shows. Dive bar aesthetic.',
                 address: 'Cuauhtémoc 91-A, Centro',
@@ -400,7 +420,8 @@
             },
             {
                 name: 'La Perla',
-                category: 'nightlife',
+                mainCategory: 'nightlife',
+                subCategory: 'Dive Bar',
                 type: 'Dive Bar',
                 description: 'Old-school cantina. Live mariachi, norteño, rock. Cash only.',
                 address: 'República de Cuba 44, Centro',
@@ -413,7 +434,8 @@
             },
             {
                 name: 'Vaquita Bar',
-                category: 'nightlife',
+                mainCategory: 'nightlife',
+                subCategory: 'Dance Club',
                 type: 'Dance Club',
                 description: 'Party club. Open bar packages, DJ, dance floor.',
                 address: 'Insurgentes Sur, Zona Rosa',
@@ -427,7 +449,8 @@
             // ========== ADULT 18+ ==========
             {
                 name: 'Queen\'s',
-                category: 'adult',
+                mainCategory: 'adult',
+                subCategory: 'Strip Club',
                 type: 'Strip Club',
                 description: 'Upscale strip club. VIP sections, bottle service.',
                 address: 'Hamburgo, Juárez',
@@ -440,7 +463,8 @@
             },
             {
                 name: 'Cabaret Show Girls',
-                category: 'adult',
+                mainCategory: 'adult',
+                subCategory: 'Strip Club',
                 type: 'Strip Club',
                 description: 'Multi-level club, private rooms, full bar.',
                 address: 'Londres, Juárez',
@@ -453,7 +477,8 @@
             },
             {
                 name: 'Las Adelitas',
-                category: 'adult',
+                mainCategory: 'adult',
+                subCategory: 'Strip Club',
                 type: 'Strip Club',
                 description: 'Mid-tier, more relaxed vibe than upscale spots.',
                 address: 'Insurgentes Sur',
@@ -466,7 +491,8 @@
             },
             {
                 name: 'Bar Oriente',
-                category: 'adult',
+                mainCategory: 'adult',
+                subCategory: 'Strip Club',
                 type: 'Strip Club',
                 description: 'Budget option. More dive bar than club.',
                 address: 'Centro',
@@ -479,7 +505,8 @@
             },
             {
                 name: 'Parque México',
-                category: 'adult',
+                mainCategory: 'adult',
+                subCategory: 'Weed Zone',
                 type: 'Weed Zone',
                 description: 'Condesa park. Chill vibe, people smoke openly. Cops don\'t care.',
                 address: 'Av. México, Condesa',
@@ -492,7 +519,8 @@
             },
             {
                 name: 'Zona Rosa',
-                category: 'adult',
+                mainCategory: 'adult',
+                subCategory: 'Weed Zone',
                 type: 'Weed Zone',
                 description: 'Gay district. Bars, clubs. People smoke on patios.',
                 address: 'Zona Rosa',
@@ -505,7 +533,8 @@
             },
             {
                 name: 'Roma Norte Side Streets',
-                category: 'adult',
+                mainCategory: 'adult',
+                subCategory: 'Weed Zone',
                 type: 'Weed Zone',
                 description: 'Bohemian neighborhood. People smoke on bar patios, side streets.',
                 address: 'Roma Norte',
@@ -519,7 +548,8 @@
             // ========== BREAKFAST ==========
             {
                 name: 'Madre Café',
-                category: 'breakfast',
+                mainCategory: 'breakfast',
+                subCategory: 'Cafes',
                 type: 'Breakfast/Brunch',
                 description: 'Cozy breakfast spot, great coffee, pastries.',
                 address: 'Roma Norte',
@@ -533,7 +563,8 @@
             // ========== MEXICAN ==========
             {
                 name: 'Máximo Bistrot',
-                category: 'mexican',
+                mainCategory: 'latin',
+                subCategory: 'Mexican',
                 type: 'Fine Dining',
                 description: 'Upscale contemporary Mexican cuisine.',
                 address: 'Álvaro Obregón 65 Bis, Roma Norte',
@@ -546,7 +577,8 @@
             },
             {
                 name: 'La Docena',
-                category: 'mexican',
+                mainCategory: 'latin',
+                subCategory: 'Mexican',
                 type: 'Oyster Bar',
                 description: 'Fresh oysters, seafood cocktails, beachside vibe.',
                 address: 'Álvaro Obregón 31, Roma Norte',
@@ -559,7 +591,8 @@
             },
             {
                 name: 'Limosneros',
-                category: 'mexican',
+                mainCategory: 'latin',
+                subCategory: 'Mexican',
                 type: 'Contemporary Mexican',
                 description: 'Creative Mexican dishes, historic Centro location.',
                 address: 'Ignacio Allende 3, Centro Histórico',
@@ -572,7 +605,8 @@
             },
             {
                 name: 'La Gruta',
-                category: 'mexican',
+                mainCategory: 'latin',
+                subCategory: 'Mexican',
                 type: 'Cave Restaurant',
                 description: 'Cave restaurant near Teotihuacan pyramids. Traditional Mexican food.',
                 address: 'Near Teotihuacan',
@@ -586,7 +620,8 @@
             // ========== TOURIST ==========
             {
                 name: 'La Ciudadela Market',
-                category: 'tourist',
+                mainCategory: 'tourist',
+                subCategory: 'Artisan Market',
                 type: 'Artisan Market',
                 description: 'Massive artisan market. Textiles, pottery, leather, souvenirs.',
                 address: 'Balderas, Centro',
@@ -599,7 +634,8 @@
             },
             {
                 name: 'La Merced Market',
-                category: 'tourist',
+                mainCategory: 'tourist',
+                subCategory: 'Food Market',
                 type: 'Food Market',
                 description: 'Enormous food market. Fresh produce, spices, street food.',
                 address: 'Anillo de Circunvalación, Centro',
@@ -612,7 +648,8 @@
             },
             {
                 name: 'Arena México',
-                category: 'tourist',
+                mainCategory: 'tourist',
+                subCategory: 'Lucha Libre',
                 type: 'Lucha Libre',
                 description: 'Iconic wrestling arena. Friday night matches, masks, Dos Equis.',
                 address: '189 Calle Dr. Lavista, Doctores',
@@ -625,7 +662,8 @@
             },
             {
                 name: 'Xochimilco Canals',
-                category: 'tourist',
+                mainCategory: 'tourist',
+                subCategory: 'Boat Ride',
                 type: 'Boat Ride',
                 description: 'Colorful trajinera boats. Bring drinks, speaker, snacks. Mariachi boats (avoid or embrace).',
                 address: 'Embarcadero Nativitas or Embarcadero Fernando Celada',
@@ -638,7 +676,8 @@
             },
             {
                 name: 'Teotihuacan Pyramids',
-                category: 'tourist',
+                mainCategory: 'tourist',
+                subCategory: 'Archaeological Site',
                 type: 'Archaeological Site',
                 description: 'Ancient pyramids. Climb Pyramid of the Sun. Get there early (opens 9am).',
                 address: 'San Juan Teotihuacán, Estado de México',
@@ -651,7 +690,8 @@
             },
             {
                 name: 'Plaza Garibaldi',
-                category: 'tourist',
+                mainCategory: 'tourist',
+                subCategory: 'Mariachi Square',
                 type: 'Mariachi Square',
                 description: 'Mariachi central. Live music, tequila bars, pulquerías. Gets rowdy at night.',
                 address: 'Plaza Garibaldi, Centro',
@@ -664,7 +704,8 @@
             },
             {
                 name: 'Farmacias Similares',
-                category: 'tourist',
+                mainCategory: 'tourist',
+                subCategory: 'Pharmacy',
                 type: 'Pharmacy',
                 description: 'Budget pharmacy chain. OTC meds, some antibiotics/ED pills without prescription.',
                 address: 'Everywhere (red/yellow signs)',
@@ -677,7 +718,8 @@
             },
             {
                 name: 'Farmacias del Ahorro',
-                category: 'tourist',
+                mainCategory: 'tourist',
+                subCategory: 'Pharmacy',
                 type: 'Pharmacy',
                 description: 'Another big chain. Similar selection to Similares.',
                 address: 'Everywhere (green signs)',
@@ -691,7 +733,8 @@
             // ========== STREET VENDORS ==========
             {
                 name: 'Tacos Don Güero',
-                category: 'street',
+                mainCategory: 'street',
+                subCategory: 'Street Vendors',
                 type: 'Tacos',
                 description: '24-hour taco stand. Al pastor, asada, suadero.',
                 address: 'Various locations (mobile stands)',
@@ -704,7 +747,8 @@
             },
             {
                 name: 'El Califa',
-                category: 'street',
+                mainCategory: 'street',
+                subCategory: 'Street Vendors',
                 type: 'Tacos',
                 description: 'Famous taco chain. Gaonera, costilla, campechano.',
                 address: 'Multiple locations (Zona Rosa, Condesa)',
@@ -717,7 +761,8 @@
             },
             {
                 name: 'Elotes & Esquites Vendors',
-                category: 'street',
+                mainCategory: 'street',
+                subCategory: 'Street Vendors',
                 type: 'Corn',
                 description: 'Grilled corn (elotes) or corn in a cup (esquites). Mayo, cheese, chili, lime.',
                 address: 'Everywhere (parks, plazas, street corners)',
@@ -730,7 +775,8 @@
             },
             {
                 name: 'Tamales Vendors',
-                category: 'street',
+                mainCategory: 'street',
+                subCategory: 'Street Vendors',
                 type: 'Tamales',
                 description: 'Morning vendors with steaming carts. Rajas, mole, dulce.',
                 address: 'Metro stations, plazas (mornings)',
@@ -743,7 +789,8 @@
             },
             {
                 name: 'Churros Vendors',
-                category: 'street',
+                mainCategory: 'street',
+                subCategory: 'Street Vendors',
                 type: 'Dessert',
                 description: 'Fresh churros with chocolate or cajeta.',
                 address: 'Parks, plazas, near churches',
@@ -756,7 +803,8 @@
             },
             {
                 name: 'Café El Popular',
-                category: 'nightlife',
+                mainCategory: 'nightlife',
+                subCategory: 'Late-Night Diner',
                 type: 'Late-Night Diner',
                 description: '24/7 diner serving full meals + drinks. Cash only, unpretentious. Perfect for after-hours.',
                 address: 'Centro Histórico',
@@ -769,7 +817,8 @@
             },
             {
                 name: 'Hanky Panky',
-                category: 'nightlife',
+                mainCategory: 'nightlife',
+                subCategory: 'Speakeasy',
                 type: 'Speakeasy',
                 description: 'Hidden speakeasy. Nervous door approach, cocktails til sunrise.',
                 address: 'Turín 40, Juárez',
@@ -782,7 +831,8 @@
             },
             {
                 name: 'Centro de Salud',
-                category: 'nightlife',
+                mainCategory: 'nightlife',
+                subCategory: 'Dive Bar',
                 type: 'Dive Bar',
                 description: 'Grungy rock/metal/alt venue. Berlin vibes, local scene.',
                 address: 'Centro Histórico',
@@ -795,7 +845,8 @@
             },
             {
                 name: 'Zinco Jazz Club',
-                category: 'nightlife',
+                mainCategory: 'nightlife',
+                subCategory: 'Jazz Club',
                 type: 'Jazz Club',
                 description: '1930s bank vault converted to jazz club. Retro vibe, cocktails, food.',
                 address: 'Motolinía 20, Centro Histórico',
@@ -808,7 +859,8 @@
             },
             {
                 name: 'Cantina La No. 20',
-                category: 'nightlife',
+                mainCategory: 'nightlife',
+                subCategory: 'Cantina',
                 type: 'Cantina',
                 description: 'Traditional cantina across from Sheraton. Late-night tacos, tequila.',
                 address: 'Near Paseo de la Reforma',
@@ -821,7 +873,8 @@
             },
             {
                 name: 'Embarcadero Cuemanco',
-                category: 'tourist',
+                mainCategory: 'tourist',
+                subCategory: 'Boat Launch',
                 type: 'Boat Launch',
                 description: 'Quieter, more ecological Xochimilco embarcadero. Deeper canals, less touristy.',
                 address: 'Periférico Sur Adolfo Ruíz Cortines, Xochimilco, 16034 CDMX',
@@ -835,7 +888,8 @@
             // ========== MEXICAN/FUSION (Bob's Research 2/15) ==========
             {
                 name: 'El Autentico Pato Manila',
-                category: 'mexican',
+                mainCategory: 'latin',
+                subCategory: 'Mexican',
                 type: 'Filipino-Mexican Fusion',
                 description: 'Filipino-Mexican fusion. Famous duck tacos, unique cross-cultural menu.',
                 address: 'Querétaro 225, Roma Norte',
@@ -848,7 +902,8 @@
             },
             {
                 name: 'Masala y Maíz',
-                category: 'mexican',
+                mainCategory: 'latin',
+                subCategory: 'Mexican',
                 type: 'Indian-Mexican Fusion',
                 description: 'Indian x Mexican fusion. Michelin listed. Creative tasting menus blending spices and corn.',
                 address: 'Marsella 72, Juárez',
@@ -861,7 +916,8 @@
             },
             {
                 name: 'Expendio de Maíz (Sin Nombre)',
-                category: 'mexican',
+                mainCategory: 'latin',
+                subCategory: 'Mexican',
                 type: 'Traditional Mexican',
                 description: 'No menu, no sign, cash only. Heirloom corn tortillas made fresh. The real deal.',
                 address: 'Roma Norte (no posted address)',
@@ -874,7 +930,8 @@
             },
             {
                 name: 'Contramar',
-                category: 'mexican',
+                mainCategory: 'latin',
+                subCategory: 'Mexican',
                 type: 'Iconic Seafood',
                 description: 'Iconic CDMX seafood restaurant. Famous tuna tostadas and grilled red/green snapper.',
                 address: 'Durango 200, Roma Norte',
@@ -887,7 +944,8 @@
             },
             {
                 name: 'El Huequito',
-                category: 'mexican',
+                mainCategory: 'latin',
+                subCategory: 'Mexican',
                 type: 'Tacos al Pastor',
                 description: 'Best tacos al pastor since 1959. CDMX institution.',
                 address: 'Ayuntamiento 21, Centro Histórico',
@@ -900,7 +958,8 @@
             },
             {
                 name: 'Rosetta',
-                category: 'mexican',
+                mainCategory: 'latin',
+                subCategory: 'Mexican',
                 type: 'Fine Dining Italian-Mexican',
                 description: 'Fine dining Italian-Mexican by Chef Elena Reygadas. Beautiful Roma Norte townhouse setting.',
                 address: 'Colima 166, Roma Norte',
@@ -913,7 +972,8 @@
             },
             {
                 name: 'Páramo',
-                category: 'mexican',
+                mainCategory: 'latin',
+                subCategory: 'Mexican',
                 type: 'Mezcal Bar & Tacos',
                 description: 'Mezcal cocktails + tacos. Great late-night spot with creative drinks.',
                 address: 'Av. Yucatán 84, Roma Norte',
@@ -926,7 +986,8 @@
             },
             {
                 name: 'Agüita Fría',
-                category: 'mexican',
+                mainCategory: 'latin',
+                subCategory: 'Mexican',
                 type: 'Seasonal Mexican',
                 description: 'Seasonal, chef-driven Mexican cuisine. Small plates, inventive menu.',
                 address: 'Roma Norte area',
@@ -939,7 +1000,8 @@
             },
             {
                 name: 'El Corazón del Mar',
-                category: 'mexican',
+                mainCategory: 'latin',
+                subCategory: 'Mexican',
                 type: 'Seafood / Ceviche',
                 description: 'Creative ceviches, aguachiles, octopus. Fresh and inventive seafood.',
                 address: 'Valladolid 91, Roma Norte',
@@ -952,7 +1014,8 @@
             },
             {
                 name: 'El Pez Azul',
-                category: 'mexican',
+                mainCategory: 'latin',
+                subCategory: 'Mexican',
                 type: 'Fish Tacos',
                 description: 'Fish + shrimp tacos with great margaritas. Baja-style seafood.',
                 address: 'Citlaltépetl 40-A, Condesa',
@@ -965,7 +1028,8 @@
             },
             {
                 name: 'Mercado de Medellín',
-                category: 'mexican',
+                mainCategory: 'latin',
+                subCategory: 'Mexican',
                 type: 'Traditional Market',
                 description: 'Traditional market with street food, fresh produce, and local flavors. Great for exploring.',
                 address: 'Medellín, Roma Norte',
@@ -979,7 +1043,8 @@
             // === HIGH-END COCKTAIL BARS ===
             {
                 name: 'Handshake Speakeasy',
-                category: 'nightlife',
+                mainCategory: 'nightlife',
+                subCategory: 'High-End Cocktail Bar',
                 type: 'High-End Cocktail Bar',
                 description: '#2 bar in the world. Reservations required via OpenTable. Hidden entrance, world-class cocktails.',
                 address: 'Amberes 65, Juárez (Zona Rosa)',
@@ -992,7 +1057,8 @@
             },
             {
                 name: 'Licorería Limantour',
-                category: 'nightlife',
+                mainCategory: 'nightlife',
+                subCategory: 'High-End Cocktail Bar',
                 type: 'High-End Cocktail Bar',
                 description: 'Award-winning craft cocktails and innovative mixology. Consistently ranked among world\'s best bars.',
                 address: 'Álvaro Obregón 106, Roma Norte',
@@ -1005,7 +1071,8 @@
             },
             {
                 name: 'Parker & Lenox',
-                category: 'nightlife',
+                mainCategory: 'nightlife',
+                subCategory: 'High-End Cocktail Bar',
                 type: 'High-End Cocktail Bar',
                 description: 'Hidden speakeasy with jazz vibes and craft cocktails. Prohibition-era atmosphere in Centro Histórico.',
                 address: 'Milán 14, Juárez',
@@ -1018,7 +1085,8 @@
             },
             {
                 name: 'Xaman Bar',
-                category: 'nightlife',
+                mainCategory: 'nightlife',
+                subCategory: 'High-End Cocktail Bar',
                 type: 'High-End Cocktail Bar',
                 description: 'High-end cocktails with modern Mexican flavors. Indigenous ingredients meet contemporary mixology.',
                 address: 'Gral. Prim 95, Juárez',
@@ -1032,7 +1100,8 @@
             // === ROOFTOP BARS ===
             {
                 name: 'Terraza Cha Cha Chá ⭐',
-                category: 'nightlife',
+                mainCategory: 'nightlife',
+                subCategory: 'Rooftop Bar',
                 type: 'Rooftop Bar',
                 description: 'Bob\'s Pick! Sunset views over Monumento a la Revolución. Craft beers, tequila, and mezcal in a chill rooftop setting.',
                 address: 'Near Monumento a la Revolución, Tabacalera',
@@ -1045,7 +1114,8 @@
             },
             {
                 name: 'Cityzen Rooftop Kitchen',
-                category: 'nightlife',
+                mainCategory: 'nightlife',
+                subCategory: 'Rooftop Bar',
                 type: 'Rooftop Bar',
                 description: 'Sofitel hotel rooftop with views of Angel of Independence and Chapultepec Castle. Weekend DJs.',
                 address: 'Paseo de la Reforma 465, Cuauhtémoc (Sofitel Hotel)',
@@ -1058,7 +1128,8 @@
             },
             {
                 name: 'Nivel 40 SkyBar',
-                category: 'nightlife',
+                mainCategory: 'nightlife',
+                subCategory: 'Rooftop Bar',
                 type: 'Rooftop Bar',
                 description: '40th floor of Torre Latinoamericana. 360° panoramic views of Zócalo, Cathedral, and Palacio de Bellas Artes.',
                 address: 'Eje Central Lázaro Cárdenas 2, Centro Histórico (Torre Latinoamericana, 40th floor)',
@@ -1071,7 +1142,8 @@
             },
             {
                 name: 'Balmori Roofbar',
-                category: 'nightlife',
+                mainCategory: 'nightlife',
+                subCategory: 'Rooftop Bar',
                 type: 'Rooftop Bar',
                 description: 'Retractable roof with expert cocktails, Mexican wines, and craft beers in Roma Norte.',
                 address: 'Zacatecas 139, Roma Norte',
@@ -1085,7 +1157,8 @@
             // === ITALIAN ===
             {
                 name: 'Sartoria ⭐',
-                category: 'mexican',
+                mainCategory: 'latin',
+                subCategory: 'Mexican',
                 type: 'Italian Restaurant',
                 description: 'Bob\'s Pick! Handmade pasta and Italian done right in CDMX. Fresh ingredients, authentic technique.',
                 address: 'Orizaba 42, Roma Norte',
@@ -1099,7 +1172,8 @@
             // === ASIAN FUSION ===
             {
                 name: 'Imbiss',
-                category: 'japanese',
+                mainCategory: 'asian',
+                subCategory: 'Japanese',
                 type: 'Asian Fusion',
                 description: 'NY bistro energy with seasonal menu, great cocktails, and a small intimate space.',
                 address: 'Colima 145, Roma Norte',
@@ -1112,7 +1186,8 @@
             },
             {
                 name: 'Takotl Roma Norte',
-                category: 'japanese',
+                mainCategory: 'asian',
+                subCategory: 'Japanese',
                 type: 'Asian Fusion Tacos',
                 description: 'Asian fusion tacos — the salmon taco is the signature dish. 4.9★ with 685 reviews.',
                 address: 'Roma Norte',
@@ -1125,7 +1200,8 @@
             },
             {
                 name: 'MOG Bistro',
-                category: 'japanese',
+                mainCategory: 'asian',
+                subCategory: 'Japanese',
                 type: 'Asian Fusion',
                 description: 'Asian fusion sushi, ramen, and sake cocktails. Full bar with creative Japanese-Mexican fusion.',
                 address: 'Frontera 168, Roma Norte',
@@ -1138,7 +1214,8 @@
             },
             {
                 name: 'Daikoku',
-                category: 'japanese',
+                mainCategory: 'asian',
+                subCategory: 'Japanese',
                 type: 'Ramen / Japanese',
                 description: 'OG ramen spot with unique rice-free maki. Spacious setting in Condesa.',
                 address: 'Michoacán 25, Condesa',
@@ -1152,7 +1229,8 @@
             // === SEAFOOD ===
             {
                 name: 'Avenida La Tizona',
-                category: 'mexican',
+                mainCategory: 'latin',
+                subCategory: 'Mexican',
                 type: 'Seafood',
                 description: 'Sinaloa-style seafood tacos, ceviche, fish tostadas, and seared tuna tacos. 4.6★ with 330+ reviews.',
                 address: 'Roma Norte',
@@ -1166,7 +1244,8 @@
             // === CASUAL BARS ===
             {
                 name: 'Felina',
-                category: 'nightlife',
+                mainCategory: 'nightlife',
+                subCategory: 'Casual Bar & Tacos',
                 type: 'Casual Bar & Tacos',
                 description: 'Tacos and cocktails with indoor/outdoor seating. Good vibes in South Condesa.',
                 address: 'South Condesa',
@@ -1179,7 +1258,8 @@
             },
             {
                 name: 'La Roma Brewing',
-                category: 'nightlife',
+                mainCategory: 'nightlife',
+                subCategory: 'Brewery / Casual Bar',
                 type: 'Brewery / Casual Bar',
                 description: 'Spacious brewery with wide beer variety. Indoor/outdoor seating, great for groups.',
                 address: 'Roma Norte',
@@ -1192,7 +1272,20 @@
             }
         ];
 
-        let currentFilter = 'all';
+        // Subcategory mappings
+        const subcategories = {
+            asian: ['Japanese', 'Korean', 'Chinese', 'Thai', 'Filipino', 'Vietnamese'],
+            latin: ['Mexican', 'Salvadoran', 'Argentinian', 'Colombian', 'Peruvian', 'Brazilian'],
+            european: ['Italian', 'French', 'Spanish', 'German', 'British'],
+            nightlife: ['Rock Bars', 'Jazz Clubs', 'Cocktail Bars', 'Rooftop Bars', 'Dive Bars', 'Breweries', 'Clubs'],
+            adult: ['Strip Clubs', 'Speakeasies', 'Gentlemen\'s Clubs'],
+            tourist: ['Landmarks', 'Markets', 'Day Trips', 'Museums', 'Parks'],
+            breakfast: ['Cafes', 'Brunch Spots', 'Bakeries'],
+            street: ['Tacos', 'Tamales', 'Elotes', 'Street Markets']
+        };
+
+        let currentMainCategory = 'all';
+        let currentSubCategory = null;
 
         function renderSpots() {
             const container = document.getElementById('spotsContainer');
@@ -1200,10 +1293,17 @@
 
             let filtered = spots;
 
-            if (currentFilter !== 'all') {
-                filtered = filtered.filter(s => s.category === currentFilter);
+            // Filter by main category
+            if (currentMainCategory !== 'all') {
+                filtered = filtered.filter(s => s.mainCategory === currentMainCategory);
             }
 
+            // Filter by subcategory
+            if (currentSubCategory) {
+                filtered = filtered.filter(s => s.subCategory === currentSubCategory);
+            }
+
+            // Search filter
             if (searchTerm) {
                 filtered = filtered.filter(s => 
                     s.name.toLowerCase().includes(searchTerm) ||
@@ -1220,7 +1320,7 @@
             container.innerHTML = filtered.map(spot => `
                 <div class="spot-card">
                     <div class="spot-name">${spot.name}</div>
-                    <div class="spot-category">${spot.category}</div>
+                    <div class="spot-category">${spot.subCategory || spot.mainCategory}</div>
                     ${spot.description ? `<div class="spot-description">${spot.description}</div>` : ''}
                     <div class="spot-details">
                         ${spot.address ? `<div class="spot-detail">📍 ${spot.address}</div>` : ''}
@@ -1232,12 +1332,40 @@
             `).join('');
         }
 
-        // Filter buttons
-        document.querySelectorAll('.filter-btn').forEach(btn => {
+        function showSubcategories(mainCat) {
+            const subCatContainer = document.getElementById('subCategories');
+            
+            if (mainCat === 'all' || !subcategories[mainCat]) {
+                subCatContainer.style.display = 'none';
+                subCatContainer.innerHTML = '';
+                currentSubCategory = null;
+                return;
+            }
+
+            subCatContainer.style.display = 'flex';
+            subCatContainer.innerHTML = subcategories[mainCat].map(sub => 
+                `<button class="filter-btn sub-filter" data-subcategory="${sub}">${sub}</button>`
+            ).join('');
+
+            // Add click handlers to subcategory buttons
+            subCatContainer.querySelectorAll('.sub-filter').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.sub-filter').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentSubCategory = btn.dataset.subcategory;
+                    renderSpots();
+                });
+            });
+        }
+
+        // Main category buttons
+        document.querySelectorAll('#mainCategories .filter-btn').forEach(btn => {
             btn.addEventListener('click', () => {
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('#mainCategories .filter-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                currentFilter = btn.dataset.category;
+                currentMainCategory = btn.dataset.category;
+                currentSubCategory = null;
+                showSubcategories(currentMainCategory);
                 renderSpots();
             });
         });
