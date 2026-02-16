@@ -452,6 +452,11 @@
             
             <form onsubmit="submitReview(event)">
                 <div class="form-group">
+                    <label>Your Name (optional)</label>
+                    <input type="text" id="reviewerName" name="reviewerName" placeholder="Leave blank for anonymous">
+                </div>
+
+                <div class="form-group">
                     <label>Rating</label>
                     <div class="star-rating" id="starRating">
                         <span class="star" data-rating="1">★</span>
@@ -1877,6 +1882,7 @@
 
         function closeReviewModal() {
             document.getElementById('reviewModal').classList.remove('active');
+            document.getElementById('reviewerName').value = '';
             document.getElementById('rating').value = '';
             document.getElementById('comment').value = '';
             document.getElementById('tips').value = '';
@@ -1891,6 +1897,7 @@
             
             const reviewData = {
                 spot_name: currentSpotName,
+                reviewer_name: document.getElementById('reviewerName').value || 'Anonymous',
                 rating: parseInt(document.getElementById('rating').value),
                 comment: document.getElementById('comment').value,
                 tips: document.getElementById('tips').value || null,
@@ -1944,7 +1951,10 @@
                 container.innerHTML = reviews.map(review => `
                     <div class="review-item">
                         <div class="review-header">
-                            <span class="review-stars">${'★'.repeat(review.rating)}${'☆'.repeat(5-review.rating)}</span>
+                            <div>
+                                <div style="color: #f0f0f5; font-weight: 600; margin-bottom: 0.25rem;">${review.reviewer_name || 'Anonymous'}</div>
+                                <span class="review-stars">${'★'.repeat(review.rating)}${'☆'.repeat(5-review.rating)}</span>
+                            </div>
                             ${review.verified ? '<span class="review-verified">✓ Verified</span>' : ''}
                         </div>
                         <div class="review-comment">${review.comment}</div>
