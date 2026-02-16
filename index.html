@@ -407,6 +407,7 @@
         <input type="text" class="search-box" id="searchBox" placeholder="🔍 Search spots...">
         <div id="mainCategories" style="display: flex; flex-wrap: wrap; gap: 0.5rem; width: 100%;">
             <button class="filter-btn active" data-category="all">All</button>
+            <button class="filter-btn" data-category="bobspicks">⭐ Bob's Picks</button>
             <button class="filter-btn" data-category="asian">🥢 Asian</button>
             <button class="filter-btn" data-category="latin">🌮 Latin American</button>
             <button class="filter-btn" data-category="mediterranean">🫒 Mediterranean</button>
@@ -1722,7 +1723,9 @@
             let filtered = spots;
 
             // Filter by main category
-            if (currentMainCategory !== 'all') {
+            if (currentMainCategory === 'bobspicks') {
+                filtered = filtered.filter(s => s.bob_intel && s.bob_intel.trim() !== '');
+            } else if (currentMainCategory !== 'all') {
                 filtered = filtered.filter(s => s.mainCategory === currentMainCategory);
             }
 
