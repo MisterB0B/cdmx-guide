@@ -1,0 +1,2762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🇲🇽 CDMX Guide - Food, Music & Nightlife</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0a0a0f;
+            color: #f0f0f5;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, rgba(168,85,247,0.1), rgba(6,214,160,0.1));
+            border-bottom: 2px solid #2a2a3a;
+            padding: 2rem 1rem;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #a855f7, #06d6a0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: #8888a0;
+            margin-top: 0.5rem;
+        }
+
+        .filters {
+            background: #12121a;
+            border-bottom: 1px solid #2a2a3a;
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            padding: 0.75rem;
+            border: 1px solid #2a2a3a;
+            border-radius: 8px;
+            background: #1a1a25;
+            color: #f0f0f5;
+            font-size: 0.95rem;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #a855f7;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #2a2a3a;
+            border-radius: 8px;
+            background: transparent;
+            color: #8888a0;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover {
+            border-color: #a855f7;
+            color: #a855f7;
+        }
+
+        .filter-btn.active {
+            background: #a855f7;
+            border-color: #a855f7;
+            color: #0a0a0f;
+            font-weight: 600;
+        }
+
+        .spots-container {
+            padding: 2rem 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .spot-card {
+            background: #12121a;
+            border: 1px solid #2a2a3a;
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .spot-card:hover {
+            transform: translateY(-4px);
+            border-color: #a855f7;
+            box-shadow: 0 8px 24px rgba(168,85,247,0.2);
+        }
+
+        .spot-card.highlighted {
+            border-color: #06d6a0;
+            box-shadow: 0 0 20px rgba(6,214,160,0.4);
+            animation: highlight-pulse 2s ease-in-out;
+        }
+
+        @keyframes highlight-pulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(6,214,160,0.4); }
+            50% { box-shadow: 0 0 40px rgba(6,214,160,0.6); }
+        }
+
+        .spot-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #f0f0f5;
+            margin-bottom: 0.5rem;
+        }
+
+        .spot-category {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            background: rgba(168,85,247,0.1);
+            color: #a855f7;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .spot-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-time {
+            background: rgba(6,214,160,0.1);
+            color: #06d6a0;
+            border: 1px solid rgba(6,214,160,0.3);
+        }
+
+        .badge-price {
+            background: rgba(251,191,36,0.1);
+            color: #fbbf24;
+            border: 1px solid rgba(251,191,36,0.3);
+        }
+
+        .spot-description {
+            color: #8888a0;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .spot-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: #8888a0;
+        }
+
+        .spot-detail {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .maps-link {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background: rgba(6,214,160,0.1);
+            border: 1px solid #06d6a0;
+            border-radius: 8px;
+            color: #06d6a0;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .maps-link:hover {
+            background: rgba(6,214,160,0.2);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 4rem;
+            color: #8888a0;
+        }
+
+        /* Review Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal-content {
+            background: #12121a;
+            border: 1px solid #2a2a3a;
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            color: #a855f7;
+            font-size: 1.5rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #8888a0;
+            font-size: 2rem;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0;
+        }
+
+        .close-btn:hover {
+            color: #f0f0f5;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: #f0f0f5;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-group input[type="text"],
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: #1a1a25;
+            border: 1px solid #2a2a3a;
+            border-radius: 8px;
+            color: #f0f0f5;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #a855f7;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .star-rating {
+            display: flex;
+            gap: 0.5rem;
+            font-size: 2rem;
+        }
+
+        .star {
+            cursor: pointer;
+            color: #2a2a3a;
+            transition: color 0.2s;
+        }
+
+        .star:hover,
+        .star.active {
+            color: #fbbf24;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: #a855f7;
+            border: none;
+            border-radius: 8px;
+            color: #0a0a0f;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: #9333ea;
+        }
+
+        .reviews-btn {
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background: rgba(168,85,247,0.1);
+            border: 1px solid #a855f7;
+            border-radius: 8px;
+            color: #a855f7;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .reviews-btn:hover {
+            background: rgba(168,85,247,0.2);
+        }
+
+        .existing-reviews {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #2a2a3a;
+        }
+
+        .review-item {
+            background: #1a1a25;
+            border: 1px solid #2a2a3a;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .review-stars {
+            color: #fbbf24;
+        }
+
+        .review-verified {
+            background: rgba(6,214,160,0.1);
+            color: #06d6a0;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        .review-comment {
+            color: #f0f0f5;
+            margin-bottom: 0.5rem;
+        }
+
+        .review-tips {
+            color: #8888a0;
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div class="header">
+        <h1>🇲🇽 Mexico City Guide</h1>
+        <p>Food, Music, Nightlife & Culture — Curated by locals and travelers</p>
+    </div>
+
+    <div class="filters">
+        <input type="text" class="search-box" id="searchBox" placeholder="🔍 Search spots...">
+        <div id="mainCategories" style="display: flex; flex-wrap: wrap; gap: 0.5rem; width: 100%;">
+            <button class="filter-btn active" data-category="all">All</button>
+            <button class="filter-btn" data-category="bobspicks">⭐ Bob's Picks</button>
+            <button class="filter-btn" data-category="asian">🥢 Asian</button>
+            <button class="filter-btn" data-category="latin">🌮 Latin American</button>
+            <button class="filter-btn" data-category="mediterranean">🫒 Mediterranean</button>
+            <button class="filter-btn" data-category="italian">🍕 Italian</button>
+            <button class="filter-btn" data-category="french">🍷 French</button>
+            <button class="filter-btn" data-category="american">🍔 American</button>
+            <button class="filter-btn" data-category="nightlife">🎵 Nightlife</button>
+            <button class="filter-btn" data-category="adult">🔞 Adult 18+</button>
+            <button class="filter-btn" data-category="tourist">🗺️ Tourist</button>
+            <button class="filter-btn" data-category="breakfast">☕ Breakfast & Cafes</button>
+            <button class="filter-btn" data-category="street">🌮 Street Vendors</button>
+        </div>
+        <div id="subCategories" style="display: none; flex-wrap: wrap; gap: 0.5rem; width: 100%; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid #2a2a3a;"></div>
+        
+        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; width: 100%; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid #2a2a3a;">
+            <div style="color: #8888a0; font-size: 0.85rem; font-weight: 600; padding: 0.5rem 0; width: 100%;">Time:</div>
+            <button class="filter-btn time-filter" data-time="breakfast">🌅 Breakfast</button>
+            <button class="filter-btn time-filter" data-time="lunch">🌞 Lunch</button>
+            <button class="filter-btn time-filter" data-time="dinner">🌆 Dinner</button>
+            <button class="filter-btn time-filter" data-time="latenight">🌙 Late Night</button>
+        </div>
+        
+        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; width: 100%; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid #2a2a3a;">
+            <div style="color: #8888a0; font-size: 0.85rem; font-weight: 600; padding: 0.5rem 0; width: 100%;">Price:</div>
+            <button class="filter-btn price-filter" data-price="$">$ (< 200 MXN)</button>
+            <button class="filter-btn price-filter" data-price="$$">$$ (200-500 MXN)</button>
+            <button class="filter-btn price-filter" data-price="$$$">$$$ (500-1000 MXN)</button>
+            <button class="filter-btn price-filter" data-price="$$$$">$$$$ (1000+ MXN)</button>
+        </div>
+    </div>
+
+    <div class="spots-container" id="spotsContainer">
+        <div class="loading">Loading spots...</div>
+    </div>
+
+    <!-- Review Modal -->
+    <div class="modal" id="reviewModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalSpotName">Add Review</h2>
+                <button class="close-btn" onclick="closeReviewModal()">&times;</button>
+            </div>
+            
+            <form onsubmit="submitReview(event)">
+                <div class="form-group">
+                    <label>Your Name (optional)</label>
+                    <input type="text" id="reviewerName" name="reviewerName" placeholder="Leave blank for anonymous">
+                </div>
+
+                <div class="form-group">
+                    <label>Rating</label>
+                    <div class="star-rating" id="starRating">
+                        <span class="star" data-rating="1">★</span>
+                        <span class="star" data-rating="2">★</span>
+                        <span class="star" data-rating="3">★</span>
+                        <span class="star" data-rating="4">★</span>
+                        <span class="star" data-rating="5">★</span>
+                    </div>
+                    <input type="hidden" id="rating" name="rating" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Your Review</label>
+                    <textarea id="comment" name="comment" placeholder="Share your experience..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Quick Tips (optional)</label>
+                    <input type="text" id="tips" name="tips" placeholder="e.g., Try the tacos, arrive early, cash only...">
+                </div>
+
+                <div class="form-group">
+                    <label>Recommended Items (optional)</label>
+                    <input type="text" id="recommended" name="recommended" placeholder="e.g., Spicy tuna roll, House margarita...">
+                </div>
+
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="verified" name="verified">
+                    <label for="verified">✓ I've been here</label>
+                </div>
+
+                <button type="submit" class="submit-btn">Submit Review</button>
+            </form>
+
+            <div class="existing-reviews" id="existingReviews">
+                <!-- Reviews will load here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const spots = [
+            // ========== JAPANESE ==========
+            {
+                name: 'Taishu Teppan Sango',
+                mainCategory: 'asian',
+                subCategory: 'Japanese',
+                type: 'Teppanyaki',
+                description: 'Okonomiyaki, teppanyaki, izakaya. Small spot, gets busy.',
+                address: 'Río Pánuco 128, Col. Cuauhtémoc',
+                lat: 19.4265,
+                lng: -99.1555,
+                lat: 19.4265,
+                lng: -99.1555,
+                distance: '10 min walk from Sheraton',
+                hours: 'Tue-Sun 1pm-10pm, Closed Mon',
+                phone: '',
+                price: '~1,800 MXN for 2 people',
+                google_maps: 'https://maps.google.com/?q=Taishu+Teppan+Sango+Mexico+City',
+                timeAvailable: ['lunch', 'dinner'],
+                priceLevel: '$$$$',
+                bob_intel: 'Bob tried to go 2/14/26 but it was full. Backup = WANWAN Sakaba.'
+            },
+            {
+                name: 'WANWAN Sakaba',
+                mainCategory: 'asian',
+                subCategory: 'Japanese',
+                type: 'Izakaya',
+                description: 'Traditional izakaya with ramen and fried dishes.',
+                address: 'Londres 209, Juárez',
+                lat: 19.4285,
+                lng: -99.164,
+                lat: 19.4285,
+                lng: -99.1640,
+                distance: '8 min walk from Sheraton',
+                hours: 'Mon-Sat 1pm-11pm, Sun 1pm-9pm',
+                phone: '',
+                price: '~1,800 MXN for 2 people',
+                google_maps: 'https://maps.google.com/?q=WANWAN+Sakaba+Londres+209+Juarez+Mexico+City',
+                timeAvailable: ['lunch', 'dinner', 'latenight'],
+                priceLevel: '$$$$',
+                bob_intel: 'Bob went here 2/14/26 when Sango was full. Had sushi + ramen, 1,795 MXN total. Good backup option.'
+            },
+            {
+                name: 'Kura Izakaya',
+                mainCategory: 'asian',
+                subCategory: 'Japanese',
+                type: 'Izakaya',
+                description: 'Japanese-run izakaya. Pork belly, premium sashimi, full menu.',
+                address: 'Colima 378, Roma Norte',
+                lat: 19.415,
+                lng: -99.1625,
+                lat: 19.4150,
+                lng: -99.1625,
+                distance: '15 min walk from Sheraton',
+                hours: 'Mon-Sat 1pm-11pm, Sun 1pm-6pm',
+                phone: '',
+                price: '400-600 MXN',
+                google_maps: 'https://maps.google.com/?q=Kura+Izakaya+Colima+378+Roma+Norte+Mexico+City',
+                timeAvailable: ['lunch', 'dinner', 'latenight'],
+                priceLevel: '$$$',
+                bob_intel: ''
+            },
+            {
+                name: 'Rokai',
+                mainCategory: 'asian',
+                subCategory: 'Japanese',
+                type: 'Ramen',
+                description: 'Top ramen spot. Tonkotsu, miso, shoyu. Gyoza, karaage.',
+                address: 'Medellín 101, Roma Norte',
+                lat: 19.4155,
+                lng: -99.163,
+                lat: 19.4155,
+                lng: -99.1630,
+                distance: '15 min walk from Sheraton',
+                hours: 'Mon-Sat 1pm-10pm, Sun 1pm-9pm',
+                phone: '',
+                price: '200-350 MXN',
+                google_maps: 'https://maps.google.com/?q=Rokai+Medellin+101+Roma+Norte+Mexico+City',
+                timeAvailable: ['lunch', 'dinner'],
+                priceLevel: '$$',
+                bob_intel: ''
+            },
+            {
+                name: 'Kioko',
+                mainCategory: 'asian',
+                subCategory: 'Japanese',
+                type: 'Japanese',
+                description: 'Upscale spot. Wagyu, sashimi, omakase. Great for date night.',
+                address: 'Michoacán 25, Condesa',
+                lat: 19.4125,
+                lng: -99.172,
+                distance: '20 min walk from Sheraton',
+                hours: 'Tue-Sat 2pm-11pm, Sun 2pm-10pm',
+                phone: '',
+                price: '800-1,200 MXN',
+                google_maps: 'https://maps.google.com/?q=Kioko+Michoacan+25+Condesa+Mexico+City',
+                timeAvailable: ['lunch', 'dinner', 'latenight'],
+                priceLevel: '$$$$',
+                bob_intel: ''
+            },
+            {
+                name: 'C.O.M.E',
+                mainCategory: 'asian',
+                subCategory: 'Japanese',
+                type: 'Yakitori',
+                description: 'Budget yakitori, udon, mochi. Lunch specials ~90 MXN.',
+                address: 'Coahuila 143, Roma Sur',
+                lat: 19.41,
+                lng: -99.163,
+                distance: '15 min walk from Sheraton',
+                hours: 'Mon-Sat 12pm-9pm, Closed Sun',
+                phone: '',
+                price: '90-200 MXN',
+                google_maps: 'https://maps.google.com/?q=COME+Coahuila+143+Roma+Sur+Mexico+City',
+                timeAvailable: ['lunch', 'dinner'],
+                priceLevel: '$$',
+                bob_intel: ''
+            },
+            // ========== KOREAN ==========
+            {
+                name: 'Kpop BBQ',
+                mainCategory: 'asian',
+                subCategory: 'Korean',
+                type: 'Korean BBQ',
+                description: 'All-you-can-eat KBBQ. Beef, pork, chicken. Banchan, soju.',
+                address: 'Insurgentes Sur 349, Hipódromo',
+                lat: 19.4100,
+                lng: -99.1780,
+                distance: '20 min walk / 8 min Uber',
+                hours: 'Mon-Sun 1pm-11pm',
+                phone: '+52 55 5264 8905',
+                price: '350-450 MXN AYCE',
+                google_maps: 'https://maps.google.com/?q=Kpop+BBQ+Insurgentes+Sur+349+Hipodromo+Mexico+City',
+                timeAvailable: ['lunch', 'dinner', 'latenight'],
+                priceLevel: '$$',
+                bob_intel: ''
+            },
+            {
+                name: 'Seoul Town',
+                mainCategory: 'asian',
+                subCategory: 'Korean',
+                type: 'Korean BBQ',
+                description: 'Authentic KBBQ, banchan station, private booths.',
+                address: 'Dinamarca 106, Juárez',
+                lat: 19.4155,
+                lng: -99.163,
+                distance: '15 min walk from Sheraton',
+                hours: 'Mon-Sun 1pm-11pm',
+                phone: '+52 55 5525 0022',
+                price: '400-600 MXN',
+                google_maps: 'https://maps.google.com/?q=Seoul+Town+Dinamarca+106+Juarez+Mexico+City',
+                timeAvailable: ['lunch', 'dinner', 'latenight'],
+                priceLevel: '$$$',
+                bob_intel: ''
+            },
+            {
+                name: 'Gogiyo',
+                mainCategory: 'asian',
+                subCategory: 'Korean',
+                type: 'Korean BBQ',
+                description: 'Korean-run spot. Premium cuts, kimchi pancake, bibimbap.',
+                address: 'Amsterdam 246, Hipódromo Condesa',
+                lat: 19.4120,
+                lng: -99.1750,
+                distance: '25 min walk / 10 min Uber',
+                hours: 'Tue-Sun 2pm-11pm, Closed Mon',
+                phone: '',
+                price: '500-700 MXN',
+                google_maps: 'https://maps.google.com/?q=Gogiyo+Amsterdam+246+Hipodromo+Condesa+Mexico+City',
+                timeAvailable: ['lunch', 'dinner', 'latenight'],
+                priceLevel: '$$$',
+                bob_intel: ''
+            },
+            {
+                name: 'Mukbang Korean Restaurant',
+                mainCategory: 'asian',
+                subCategory: 'Korean',
+                type: 'Korean',
+                description: 'Full Korean menu. Bulgogi, jjigae, tteokbokki.',
+                address: 'Tlaxcala 173, Hipódromo',
+                lat: 19.4110,
+                lng: -99.1770,
+                distance: '20 min walk / 8 min Uber',
+                hours: 'Tue-Sun 1pm-10pm, Closed Mon',
+                phone: '',
+                price: '200-400 MXN',
+                google_maps: 'https://maps.google.com/?q=Mukbang+Tlaxcala+173+Hipodromo+Mexico+City',
+                timeAvailable: ['lunch', 'dinner'],
+                priceLevel: '$$',
+                bob_intel: ''
+            },
+            {
+                name: 'Hanu Korean Restaurant',
+                mainCategory: 'asian',
+                subCategory: 'Korean',
+                type: 'Korean',
+                description: 'Casual Korean spot. Gimbap, ramyeon, fried chicken.',
+                address: 'Jalapa 97, Roma Norte',
+                lat: 19.4160,
+                lng: -99.1635,
+                distance: '18 min walk from Sheraton',
+                hours: 'Wed-Mon 2pm-10pm, Closed Tue',
+                phone: '',
+                price: '150-300 MXN',
+                google_maps: 'https://maps.google.com/?q=Hanu+Jalapa+97+Roma+Norte+Mexico+City',
+                timeAvailable: ['lunch', 'dinner'],
+                priceLevel: '$$',
+                bob_intel: ''
+            },
+            // ========== NIGHTLIFE ==========
+            {
+                name: 'Cueva de Lobos',
+                mainCategory: 'nightlife',
+                subCategory: 'Rock Bar',
+                type: 'Rock Bar',
+                description: 'Rock bar with live bands, signature cocktails (Lobo Especial).',
+                address: 'C. Génova 30, Juárez',
+                lat: 19.4125,
+                lng: -99.1715,
+                distance: '5 min walk from Sheraton',
+                hours: 'Mon-Wed & Sun 10am-2am, Thu-Sat 8am-2am',
+                phone: '+52 55 5507 2186',
+                price: '150-250 MXN drinks',
+                google_maps: 'https://maps.google.com/?q=Cueva+de+Lobos+Genova+30+Juarez+Mexico+City',
+                timeAvailable: ['breakfast', 'latenight'],
+                priceLevel: '$$',
+                bob_intel: 'Bob\'s #1 rock bar. End an epic day here OR go to Queen\'s. Your call.'
+            },
+            {
+                name: 'Pulquería Los Insurgentes',
+                mainCategory: 'nightlife',
+                subCategory: 'Pulquería',
+                type: 'Pulquería',
+                description: '4-story pulque bar with rooftop terrace, DJs, dance floor. Great for first-time pulque.',
+                address: 'Av. Insurgentes Sur 226, Roma Norte',
+                lat: 19.4155,
+                lng: -99.163,
+                distance: '10 min Uber from Sheraton',
+                hours: 'Fri 9am-11pm, Sat-Sun 9am-6pm (late nights vary)',
+                phone: '+52 55 5207 0917',
+                price: '60-120 MXN pulque',
+                google_maps: 'https://maps.google.com/?q=Pulqueria+Los+Insurgentes+Mexico+City',
+                timeAvailable: ['breakfast', 'lunch', 'dinner', 'latenight'],
+                priceLevel: '$',
+                bob_intel: 'Cool spot for first-time pulque. Poppin on weekends, chill on weekdays.'
+            },
+            {
+                name: 'Jazzatlán Capital',
+                mainCategory: 'nightlife',
+                subCategory: 'Jazz Bar',
+                type: 'Jazz Bar',
+                description: 'Live jazz and flamenco. Intimate, date-night vibe.',
+                address: 'Zona Rosa',
+                lat: 19.4250,
+                lng: -99.1620,
+                distance: '8 min walk from Sheraton',
+                hours: 'Wed-Sat 8pm-2am',
+                phone: '',
+                price: '200-400 MXN',
+                google_maps: 'https://maps.google.com/?q=Jazzatlan+Capital+Zona+Rosa+Mexico+City',
+                timeAvailable: ['dinner', 'latenight'],
+                priceLevel: '$$',
+                bob_intel: ''
+            },
+            {
+                name: 'Multiforo Alicia',
+                mainCategory: 'nightlife',
+                subCategory: 'Underground Venue',
+                type: 'Underground Venue',
+                description: 'Underground punk, metal, indie shows. Dive bar aesthetic.',
+                address: 'Cuauhtémoc 91-A, Centro',
+                lat: 19.4340,
+                lng: -99.1370,
+                distance: '15 min Uber',
+                hours: 'Event-based (Thu-Sat usually)',
+                phone: '+52 55 5510 2164',
+                price: '100-300 MXN cover',
+                google_maps: 'https://maps.google.com/?q=Multiforo+Alicia+Centro+Mexico+City',
+                priceLevel: '$$',
+                bob_intel: ''
+            },
+            {
+                name: 'La Perla',
+                mainCategory: 'nightlife',
+                subCategory: 'Dive Bar',
+                type: 'Dive Bar',
+                description: 'Old-school cantina. Live mariachi, norteño, rock. Cash only.',
+                address: 'República de Cuba 44, Centro',
+                lat: 19.4350,
+                lng: -99.1360,
+                distance: '15 min Uber',
+                hours: 'Mon-Sat 1pm-1am, Closed Sun',
+                phone: '',
+                price: '80-150 MXN drinks',
+                google_maps: 'https://maps.google.com/?q=La+Perla+Republica+de+Cuba+44+Centro+Mexico+City',
+                timeAvailable: ['lunch', 'latenight'],
+                priceLevel: '$',
+                bob_intel: ''
+            },
+            {
+                name: 'Vaquita Bar',
+                mainCategory: 'nightlife',
+                subCategory: 'Dance Club',
+                type: 'Dance Club',
+                description: 'Party club. Open bar packages, DJ, dance floor.',
+                address: 'Insurgentes Sur, Zona Rosa',
+                lat: 19.4240,
+                lng: -99.1630,
+                distance: '10 min walk from Sheraton',
+                hours: 'Thu-Sat 10pm-4am',
+                phone: '',
+                price: '400-600 MXN open bar',
+                google_maps: 'https://maps.google.com/?q=Vaquita+Bar+Zona+Rosa+Mexico+City',
+                timeAvailable: ['dinner', 'latenight'],
+                priceLevel: '$$$',
+                bob_intel: ''
+            },
+            // ========== ADULT 18+ ==========
+            {
+                name: 'Queen\'s',
+                mainCategory: 'adult',
+                subCategory: 'Strip Club',
+                type: 'Strip Club',
+                description: 'Upscale strip club. VIP sections, bottle service.',
+                address: 'Hamburgo, Juárez',
+                lat: 19.4280,
+                lng: -99.1650,
+                distance: '12 min walk from Sheraton',
+                hours: 'Mon-Sat 9pm-4am',
+                phone: '',
+                price: '500-1,500 MXN entry + drinks',
+                google_maps: 'https://maps.google.com/?q=Queens+Hamburgo+Juarez+Mexico+City',
+                timeAvailable: ['dinner', 'latenight'],
+                priceLevel: '$$$$',
+                bob_intel: 'Bob\'s pick for strip clubs. Can be the finale of an epic Teotihuacan → Xochimilco → Mariachi day.'
+            },
+            {
+                name: 'Cabaret Show Girls',
+                mainCategory: 'adult',
+                subCategory: 'Strip Club',
+                type: 'Strip Club',
+                description: 'Multi-level club, private rooms, full bar.',
+                address: 'Londres, Juárez',
+                lat: 19.4285,
+                lng: -99.1645,
+                distance: '10 min walk from Sheraton',
+                hours: 'Mon-Sat 8pm-4am',
+                phone: '',
+                price: '400-1,000 MXN',
+                google_maps: 'https://maps.google.com/?q=Cabaret+Show+Girls+Londres+Juarez+Mexico+City',
+                timeAvailable: ['dinner', 'latenight'],
+                priceLevel: '$$$$',
+                bob_intel: ''
+            },
+            {
+                name: 'Las Adelitas',
+                mainCategory: 'adult',
+                subCategory: 'Strip Club',
+                type: 'Strip Club',
+                description: 'Mid-tier, more relaxed vibe than upscale spots.',
+                address: 'Insurgentes Sur',
+                lat: 19.4200,
+                lng: -99.1700,
+                distance: '15 min Uber',
+                hours: 'Daily 6pm-3am',
+                phone: '',
+                price: '300-700 MXN',
+                google_maps: 'https://maps.google.com/?q=Las+Adelitas+Insurgentes+Sur+Mexico+City',
+                timeAvailable: ['lunch', 'dinner', 'latenight'],
+                priceLevel: '$$$',
+                bob_intel: ''
+            },
+            {
+                name: 'Bar Oriente',
+                mainCategory: 'adult',
+                subCategory: 'Strip Club',
+                type: 'Strip Club',
+                description: 'Budget option. More dive bar than club.',
+                address: 'Centro',
+                lat: 19.4340,
+                lng: -99.1330,
+                distance: '15 min Uber',
+                hours: 'Daily 4pm-2am',
+                phone: '',
+                price: '150-400 MXN',
+                google_maps: '',
+                timeAvailable: ['lunch', 'dinner', 'latenight'],
+                priceLevel: '$$',
+                bob_intel: 'Seedy tier. Not for everyone.'
+            },
+            {
+                name: 'Parque México',
+                mainCategory: 'adult',
+                subCategory: 'Weed Zone',
+                type: 'Weed Zone',
+                description: 'Condesa park. Chill vibe, people smoke openly. Cops don\'t care.',
+                address: 'Av. México, Condesa',
+                lat: 19.4125,
+                lng: -99.172,
+                distance: '20 min walk / 10 min Uber',
+                hours: 'All day',
+                phone: '',
+                price: '',
+                google_maps: 'https://maps.google.com/?q=Parque+Mexico+Condesa+Mexico+City',
+                bob_intel: 'Most tolerant spot. Bring your own.'
+            },
+            {
+                name: 'Zona Rosa',
+                mainCategory: 'adult',
+                subCategory: 'Weed Zone',
+                type: 'Weed Zone',
+                description: 'Gay district. Bars, clubs. People smoke on patios.',
+                address: 'Zona Rosa',
+                distance: '5 min walk from Sheraton',
+                hours: '',
+                phone: '',
+                price: '',
+                google_maps: '',
+                bob_intel: 'Pretty chill. Stay on main streets at night.'
+            },
+            {
+                name: 'Roma Norte Side Streets',
+                mainCategory: 'adult',
+                subCategory: 'Weed Zone',
+                type: 'Weed Zone',
+                description: 'Bohemian neighborhood. People smoke on bar patios, side streets.',
+                address: 'Roma Norte',
+                lat: 19.4155,
+                lng: -99.1630,
+                distance: '15 min walk / 10 min Uber',
+                hours: '',
+                phone: '',
+                price: '',
+                google_maps: '',
+                bob_intel: 'Laid-back area. Just be discreet.'
+            },
+            // ========== BREAKFAST ==========
+            {
+                name: 'Madre Café',
+                mainCategory: 'breakfast',
+                subCategory: 'Cafes',
+                type: 'Breakfast/Brunch',
+                description: 'Cozy breakfast spot, great coffee, pastries.',
+                address: 'Roma Norte',
+                distance: '',
+                hours: 'Mon-Sun 8am-5pm',
+                phone: '',
+                price: '150-250 MXN',
+                google_maps: '',
+                timeAvailable: ['breakfast', 'lunch', 'dinner'],
+                priceLevel: '$$',
+                bob_intel: 'Part of Bob\'s 5-day itinerary.'
+            },
+            // ========== MEXICAN ==========
+            {
+                name: 'Máximo Bistrot',
+                mainCategory: 'latin',
+                subCategory: 'Mexican',
+                type: 'Fine Dining',
+                description: 'Upscale contemporary Mexican cuisine.',
+                address: 'Álvaro Obregón 65 Bis, Roma Norte',
+                lat: 19.4145,
+                lng: -99.1625,
+                distance: '',
+                hours: 'Mon-Sat 1pm-11pm, Closed Sun',
+                phone: '',
+                price: '800-1,500 MXN',
+                google_maps: 'https://maps.google.com/?q=Maximo+Bistrot+Alvaro+Obregon+65+Bis+Roma+Norte+Mexico+City',
+                timeAvailable: ['lunch', 'latenight', 'dinner'],
+                priceLevel: '$$$$',
+                bob_intel: 'Part of Bob\'s 5-day itinerary. High-end dinner spot.'
+            },
+            {
+                name: 'La Docena',
+                mainCategory: 'latin',
+                subCategory: 'Mexican',
+                type: 'Oyster Bar',
+                description: 'Fresh oysters, seafood cocktails, beachside vibe.',
+                address: 'Álvaro Obregón 31, Roma Norte',
+                lat: 19.4150,
+                lng: -99.1628,
+                distance: '',
+                hours: 'Daily 12pm-midnight',
+                phone: '',
+                price: '400-800 MXN',
+                google_maps: 'https://maps.google.com/?q=La+Docena+Alvaro+Obregon+31+Roma+Norte+Mexico+City',
+                timeAvailable: ['lunch', 'dinner', 'latenight'],
+                priceLevel: '$$$',
+                bob_intel: 'Part of Bob\'s 5-day itinerary. Great for lunch/happy hour.'
+            },
+            {
+                name: 'Limosneros',
+                mainCategory: 'latin',
+                subCategory: 'Mexican',
+                type: 'Contemporary Mexican',
+                description: 'Creative Mexican dishes, historic Centro location.',
+                address: 'Ignacio Allende 3, Centro Histórico',
+                lat: 19.4320,
+                lng: -99.1350,
+                distance: '',
+                hours: 'Tue-Sat 1pm-11pm, Sun 1pm-6pm',
+                phone: '',
+                price: '500-900 MXN',
+                google_maps: 'https://maps.google.com/?q=Limosneros+Ignacio+Allende+3+Centro+Historico+Mexico+City',
+                timeAvailable: ['lunch', 'dinner', 'latenight'],
+                priceLevel: '$$$',
+                bob_intel: 'Part of Bob\'s 5-day itinerary.'
+            },
+            {
+                name: 'La Gruta',
+                mainCategory: 'latin',
+                subCategory: 'Mexican',
+                type: 'Cave Restaurant',
+                description: 'Cave restaurant near Teotihuacan pyramids. Traditional Mexican food.',
+                address: 'Near Teotihuacan',
+                lat: 19.6920,
+                lng: -98.8500,
+                distance: '1 hour from CDMX',
+                hours: 'Daily 8am-7pm',
+                phone: '',
+                price: '300-600 MXN',
+                google_maps: 'https://maps.google.com/?q=La+Gruta+Teotihuacan+Mexico',
+                timeAvailable: ['breakfast', 'lunch', 'dinner'],
+                priceLevel: '$$$',
+                bob_intel: 'Part of Bob\'s 5-day itinerary. Stop here after visiting the pyramids.'
+            },
+            // ========== TOURIST ==========
+            {
+                name: 'La Ciudadela Market',
+                mainCategory: 'tourist',
+                subCategory: 'Artisan Market',
+                type: 'Artisan Market',
+                description: 'Massive artisan market. Textiles, pottery, leather, souvenirs.',
+                address: 'Balderas, Centro',
+                lat: 19.427,
+                lng: -99.148,
+                distance: '15 min Uber',
+                hours: 'Daily 9am-7pm',
+                phone: '',
+                price: 'Varies (haggle)',
+                google_maps: 'https://maps.google.com/?q=La+Ciudadela+Market+Mexico+City',
+                timeAvailable: ['breakfast', 'lunch', 'dinner'],
+                bob_intel: 'Part of Bob\'s 5-day itinerary. Best market for souvenirs.'
+            },
+            {
+                name: 'La Merced Market',
+                mainCategory: 'tourist',
+                subCategory: 'Food Market',
+                type: 'Food Market',
+                description: 'Enormous food market. Fresh produce, spices, street food.',
+                address: 'Anillo de Circunvalación, Centro',
+                lat: 19.4250,
+                lng: -99.1190,
+                lat: 19.425,
+                lng: -99.119,
+                distance: '20 min Uber',
+                hours: 'Daily 6am-6pm',
+                phone: '',
+                price: 'Budget-friendly',
+                google_maps: 'https://maps.google.com/?q=La+Merced+Market+Mexico+City',
+                timeAvailable: ['breakfast', 'lunch', 'dinner'],
+                bob_intel: 'Part of Bob\'s 5-day itinerary. Locals\' market, bring cash.'
+            },
+            {
+                name: 'Arena México',
+                mainCategory: 'tourist',
+                subCategory: 'Lucha Libre',
+                type: 'Lucha Libre',
+                description: 'Iconic wrestling arena. Friday night matches, masks, Dos Equis.',
+                address: '189 Calle Dr. Lavista, Doctores',
+                lat: 19.4225,
+                lng: -99.1545,
+                distance: '15 min Uber',
+                hours: 'Shows Fridays 8:30pm',
+                phone: '',
+                price: '100-400 MXN tickets',
+                google_maps: 'https://maps.google.com/?q=Arena+Mexico+189+Calle+Dr+Lavista+Doctores+Mexico+City',
+                priceLevel: '$$',
+                bob_intel: 'Part of Bob\'s 5-day itinerary. Get ringside seats, buy a mask.'
+            },
+            {
+                name: 'Xochimilco Canals',
+                mainCategory: 'tourist',
+                subCategory: 'Boat Ride',
+                type: 'Boat Ride',
+                description: 'Colorful trajinera boats. Bring drinks, speaker, snacks. Mariachi boats (avoid or embrace).',
+                address: 'Embarcadero Nativitas or Embarcadero Fernando Celada',
+                distance: '1 hour from Centro',
+                hours: 'Daily 9am-6pm',
+                phone: '',
+                price: '500-800 MXN per boat (holds 10-15 people)',
+                google_maps: 'https://maps.google.com/?q=Xochimilco+Nativitas+Embarcadero+Mexico+City',
+                timeAvailable: ['breakfast', 'lunch', 'dinner'],
+                priceLevel: '$$$',
+                bob_intel: 'Bring your own drinks/speaker. Phone flashlight in bottle = instant ambience. Mariachi boats will hound you — negotiate or say no.'
+            },
+            {
+                name: 'Teotihuacan Pyramids',
+                mainCategory: 'tourist',
+                subCategory: 'Archaeological Site',
+                type: 'Archaeological Site',
+                description: 'Ancient pyramids. Climb Pyramid of the Sun. Get there early (opens 9am).',
+                address: 'San Juan Teotihuacán, Estado de México',
+                distance: '1 hour from Centro',
+                hours: 'Daily 9am-5pm',
+                phone: '',
+                price: '80 MXN entry',
+                google_maps: 'https://maps.google.com/?q=Teotihuacan+Pyramids+Mexico',
+                timeAvailable: ['breakfast', 'lunch', 'dinner'],
+                priceLevel: '$',
+                bob_intel: 'Best option: ask Sheraton concierge for English-speaking private tour guide. Better than online tours. Go early, avoid noon heat. Lunch at La Gruta after.'
+            },
+            {
+                name: 'Plaza Garibaldi',
+                mainCategory: 'tourist',
+                subCategory: 'Mariachi Square',
+                type: 'Mariachi Square',
+                description: 'Mariachi central. Live music, tequila bars, pulquerías. Gets rowdy at night.',
+                address: 'Plaza Garibaldi, Centro',
+                lat: 19.427,
+                lng: -99.137,
+                distance: '15 min Uber',
+                hours: 'Best after 8pm',
+                phone: '',
+                price: '100-200 MXN per mariachi song',
+                google_maps: 'https://maps.google.com/?q=Plaza+Garibaldi+Mexico+City',
+                timeAvailable: ['dinner'],
+                priceLevel: '$$',
+                bob_intel: 'Can be the end of an epic day: Teotihuacan → lunch → Xochimilco → mariachi square → Queen\'s OR Cueva de Lobos. Bring cash, negotiate mariachi prices.'
+            },
+            {
+                name: 'Farmacias Similares',
+                mainCategory: 'tourist',
+                subCategory: 'Pharmacy',
+                type: 'Pharmacy',
+                description: 'Budget pharmacy chain. OTC meds, some antibiotics/ED pills without prescription.',
+                address: 'Everywhere (red/yellow signs)',
+                distance: '',
+                hours: 'Many 24hr',
+                phone: '',
+                price: 'Cheap',
+                google_maps: '',
+                bob_intel: 'Azithromycin, Ciprofloxacin available OTC. ED pills too. Still illegal to import to US.'
+            },
+            {
+                name: 'Farmacias del Ahorro',
+                mainCategory: 'tourist',
+                subCategory: 'Pharmacy',
+                type: 'Pharmacy',
+                description: 'Another big chain. Similar selection to Similares.',
+                address: 'Everywhere (green signs)',
+                distance: '',
+                hours: 'Many 24hr',
+                phone: '',
+                price: 'Cheap',
+                google_maps: '',
+                bob_intel: ''
+            },
+            // ========== STREET VENDORS ==========
+            {
+                name: 'Tacos Don Güero',
+                mainCategory: 'street',
+                subCategory: 'Street Vendors',
+                type: 'Tacos',
+                description: '24-hour taco stand. Al pastor, asada, suadero.',
+                address: 'Various locations (mobile stands)',
+                lat: 19.434,
+                lng: -99.136,
+                distance: '',
+                hours: '24 hours',
+                phone: '',
+                price: '15-25 MXN per taco',
+                google_maps: '',
+                priceLevel: '$',
+                bob_intel: 'Street tacos = safe if cooked fresh + lots of customers. Avoid stands with no line.'
+            },
+            {
+                name: 'El Califa',
+                mainCategory: 'street',
+                subCategory: 'Street Vendors',
+                type: 'Tacos',
+                description: 'Famous taco chain. Gaonera, costilla, campechano.',
+                address: 'Multiple locations (Zona Rosa, Condesa)',
+                distance: '',
+                hours: 'Til 4:30am',
+                phone: '',
+                price: '40-60 MXN per taco',
+                google_maps: 'https://maps.google.com/?q=El+Califa+Zona+Rosa+Mexico+City',
+                priceLevel: '$',
+                bob_intel: 'Open late, touristy but solid quality.'
+            },
+            {
+                name: 'Elotes & Esquites Vendors',
+                mainCategory: 'street',
+                subCategory: 'Street Vendors',
+                type: 'Corn',
+                description: 'Grilled corn (elotes) or corn in a cup (esquites). Mayo, cheese, chili, lime.',
+                address: 'Everywhere (parks, plazas, street corners)',
+                distance: '',
+                hours: 'Afternoons/evenings',
+                phone: '',
+                price: '30-50 MXN',
+                google_maps: '',
+                priceLevel: '$',
+                bob_intel: 'Super safe. Cooked in front of you. Skip if corn looks old/dry.'
+            },
+            {
+                name: 'Tamales Vendors',
+                mainCategory: 'street',
+                subCategory: 'Street Vendors',
+                type: 'Tamales',
+                description: 'Morning vendors with steaming carts. Rajas, mole, dulce.',
+                address: 'Metro stations, plazas (mornings)',
+                distance: '',
+                hours: '6am-11am',
+                phone: '',
+                price: '15-30 MXN per tamale',
+                google_maps: '',
+                timeAvailable: ['breakfast', 'lunch', 'latenight'],
+                priceLevel: '$',
+                bob_intel: 'Breakfast staple. Safe if steaming hot.'
+            },
+            {
+                name: 'Churros Vendors',
+                mainCategory: 'street',
+                subCategory: 'Street Vendors',
+                type: 'Dessert',
+                description: 'Fresh churros with chocolate or cajeta.',
+                address: 'Parks, plazas, near churches',
+                distance: '',
+                hours: 'Afternoons/evenings',
+                phone: '',
+                price: '20-40 MXN',
+                google_maps: '',
+                priceLevel: '$',
+                bob_intel: 'Best after dinner. Crispy outside, soft inside.'
+            },
+            {
+                name: 'Café El Popular',
+                mainCategory: 'nightlife',
+                subCategory: 'Late-Night Diner',
+                type: 'Late-Night Diner',
+                description: '24/7 diner serving full meals + drinks. Cash only, unpretentious. Perfect for after-hours.',
+                address: 'Centro Histórico',
+                lat: 19.434,
+                lng: -99.135,
+                distance: '15 min Uber',
+                hours: '24 hours',
+                phone: '',
+                price: '100-200 MXN',
+                google_maps: 'https://maps.google.com/?q=Cafe+El+Popular+Centro+Historico+Mexico+City',
+                priceLevel: '$$',
+                bob_intel: 'Cash only. Classic late-night spot when everything else closes.'
+            },
+            {
+                name: 'Hanky Panky',
+                mainCategory: 'nightlife',
+                subCategory: 'Speakeasy',
+                type: 'Speakeasy',
+                description: 'Hidden speakeasy. Nervous door approach, cocktails til sunrise.',
+                address: 'Turín 40, Juárez',
+                lat: 19.4155,
+                lng: -99.163,
+                distance: '10 min walk from Sheraton',
+                hours: 'Mon-Sat 7pm-2am',
+                phone: '',
+                price: '200-400 MXN cocktails',
+                google_maps: 'https://maps.google.com/?q=Hanky+Panky+Turin+40+Juarez+Mexico+City',
+                timeAvailable: ['dinner', 'latenight'],
+                priceLevel: '$$',
+                bob_intel: ''
+            },
+            {
+                name: 'Centro de Salud',
+                mainCategory: 'nightlife',
+                subCategory: 'Dive Bar',
+                type: 'Dive Bar',
+                description: 'Grungy rock/metal/alt venue. Berlin vibes, local scene.',
+                address: 'Centro Histórico',
+                lat: 19.4155,
+                lng: -99.163,
+                distance: '15 min Uber',
+                hours: 'Thu-Sat 9pm-3am',
+                phone: '',
+                price: '100-250 MXN',
+                google_maps: 'https://maps.google.com/?q=Centro+de+Salud+bar+Mexico+City',
+                timeAvailable: ['dinner', 'latenight'],
+                priceLevel: '$$',
+                bob_intel: ''
+            },
+            {
+                name: 'Zinco Jazz Club',
+                mainCategory: 'nightlife',
+                subCategory: 'Jazz Club',
+                type: 'Jazz Club',
+                description: '1930s bank vault converted to jazz club. Retro vibe, cocktails, food.',
+                address: 'Motolinía 20, Centro Histórico',
+                lat: 19.434,
+                lng: -99.136,
+                distance: '15 min Uber',
+                hours: 'Wed-Sat 9pm-2am',
+                phone: '',
+                price: '300-500 MXN',
+                google_maps: 'https://maps.google.com/?q=Zinco+Jazz+Club+Motolinia+Centro+Mexico+City',
+                timeAvailable: ['dinner', 'latenight'],
+                priceLevel: '$$$',
+                bob_intel: ''
+            },
+            {
+                name: 'Cantina La No. 20',
+                mainCategory: 'nightlife',
+                subCategory: 'Cantina',
+                type: 'Cantina',
+                description: 'Traditional cantina across from Sheraton. Late-night tacos, tequila.',
+                address: 'Near Paseo de la Reforma',
+                lat: 19.434,
+                lng: -99.135,
+                distance: '4 min walk from Sheraton',
+                hours: 'Late night',
+                phone: '',
+                price: '80-150 MXN',
+                google_maps: '',
+                timeAvailable: ['latenight'],
+                priceLevel: '$',
+                bob_intel: 'Right across the street from Sheraton. Classic spot.'
+            },
+            {
+                name: 'Embarcadero Cuemanco',
+                mainCategory: 'tourist',
+                subCategory: 'Boat Launch',
+                type: 'Boat Launch',
+                description: 'Quieter, more ecological Xochimilco embarcadero. Deeper canals, less touristy.',
+                address: 'Periférico Sur Adolfo Ruíz Cortines, Xochimilco, 16034 CDMX',
+                distance: '1 hour from Centro',
+                hours: 'Daily 8am-8pm',
+                phone: '',
+                price: '500-800 MXN per boat',
+                google_maps: 'https://maps.google.com/?q=Embarcadero+Cuemanco+Xochimilco+CDMX',
+                timeAvailable: ['breakfast', 'lunch', 'dinner'],
+                priceLevel: '$$$',
+                bob_intel: 'More nature-focused, less party vibe than Nativitas.'
+            },
+            // ========== MEXICAN/FUSION (Bob's Research 2/15) ==========
+            {
+                name: 'El Autentico Pato Manila',
+                mainCategory: 'latin',
+                subCategory: 'Mexican',
+                type: 'Filipino-Mexican Fusion',
+                description: 'Filipino-Mexican fusion. Famous duck tacos, unique cross-cultural menu.',
+                address: 'Querétaro 225, Roma Norte',
+                distance: '0.7mi / 16 min walk from Sheraton',
+                hours: 'Mon 12pm-11:30pm | Tue-Wed 1:30-9:30pm | Thu-Sat 1:30pm-12:30am | Sun 1:30-8:30pm',
+                phone: '+52 55 5138 9611',
+                price: '200-400 MXN',
+                google_maps: 'https://maps.google.com/?q=El+Autentico+Pato+Manila+Queretaro+225+Roma+Norte+Mexico+City',
+                timeAvailable: ['lunch'],
+                priceLevel: '$$',
+                bob_intel: 'Filipino-Mexican fusion — rare find. Duck tacos are the move.'
+            },
+            {
+                name: 'Masala y Maíz',
+                mainCategory: 'latin',
+                subCategory: 'Mexican',
+                type: 'Indian-Mexican Fusion',
+                description: 'Indian x Mexican fusion. Michelin listed. Creative tasting menus blending spices and corn.',
+                address: 'Marsella 72, Juárez',
+                distance: '0.4mi / 8 min walk from Sheraton',
+                hours: 'Daily 12-6pm (closed Tue)',
+                phone: '+52 55 6227 9468',
+                price: '500-900 MXN',
+                google_maps: 'https://maps.google.com/?q=Masala+y+Maiz+Marsella+72+Juarez+Mexico+City',
+                timeAvailable: ['lunch', 'dinner'],
+                priceLevel: '$$$',
+                bob_intel: 'Michelin listed. Only 8 min walk — easy lunch spot.'
+            },
+            {
+                name: 'Expendio de Maíz (Sin Nombre)',
+                mainCategory: 'latin',
+                subCategory: 'Mexican',
+                type: 'Traditional Mexican',
+                description: 'No menu, no sign, cash only. Heirloom corn tortillas made fresh. The real deal.',
+                address: 'Roma Norte (no posted address)',
+                distance: '0.9mi / 20 min walk from Sheraton',
+                hours: 'Irregular — check locally',
+                phone: '',
+                price: '~$12 USD / ~200 MXN per person',
+                google_maps: 'https://maps.google.com/?q=Expendio+de+Maiz+Sin+Nombre+Roma+Norte+Mexico+City',
+                priceLevel: '$$',
+                bob_intel: 'Cash only. No sign outside. Worth the hunt — best tortillas in the city.'
+            },
+            {
+                name: 'Contramar',
+                mainCategory: 'latin',
+                subCategory: 'Mexican',
+                type: 'Iconic Seafood',
+                description: 'Iconic CDMX seafood restaurant. Famous tuna tostadas and grilled red/green snapper.',
+                address: 'Durango 200, Roma Norte',
+                distance: '~1mi from Sheraton',
+                hours: 'Tue-Sun 9am-6:30pm, Closed Mon',
+                phone: '+52 55 5514 9217',
+                price: '500-1,000 MXN',
+                google_maps: 'https://maps.google.com/?q=Contramar+Durango+200+Roma+Norte+Mexico+City',
+                timeAvailable: ['breakfast', 'lunch', 'dinner'],
+                priceLevel: '$$$$',
+                bob_intel: 'One of the most famous restaurants in CDMX. Go early — lines get long.'
+            },
+            {
+                name: 'El Huequito',
+                mainCategory: 'latin',
+                subCategory: 'Mexican',
+                type: 'Tacos al Pastor',
+                description: 'Best tacos al pastor since 1959. CDMX institution.',
+                address: 'Ayuntamiento 21, Centro Histórico',
+                distance: '~2mi from Sheraton',
+                hours: 'Mon-Sun 9:30am-11pm',
+                phone: '+52 55 5518 3313',
+                price: '50-150 MXN',
+                google_maps: 'https://maps.google.com/?q=El+Huequito+Ayuntamiento+21+Centro+Mexico+City',
+                timeAvailable: ['lunch', 'dinner', 'latenight'],
+                priceLevel: '$',
+                bob_intel: 'Since 1959. The OG tacos al pastor spot.'
+            },
+            {
+                name: 'Rosetta',
+                mainCategory: 'latin',
+                subCategory: 'Mexican',
+                type: 'Fine Dining Italian-Mexican',
+                description: 'Fine dining Italian-Mexican by Chef Elena Reygadas. Beautiful Roma Norte townhouse setting.',
+                address: 'Colima 166, Roma Norte',
+                distance: '~0.8mi from Sheraton',
+                hours: 'Mon-Sat 1pm-11pm (check for reservations)',
+                phone: '',
+                price: '800-1,500 MXN',
+                google_maps: 'https://maps.google.com/?q=Rosetta+Colima+166+Roma+Norte+Mexico+City',
+                timeAvailable: ['lunch', 'latenight', 'dinner'],
+                priceLevel: '$$$$',
+                bob_intel: 'Chef Elena Reygadas — one of the best chefs in Latin America. Reserve ahead.'
+            },
+            {
+                name: 'Páramo',
+                mainCategory: 'latin',
+                subCategory: 'Mexican',
+                type: 'Mezcal Bar & Tacos',
+                description: 'Mezcal cocktails + tacos. Great late-night spot with creative drinks.',
+                address: 'Av. Yucatán 84, Roma Norte',
+                distance: '0.9mi / 20 min walk from Sheraton',
+                hours: 'Daily 2pm-1:30am',
+                phone: '+52 55 5941 5125',
+                price: '200-500 MXN',
+                google_maps: 'https://maps.google.com/?q=Paramo+Yucatan+84+Roma+Norte+Mexico+City',
+                timeAvailable: ['lunch', 'dinner'],
+                priceLevel: '$$$',
+                bob_intel: 'Good mezcal spot. Open late — solid for after-dinner drinks + tacos.'
+            },
+            {
+                name: 'Agüita Fría',
+                mainCategory: 'latin',
+                subCategory: 'Mexican',
+                type: 'Seasonal Mexican',
+                description: 'Seasonal, chef-driven Mexican cuisine. Small plates, inventive menu.',
+                address: 'Roma Norte area',
+                distance: '0.5mi / 10 min walk from Sheraton',
+                hours: 'Check locally',
+                phone: '',
+                price: '300-600 MXN',
+                google_maps: 'https://maps.google.com/?q=Aguita+Fria+Roma+Norte+Mexico+City',
+                priceLevel: '$$$',
+                bob_intel: 'Chef-driven seasonal spot. Close to hotel — easy walkable lunch.'
+            },
+            {
+                name: 'El Corazón del Mar',
+                mainCategory: 'latin',
+                subCategory: 'Mexican',
+                type: 'Seafood / Ceviche',
+                description: 'Creative ceviches, aguachiles, octopus. Fresh and inventive seafood.',
+                address: 'Valladolid 91, Roma Norte',
+                distance: '0.8mi / 17 min walk from Sheraton',
+                hours: 'Mon-Thu 12-10pm | Fri-Sat 12pm-12am | Sun 12-8pm',
+                phone: '',
+                price: '300-600 MXN',
+                google_maps: 'https://maps.google.com/?q=El+Corazon+del+Mar+Valladolid+91+Roma+Norte+Mexico+City',
+                timeAvailable: ['lunch', 'dinner', 'latenight'],
+                priceLevel: '$$$',
+                bob_intel: 'Great ceviche and aguachile spot in Roma Norte.'
+            },
+            {
+                name: 'El Pez Azul',
+                mainCategory: 'latin',
+                subCategory: 'Mexican',
+                type: 'Fish Tacos',
+                description: 'Fish + shrimp tacos with great margaritas. Baja-style seafood.',
+                address: 'Citlaltépetl 40-A, Condesa',
+                distance: '1.2mi / 24 min walk from Sheraton',
+                hours: 'Mon-Fri 11:30am-7:30pm | Sat 11:30am-5pm, Closed Sun',
+                phone: '',
+                price: '150-350 MXN',
+                google_maps: 'https://maps.google.com/?q=El+Pez+Azul+Citlaltepetl+40-A+Condesa+Mexico+City',
+                timeAvailable: ['dinner'],
+                priceLevel: '$$',
+                bob_intel: 'Baja-style fish tacos in Condesa. Solid casual lunch.'
+            },
+            {
+                name: 'Mercado de Medellín',
+                mainCategory: 'latin',
+                subCategory: 'Mexican',
+                type: 'Traditional Market',
+                description: 'Traditional market with street food, fresh produce, and local flavors. Great for exploring.',
+                address: 'Medellín, Roma Norte',
+                distance: '1.2mi / 25 min walk from Sheraton',
+                hours: 'Daily ~7am-6pm',
+                phone: '',
+                price: '50-200 MXN',
+                google_maps: 'https://maps.google.com/?q=Mercado+de+Medellin+Roma+Norte+Mexico+City',
+                timeAvailable: ['breakfast', 'lunch', 'dinner'],
+                priceLevel: '$$',
+                bob_intel: 'Great market for street food and local produce. Walk around and sample.'
+            },
+            // === HIGH-END COCKTAIL BARS ===
+            {
+                name: 'Handshake Speakeasy',
+                mainCategory: 'nightlife',
+                subCategory: 'High-End Cocktail Bar',
+                type: 'High-End Cocktail Bar',
+                description: '#2 bar in the world. Reservations required via OpenTable. Hidden entrance, world-class cocktails.',
+                address: 'Amberes 65, Juárez (Zona Rosa)',
+                lat: 19.4155,
+                lng: -99.1625,
+                distance: '2.5mi / 12 min Uber from Sheraton',
+                hours: 'Tue-Sat 7pm-2am',
+                phone: '',
+                price: '300-500 MXN per cocktail',
+                google_maps: 'https://maps.google.com/?q=Handshake+Speakeasy+Amberes+65+Mexico+City',
+                timeAvailable: ['dinner', 'latenight'],
+                priceLevel: '$$$',
+                bob_intel: 'Book on OpenTable well in advance. #2 bar in the world — don\'t miss it.'
+            },
+            {
+                name: 'Licorería Limantour',
+                mainCategory: 'nightlife',
+                subCategory: 'High-End Cocktail Bar',
+                type: 'High-End Cocktail Bar',
+                description: 'Award-winning craft cocktails and innovative mixology. Consistently ranked among world\'s best bars.',
+                address: 'Álvaro Obregón 106, Roma Norte',
+                lat: 19.4155,
+                lng: -99.1625,
+                distance: '1.0mi / 20 min walk from Sheraton',
+                hours: 'Mon-Sat 1pm-2am, Sun 1pm-12am',
+                phone: '',
+                price: '200-350 MXN per cocktail',
+                google_maps: 'https://maps.google.com/?q=Licoreria+Limantour+Alvaro+Obregon+Roma+Norte+Mexico+City',
+                timeAvailable: ['lunch', 'latenight'],
+                priceLevel: '$$',
+                bob_intel: 'World-class cocktail bar. Walk-ins OK but can get packed — go early or weeknight.'
+            },
+            {
+                name: 'Parker & Lenox',
+                mainCategory: 'nightlife',
+                subCategory: 'High-End Cocktail Bar',
+                type: 'High-End Cocktail Bar',
+                description: 'Hidden speakeasy with jazz vibes and craft cocktails. Prohibition-era atmosphere in Centro Histórico.',
+                address: 'Milán 14, Juárez',
+                lat: 19.428,
+                lng: -99.164,
+                distance: '2.3mi / 10 min Uber from Sheraton',
+                hours: 'Wed-Sat 8pm-2am',
+                phone: '',
+                price: '250-400 MXN per cocktail',
+                google_maps: 'https://maps.google.com/?q=Parker+%26+Lenox+Milan+14+Mexico+City',
+                timeAvailable: ['dinner', 'latenight'],
+                priceLevel: '$$',
+                bob_intel: 'Hidden speakeasy — look for the unmarked door. Jazz vibes and excellent drinks.'
+            },
+            {
+                name: 'Xaman Bar',
+                mainCategory: 'nightlife',
+                subCategory: 'High-End Cocktail Bar',
+                type: 'High-End Cocktail Bar',
+                description: 'High-end cocktails with modern Mexican flavors. Indigenous ingredients meet contemporary mixology.',
+                address: 'Gral. Prim 95, Juárez',
+                lat: 19.436,
+                lng: -99.195,
+                distance: '2.4mi / 11 min Uber from Sheraton',
+                hours: 'Tue-Sat 6pm-2am',
+                phone: '',
+                price: '250-400 MXN per cocktail',
+                google_maps: 'https://maps.google.com/?q=Xaman+Bar+General+Prim+Mexico+City',
+                timeAvailable: ['dinner', 'latenight'],
+                priceLevel: '$$',
+                bob_intel: 'Modern Mexican cocktails using indigenous ingredients. Unique and worth the visit.'
+            },
+            // === ROOFTOP BARS ===
+            {
+                name: 'Terraza Cha Cha Chá ⭐',
+                mainCategory: 'nightlife',
+                subCategory: 'Rooftop Bar',
+                type: 'Rooftop Bar',
+                description: 'Bob\'s Pick! Sunset views over Monumento a la Revolución. Craft beers, tequila, and mezcal in a chill rooftop setting.',
+                address: 'Near Monumento a la Revolución, Tabacalera',
+                distance: '2.8mi / 12 min Uber from Sheraton',
+                hours: 'Mon-Sun 1pm-12am',
+                phone: '',
+                price: '~150 MXN per drink',
+                google_maps: 'https://maps.google.com/?q=Terraza+Cha+Cha+Cha+Monumento+Revolucion+Mexico+City',
+                timeAvailable: ['lunch', 'dinner', 'latenight'],
+                priceLevel: '$',
+                bob_intel: '⭐ Bob\'s Pick — Go for sunset. Views over Monumento a la Revolución are incredible. Craft beers and mezcal ~150 MXN.'
+            },
+            {
+                name: 'Cityzen Rooftop Kitchen',
+                mainCategory: 'nightlife',
+                subCategory: 'Rooftop Bar',
+                type: 'Rooftop Bar',
+                description: 'Sofitel hotel rooftop with views of Angel of Independence and Chapultepec Castle. Weekend DJs.',
+                address: 'Paseo de la Reforma 465, Cuauhtémoc (Sofitel Hotel)',
+                lat: 19.428,
+                lng: -99.164,
+                distance: '3.0mi / 13 min Uber from Sheraton',
+                hours: 'Mon-Sun 1pm-12am',
+                phone: '',
+                price: '250-450 MXN per drink',
+                google_maps: 'https://maps.google.com/?q=Cityzen+Rooftop+Kitchen+Sofitel+Paseo+de+la+Reforma+Mexico+City',
+                timeAvailable: ['lunch', 'dinner', 'latenight'],
+                priceLevel: '$$',
+                bob_intel: 'Upscale rooftop at the Sofitel. Angel + Chapultepec Castle views. Weekend DJs make it a scene.'
+            },
+            {
+                name: 'Nivel 40 SkyBar',
+                mainCategory: 'nightlife',
+                subCategory: 'Rooftop Bar',
+                type: 'Rooftop Bar',
+                description: '40th floor of Torre Latinoamericana. 360° panoramic views of Zócalo, Cathedral, and Palacio de Bellas Artes.',
+                address: 'Eje Central Lázaro Cárdenas 2, Centro Histórico (Torre Latinoamericana, 40th floor)',
+                lat: 19.426,
+                lng: -99.167,
+                distance: '3.5mi / 15 min Uber from Sheraton',
+                hours: 'Fri-Sun 1pm-11pm',
+                phone: '',
+                price: '200-400 MXN per drink',
+                google_maps: 'https://maps.google.com/?q=Nivel+40+SkyBar+Torre+Latinoamericana+Mexico+City',
+                timeAvailable: ['lunch', 'latenight', 'dinner'],
+                priceLevel: '$$',
+                bob_intel: '40th floor — 360° views of Zócalo, Cathedral, Bellas Artes. Only open Fri-Sun. Worth the trip.'
+            },
+            {
+                name: 'Balmori Roofbar',
+                mainCategory: 'nightlife',
+                subCategory: 'Rooftop Bar',
+                type: 'Rooftop Bar',
+                description: 'Retractable roof with expert cocktails, Mexican wines, and craft beers in Roma Norte.',
+                address: 'Zacatecas 139, Roma Norte',
+                lat: 19.4155,
+                lng: -99.163,
+                distance: '1.3mi / 25 min walk from Sheraton',
+                hours: 'Mon-Wed 5pm-12am, Thu-Sat 5pm-2am, Sun 1pm-8pm',
+                phone: '',
+                price: '180-350 MXN per drink',
+                google_maps: 'https://maps.google.com/?q=Balmori+Roofbar+Zacatecas+139+Roma+Norte+Mexico+City',
+                timeAvailable: ['lunch', 'dinner', 'latenight'],
+                priceLevel: '$$',
+                bob_intel: 'Retractable roof — great rain or shine. Expert cocktails and Mexican wines. Walking distance in Roma.'
+            },
+            // === ITALIAN ===
+            {
+                name: 'Sartoria ⭐',
+                mainCategory: 'latin',
+                subCategory: 'Mexican',
+                type: 'Italian Restaurant',
+                description: 'Bob\'s Pick! Handmade pasta and Italian done right in CDMX. Fresh ingredients, authentic technique.',
+                address: 'Orizaba 42, Roma Norte',
+                distance: '1.1mi / 22 min walk from Sheraton',
+                hours: 'Mon-Sat 1pm-11pm, Sun 1pm-6pm',
+                phone: '',
+                price: '250-500 MXN per dish',
+                google_maps: 'https://maps.google.com/?q=Sartoria+Orizaba+Roma+Norte+Mexico+City',
+                timeAvailable: ['lunch', 'dinner', 'latenight'],
+                priceLevel: '$$$',
+                bob_intel: '⭐ Bob says "really good" — Handmade pasta, Italian done right. Don\'t skip this one.'
+            },
+            // === ASIAN FUSION ===
+            {
+                name: 'Imbiss',
+                mainCategory: 'asian',
+                subCategory: 'Japanese',
+                type: 'Asian Fusion',
+                description: 'NY bistro energy with seasonal menu, great cocktails, and a small intimate space.',
+                address: 'Colima 145, Roma Norte',
+                lat: 19.428,
+                lng: -99.164,
+                distance: '1.2mi / 24 min walk from Sheraton',
+                hours: 'Tue-Sat 1pm-11pm, Sun 1pm-6pm',
+                phone: '',
+                price: '200-400 MXN per dish',
+                google_maps: 'https://maps.google.com/?q=Imbiss+Colima+Roma+Norte+Mexico+City',
+                timeAvailable: ['lunch', 'dinner', 'latenight'],
+                priceLevel: '$$',
+                bob_intel: 'NY bistro vibes — seasonal menu, great cocktails, intimate space. Book ahead, it\'s small.'
+            },
+            {
+                name: 'Takotl Roma Norte',
+                mainCategory: 'asian',
+                subCategory: 'Japanese',
+                type: 'Asian Fusion Tacos',
+                description: 'Asian fusion tacos — the salmon taco is the signature dish. 4.9★ with 685 reviews.',
+                address: 'Roma Norte',
+                lat: 19.4155,
+                lng: -99.163,
+                distance: '1.0mi / 20 min walk from Sheraton',
+                hours: 'Mon-Sun 12pm-10pm',
+                phone: '',
+                price: '80-180 MXN per taco',
+                google_maps: 'https://maps.google.com/?q=Takotl+Roma+Norte+Mexico+City',
+                timeAvailable: ['lunch', 'dinner'],
+                priceLevel: '$',
+                bob_intel: '4.9★ with 685 reviews — the salmon taco is legendary. Asian fusion tacos done right.'
+            },
+            {
+                name: 'MOG Bistro',
+                mainCategory: 'asian',
+                subCategory: 'Japanese',
+                type: 'Asian Fusion',
+                description: 'Asian fusion sushi, ramen, and sake cocktails. Full bar with creative Japanese-Mexican fusion.',
+                address: 'Frontera 168, Roma Norte',
+                lat: 19.434,
+                lng: -99.133,
+                distance: '1.1mi / 22 min walk from Sheraton',
+                hours: 'Mon-Sun 1pm-11pm',
+                phone: '',
+                price: '180-350 MXN per dish',
+                google_maps: 'https://maps.google.com/?q=MOG+Bistro+Frontera+168+Roma+Norte+Mexico+City',
+                timeAvailable: ['lunch', 'dinner', 'latenight'],
+                priceLevel: '$$',
+                bob_intel: 'Sushi, ramen, and sake cocktails — solid Asian fusion in Roma Norte. Open daily.'
+            },
+            {
+                name: 'Daikoku',
+                mainCategory: 'asian',
+                subCategory: 'Japanese',
+                type: 'Ramen / Japanese',
+                description: 'OG ramen spot with unique rice-free maki. Spacious setting in Condesa.',
+                address: 'Michoacán 25, Condesa',
+                lat: 19.4155,
+                lng: -99.163,
+                distance: '1.8mi / 8 min Uber from Sheraton',
+                hours: 'Mon-Sun 1pm-10pm',
+                phone: '',
+                price: '150-300 MXN per dish',
+                google_maps: 'https://maps.google.com/?q=Daikoku+Michoacan+25+Condesa+Mexico+City',
+                timeAvailable: ['lunch', 'dinner'],
+                priceLevel: '$$',
+                bob_intel: 'OG ramen spot — try the rice-free maki, it\'s unique. Spacious and chill in Condesa.'
+            },
+            // === SEAFOOD ===
+            {
+                name: 'Avenida La Tizona',
+                mainCategory: 'latin',
+                subCategory: 'Mexican',
+                type: 'Seafood',
+                description: 'Sinaloa-style seafood tacos, ceviche, fish tostadas, and seared tuna tacos. 4.6★ with 330+ reviews.',
+                address: 'Roma Norte',
+                lat: 19.436,
+                lng: -99.192,
+                distance: '1.0mi / 20 min walk from Sheraton',
+                hours: 'Mon-Sun 11am-7pm',
+                phone: '',
+                price: '80-200 MXN per dish',
+                google_maps: 'https://maps.google.com/?q=Avenida+La+Tizona+Roma+Norte+Mexico+City',
+                timeAvailable: ['lunch', 'dinner', 'latenight'],
+                priceLevel: '$$',
+                bob_intel: '4.6★ — Sinaloa-style seafood. Fish tostadas and seared tuna tacos are the move.'
+            },
+            // === CASUAL BARS ===
+            {
+                name: 'Felina',
+                mainCategory: 'nightlife',
+                subCategory: 'Casual Bar & Tacos',
+                type: 'Casual Bar & Tacos',
+                description: 'Tacos and cocktails with indoor/outdoor seating. Good vibes in South Condesa.',
+                address: 'South Condesa',
+                lat: 19.4125,
+                lng: -99.1715,
+                distance: '2.0mi / 9 min Uber from Sheraton',
+                hours: 'Mon-Sun 1pm-12am',
+                phone: '',
+                price: '100-250 MXN',
+                google_maps: 'https://maps.google.com/?q=Felina+Condesa+Mexico+City',
+                timeAvailable: ['lunch', 'dinner', 'latenight'],
+                priceLevel: '$$',
+                bob_intel: 'Tacos + cocktails combo — good vibes, indoor/outdoor. Chill spot in South Condesa.'
+            },
+            {
+                name: 'La Roma Brewing',
+                mainCategory: 'nightlife',
+                subCategory: 'Brewery / Casual Bar',
+                type: 'Brewery / Casual Bar',
+                description: 'Spacious brewery with wide beer variety. Indoor/outdoor seating, great for groups.',
+                address: 'Roma Norte',
+                lat: 19.4155,
+                lng: -99.163,
+                distance: '1.0mi / 20 min walk from Sheraton',
+                hours: 'Mon-Sun 1pm-12am',
+                phone: '',
+                price: '80-200 MXN per beer',
+                google_maps: 'https://maps.google.com/?q=La+Roma+Brewing+Roma+Norte+Mexico+City',
+                timeAvailable: ['lunch', 'dinner', 'latenight'],
+                priceLevel: '$$',
+                bob_intel: 'Spacious brewery — wide beer selection, indoor/outdoor. Perfect for groups.'
+            },
+            // ========== ITALIAN ==========
+            {
+                name: 'Quattro Gastronomia Italiana',
+                mainCategory: 'italian',
+                subCategory: 'Italian',
+                type: 'Italian',
+                description: 'Inside JW Marriott Hotel Santa Fe. Top-rated (4.8/5, 1,581 reviews) with authentic carpaccios, fish, meat, pasta, pizza. Famous tiramisu. Long wine list. Vegetarian/vegan/gluten-free options.',
+                address: 'Avenida Santa Fe 160, Santa Fe (inside JW Marriott)',
+                lat: 19.3595,
+                lng: -99.2646,
+                distance: '8mi / 20 min Uber from Sheraton',
+                hours: 'Mon-Sun 1pm-11pm',
+                phone: '',
+                price: '800-1200 MXN',
+                google_maps: 'https://maps.google.com/?q=Quattro+Gastronomia+Italiana+Cuauhtemoc+Mexico+City',
+                timeAvailable: ['lunch', 'dinner', 'latenight'],
+                priceLevel: '$$$$',
+                bob_intel: ''
+            },
+            {
+                name: 'Macelleria Roma',
+                mainCategory: 'italian',
+                subCategory: 'Italian',
+                type: 'Italian',
+                description: '4.2/5 rating. Known for delicious pasta alla rota and pizza. Authentic Italian in Roma.',
+                address: 'Roma Norte, Mexico City',
+                lat: 19.4155,
+                lng: -99.1630,
+                distance: '0.9mi / 18 min walk from Sheraton',
+                hours: 'Mon-Sun 1pm-11pm',
+                phone: '',
+                price: '400-800 MXN',
+                google_maps: 'https://maps.google.com/?q=Macelleria+Roma+Roma+Norte+Mexico+City',
+                timeAvailable: ['lunch', 'dinner', 'latenight'],
+                priceLevel: '$$$',
+                bob_intel: ''
+            },
+            {
+                name: 'Supplì',
+                mainCategory: 'italian',
+                subCategory: 'Italian',
+                type: 'Roman Italian',
+                description: 'Tiny homemade Roman classics spot. Amatriciana, carbonara, seasonal local ingredients. Food & Wine acclaim.',
+                address: 'Roma Norte, Mexico City',
+                lat: 19.4150,
+                lng: -99.1625,
+                distance: '0.9mi / 18 min walk from Sheraton',
+                hours: 'Tue-Sat 2pm-10pm',
+                phone: '',
+                price: '350-600 MXN',
+                google_maps: 'https://maps.google.com/?q=Suppli+Roma+Norte+Mexico+City',
+                timeAvailable: ['lunch', 'dinner'],
+                priceLevel: '$$$',
+                bob_intel: ''
+            },
+            {
+                name: 'Osteria del Becco',
+                mainCategory: 'italian',
+                subCategory: 'Italian',
+                type: 'Italian',
+                description: '4.2/5 rating. Praised for service improvements and pizza. Near Roma area.',
+                address: 'Cuauhtémoc, Mexico City',
+                lat: 19.4280,
+                lng: -99.1550,
+                distance: '0.4mi / 8 min walk from Sheraton',
+                hours: 'Mon-Sun 1pm-11pm',
+                phone: '',
+                price: '400-700 MXN',
+                google_maps: 'https://maps.google.com/?q=Osteria+del+Becco+Cuauhtemoc+Mexico+City',
+                timeAvailable: ['lunch', 'dinner', 'latenight'],
+                priceLevel: '$$$',
+                bob_intel: ''
+            },
+            // ========== FRENCH ==========
+            {
+                name: 'Les Moustaches',
+                mainCategory: 'french',
+                subCategory: 'French',
+                type: 'French',
+                description: '4.8/5 from 1,581 reviews. Duck à l\'orange in a mansion setting. Anniversary favorite.',
+                address: 'Polanco, Mexico City',
+                lat: 19.4360,
+                lng: -99.1950,
+                distance: '2.0mi / 8 min Uber from Sheraton',
+                hours: 'Mon-Sun 1pm-11pm',
+                phone: '',
+                price: '1000-1500 MXN',
+                google_maps: 'https://maps.google.com/?q=Les+Moustaches+Polanco+Mexico+City',
+                timeAvailable: ['lunch', 'dinner', 'latenight'],
+                priceLevel: '$$$$',
+                bob_intel: ''
+            },
+            {
+                name: 'Havre 77',
+                mainCategory: 'french',
+                subCategory: 'French',
+                type: 'French Brasserie',
+                description: 'Longstanding brasserie with executed classics. First well-executed French spot in the city.',
+                address: 'Juárez, Mexico City',
+                lat: 19.4280,
+                lng: -99.1650,
+                distance: '0.3mi / 6 min walk from Sheraton',
+                hours: 'Mon-Sun 8am-11pm',
+                phone: '',
+                price: '600-1000 MXN',
+                google_maps: 'https://maps.google.com/?q=Havre+77+Juarez+Mexico+City',
+                timeAvailable: ['breakfast', 'lunch', 'dinner', 'latenight'],
+                priceLevel: '$$$$',
+                bob_intel: ''
+            },
+            {
+                name: 'Eloise Chic Cuisine',
+                mainCategory: 'french',
+                subCategory: 'French',
+                type: 'French',
+                description: '4.6/5 rating. Truffle-topped huevos rotos and fine presentation. Upscale French dining.',
+                address: 'Polanco, Mexico City',
+                lat: 19.4350,
+                lng: -99.1920,
+                distance: '1.9mi / 8 min Uber from Sheraton',
+                hours: 'Mon-Sun 9am-11pm',
+                phone: '',
+                price: '800-1200 MXN',
+                google_maps: 'https://maps.google.com/?q=Eloise+Chic+Cuisine+Polanco+Mexico+City',
+                timeAvailable: ['breakfast', 'lunch', 'dinner', 'latenight'],
+                priceLevel: '$$$$',
+                bob_intel: ''
+            },
+            // ========== MEDITERRANEAN ==========
+            {
+                name: 'Ilios Greek Estiatorio',
+                mainCategory: 'mediterranean',
+                subCategory: 'Greek',
+                type: 'Greek',
+                description: '4.9/5 with 1,290 reviews. Authentic Greek dishes in bar-Mediterranean setting. Highly praised.',
+                address: 'Polanco, Mexico City',
+                lat: 19.4360,
+                lng: -99.1940,
+                distance: '2.0mi / 8 min Uber from Sheraton',
+                hours: 'Mon-Sun 1pm-12am',
+                phone: '',
+                price: '800-1200 MXN',
+                google_maps: 'https://maps.google.com/?q=Ilios+Greek+Estiatorio+Polanco+Mexico+City',
+                timeAvailable: ['lunch', 'dinner', 'latenight'],
+                priceLevel: '$$$$',
+                bob_intel: ''
+            },
+            {
+                name: 'El Jamil',
+                mainCategory: 'mediterranean',
+                subCategory: 'Lebanese',
+                type: 'Lebanese',
+                description: '4.5/5, 175 reviews. Lebanese-Mediterranean fare. Amazing food at reasonable prices.',
+                address: 'Condesa, Mexico City',
+                lat: 19.4125,
+                lng: -99.1720,
+                distance: '1.2mi / 24 min walk from Sheraton',
+                hours: 'Mon-Sun 1pm-11pm',
+                phone: '',
+                price: '400-700 MXN',
+                google_maps: 'https://maps.google.com/?q=El+Jamil+Condesa+Mexico+City',
+                timeAvailable: ['lunch', 'dinner', 'latenight'],
+                priceLevel: '$$$',
+                bob_intel: ''
+            },
+            {
+                name: 'Merkava',
+                mainCategory: 'mediterranean',
+                subCategory: 'Middle Eastern',
+                type: 'Middle Eastern',
+                description: 'Mediterranean-Middle Eastern. Excellent baba ganoush and taboulleh. 191 reviews, consistent quality.',
+                address: 'Roma Norte, Mexico City',
+                lat: 19.4155,
+                lng: -99.1635,
+                distance: '0.9mi / 18 min walk from Sheraton',
+                hours: 'Mon-Sun 1pm-10pm',
+                phone: '',
+                price: '350-600 MXN',
+                google_maps: 'https://maps.google.com/?q=Merkava+Roma+Norte+Mexico+City',
+                timeAvailable: ['lunch', 'dinner'],
+                priceLevel: '$$$',
+                bob_intel: ''
+            },
+            {
+                name: 'Estiatorio Mythos',
+                mainCategory: 'mediterranean',
+                subCategory: 'Greek',
+                type: 'Greek',
+                description: '4.5/5 rating, 205 reviews. Best Greek food in Mexico City with strong endorsements.',
+                address: 'Polanco, Mexico City',
+                lat: 19.4355,
+                lng: -99.1935,
+                distance: '2.0mi / 8 min Uber from Sheraton',
+                hours: 'Mon-Sun 1pm-11pm',
+                phone: '',
+                price: '700-1000 MXN',
+                google_maps: 'https://maps.google.com/?q=Estiatorio+Mythos+Polanco+Mexico+City',
+                timeAvailable: ['lunch', 'dinner', 'latenight'],
+                priceLevel: '$$$$',
+                bob_intel: ''
+            },
+            // ========== AMERICAN ==========
+            {
+                name: 'Butcher & Sons',
+                mainCategory: 'american',
+                subCategory: 'Burgers',
+                type: 'American Burgers',
+                description: '4.0/5, 492 reviews. Go-to for burgers. Quality beef, juicy and well-cooked despite higher prices.',
+                address: 'Multiple locations, Mexico City',
+                lat: 19.4280,
+                lng: -99.1640,
+                distance: '0.3mi / 6 min walk from Sheraton',
+                hours: 'Mon-Sun 12pm-11pm',
+                phone: '',
+                price: '300-500 MXN',
+                google_maps: 'https://maps.google.com/?q=Butcher+and+Sons+Mexico+City',
+                timeAvailable: ['lunch', 'dinner', 'latenight'],
+                priceLevel: '$$$',
+                bob_intel: ''
+            },
+            {
+                name: 'Pinche Gringo BBQ',
+                mainCategory: 'american',
+                subCategory: 'BBQ',
+                type: 'American BBQ',
+                description: '4.0 rating. BBQ focus with great ribs and service. Texas-style BBQ.',
+                address: 'Narvarte, Mexico City',
+                lat: 19.3980,
+                lng: -99.1590,
+                distance: '2.0mi / 8 min Uber from Sheraton',
+                hours: 'Mon-Sun 1pm-10pm',
+                phone: '',
+                price: '400-700 MXN',
+                google_maps: 'https://maps.google.com/?q=Pinche+Gringo+BBQ+Narvarte+Mexico+City',
+                timeAvailable: ['lunch', 'dinner'],
+                priceLevel: '$$$',
+                bob_intel: ''
+            },
+            {
+                name: 'Sliders Polanco',
+                mainCategory: 'american',
+                subCategory: 'Burgers',
+                type: 'American Burgers',
+                description: '4.0/5, 118 reviews. Superb juicy burgers including standout special burger. Bar atmosphere.',
+                address: 'Polanco, Mexico City',
+                lat: 19.4360,
+                lng: -99.1930,
+                distance: '2.0mi / 8 min Uber from Sheraton',
+                hours: 'Mon-Sun 12pm-12am',
+                phone: '',
+                price: '300-500 MXN',
+                google_maps: 'https://maps.google.com/?q=Sliders+Polanco+Mexico+City',
+                timeAvailable: ['lunch', 'dinner', 'latenight'],
+                priceLevel: '$$$',
+                bob_intel: ''
+            },
+            {
+                name: 'Texas Ribs Buenavista',
+                mainCategory: 'american',
+                subCategory: 'BBQ',
+                type: 'American BBQ',
+                description: '4.2/5, 177 reviews. Great ribs, Texas-style BBQ. Chili\'s alternative.',
+                address: 'Buenavista, Mexico City',
+                lat: 19.4470,
+                lng: -99.1530,
+                distance: '1.5mi / 6 min Uber from Sheraton',
+                hours: 'Mon-Sun 12pm-11pm',
+                phone: '',
+                price: '400-700 MXN',
+                google_maps: 'https://maps.google.com/?q=Texas+Ribs+Buenavista+Mexico+City',
+                timeAvailable: ['lunch', 'dinner', 'latenight'],
+                priceLevel: '$$$',
+                bob_intel: ''
+            },
+            // ========== BREAKFAST & CAFES ==========
+            {
+                name: 'La Ventanita',
+                mainCategory: 'breakfast',
+                subCategory: 'Mexican Breakfast',
+                type: 'Mexican Breakfast',
+                description: 'Outdoor seating near Fuente de Cibeles. Chilaquiles, enchiladas, egg dishes, French toast. Vegan options.',
+                address: 'Near Fuente de Cibeles, Roma Norte',
+                lat: 19.4240,
+                lng: -99.1640,
+                distance: '0.2mi / 4 min walk from Sheraton',
+                hours: 'Mon-Sun 8am-5pm',
+                phone: '',
+                price: '150-300 MXN',
+                google_maps: 'https://maps.google.com/?q=La+Ventanita+Roma+Norte+Mexico+City',
+                timeAvailable: ['breakfast', 'lunch'],
+                priceLevel: '$$',
+                bob_intel: ''
+            },
+            {
+                name: 'Forte',
+                mainCategory: 'breakfast',
+                subCategory: 'Cafe',
+                type: 'Hipster Cafe',
+                description: 'Specialty coffee, fresh bread/pastries, chilaquiles, breakfast bagels, egg dishes from 8am.',
+                address: 'Roma Norte, Mexico City',
+                lat: 19.4155,
+                lng: -99.1635,
+                distance: '0.9mi / 18 min walk from Sheraton',
+                hours: 'Mon-Sun 8am-6pm',
+                phone: '',
+                price: '150-300 MXN',
+                google_maps: 'https://maps.google.com/?q=Forte+Roma+Norte+Mexico+City',
+                timeAvailable: ['breakfast', 'lunch'],
+                priceLevel: '$$',
+                bob_intel: ''
+            },
+            {
+                name: 'Toscano',
+                mainCategory: 'breakfast',
+                subCategory: 'Cafe',
+                type: 'Upscale Cafe',
+                description: 'Classy with marble tables overlooking Parque Mexico. Beautiful breakfasts, people-watching spot.',
+                address: 'Parque Mexico, Condesa',
+                lat: 19.4125,
+                lng: -99.1710,
+                distance: '1.2mi / 24 min walk from Sheraton',
+                hours: 'Mon-Sun 8am-6pm',
+                phone: '',
+                price: '200-400 MXN',
+                google_maps: 'https://maps.google.com/?q=Toscano+Condesa+Mexico+City',
+                timeAvailable: ['breakfast', 'lunch'],
+                priceLevel: '$$$',
+                bob_intel: ''
+            },
+            {
+                name: 'Panadería Rosetta',
+                mainCategory: 'breakfast',
+                subCategory: 'Bakery',
+                type: 'Bakery Cafe',
+                description: 'Famous for guava rolls, fresh pastries, traditional Mexican dishes. Arrive early, pet-friendly.',
+                address: 'Roma Norte, Mexico City',
+                lat: 19.4180,
+                lng: -99.1670,
+                distance: '0.5mi / 10 min walk from Sheraton',
+                hours: 'Mon-Sun 7am-6pm',
+                phone: '',
+                price: '150-300 MXN',
+                google_maps: 'https://maps.google.com/?q=Panaderia+Rosetta+Roma+Norte+Mexico+City',
+                timeAvailable: ['breakfast', 'lunch'],
+                priceLevel: '$$',
+                bob_intel: ''
+            },
+            {
+                name: 'Mendl Delicatessen',
+                mainCategory: 'breakfast',
+                subCategory: 'Deli',
+                type: 'Jewish Deli',
+                description: 'New York-style Jewish deli near Parque Mexico. Lox bagels, shakshuka, pastrami. Quentin coffee.',
+                address: 'Near Parque Mexico, Condesa',
+                lat: 19.4120,
+                lng: -99.1715,
+                distance: '1.2mi / 24 min walk from Sheraton',
+                hours: 'Mon-Sun 8am-5pm',
+                phone: '',
+                price: '200-400 MXN',
+                google_maps: 'https://maps.google.com/?q=Mendl+Delicatessen+Condesa+Mexico+City',
+                timeAvailable: ['breakfast', 'lunch'],
+                priceLevel: '$$$',
+                bob_intel: ''
+            },
+            {
+                name: 'Quentin Cafes',
+                mainCategory: 'breakfast',
+                subCategory: 'Cafe',
+                type: 'Cafe',
+                description: 'Excellent drinks, cool ambiance. Tostadas, empanadas, chilaquiles, smoothies, turmeric lattes.',
+                address: 'Álvaro Obregón, Roma Norte',
+                lat: 19.4155,
+                lng: -99.1628,
+                distance: '0.9mi / 18 min walk from Sheraton',
+                hours: 'Mon-Sun 8am-7pm',
+                phone: '',
+                price: '120-250 MXN',
+                google_maps: 'https://maps.google.com/?q=Quentin+Cafes+Roma+Norte+Mexico+City',
+                timeAvailable: ['breakfast', 'lunch'],
+                priceLevel: '$$',
+                bob_intel: ''
+            },
+            {
+                name: 'Constela Cafe',
+                mainCategory: 'breakfast',
+                subCategory: 'Cafe',
+                type: 'Cafe',
+                description: 'Strong coffee, kombucha, avocado/fig toast, acai bowls. Good for groups outside near galleries.',
+                address: 'Roma Norte, near galleries',
+                lat: 19.4160,
+                lng: -99.1640,
+                distance: '0.8mi / 16 min walk from Sheraton',
+                hours: 'Mon-Sun 8am-6pm',
+                phone: '',
+                price: '120-280 MXN',
+                google_maps: 'https://maps.google.com/?q=Constela+Cafe+Roma+Norte+Mexico+City',
+                timeAvailable: ['breakfast', 'lunch'],
+                priceLevel: '$$',
+                bob_intel: ''
+            },
+            // ========== DIVE BARS & CASUAL BARS ==========
+            {
+                name: 'Ladina Bar',
+                mainCategory: 'nightlife',
+                subCategory: 'Dive Bar',
+                type: 'Dive Bar',
+                description: 'Step-up dive with dark, relaxed vibes. Great cocktails, non-sticky floors, no pretension.',
+                address: 'Roma/Condesa area, Mexico City',
+                lat: 19.4155,
+                lng: -99.1680,
+                distance: '0.9mi / 18 min walk from Sheraton',
+                hours: 'Mon-Sun 6pm-2am',
+                phone: '',
+                price: '150-300 MXN per drink',
+                google_maps: 'https://maps.google.com/?q=Ladina+Bar+Mexico+City',
+                timeAvailable: ['dinner', 'latenight'],
+                priceLevel: '$$',
+                bob_intel: ''
+            },
+            {
+                name: 'Baltra Bar',
+                mainCategory: 'nightlife',
+                subCategory: 'Cocktail Bar',
+                type: 'Cocktail Bar',
+                description: 'Outdoor seating at Iztaccihuatl 36D. Botanical cocktails from 160 MXN. Famous Martini Tuesdays. Great for dates.',
+                address: 'Iztaccihuatl 36D, Condesa',
+                lat: 19.4115,
+                lng: -99.1725,
+                distance: '1.3mi / 26 min walk from Sheraton',
+                hours: 'Tue-Sat 5pm-12am',
+                phone: '',
+                price: '160-300 MXN per drink',
+                google_maps: 'https://maps.google.com/?q=Baltra+Bar+Condesa+Mexico+City',
+                timeAvailable: ['dinner', 'latenight'],
+                priceLevel: '$$',
+                bob_intel: ''
+            },
+            {
+                name: 'Caiman',
+                mainCategory: 'nightlife',
+                subCategory: 'Casual Bar',
+                type: 'Casual Bar',
+                description: 'One of few real bars (not restaurant-adjacent). Coronitas, negronis, effortlessly cool locals.',
+                address: 'Condesa, Mexico City',
+                lat: 19.4125,
+                lng: -99.1705,
+                distance: '1.2mi / 24 min walk from Sheraton',
+                hours: 'Mon-Sun 6pm-2am',
+                phone: '',
+                price: '150-280 MXN per drink',
+                google_maps: 'https://maps.google.com/?q=Caiman+Bar+Condesa+Mexico+City',
+                timeAvailable: ['dinner', 'latenight'],
+                priceLevel: '$$',
+                bob_intel: ''
+            },
+            {
+                name: 'Petanca Roma',
+                mainCategory: 'nightlife',
+                subCategory: 'Dive Bar',
+                type: 'Mezcaleria / Dive Bar',
+                description: 'Hole-in-the-wall mezcaleria. Gritty, authentic feel with bocce ball. Perfect for starting the night.',
+                address: 'Roma, Mexico City',
+                lat: 19.4155,
+                lng: -99.1650,
+                distance: '0.9mi / 18 min walk from Sheraton',
+                hours: 'Mon-Sun 6pm-2am',
+                phone: '',
+                price: '120-250 MXN per drink',
+                google_maps: 'https://maps.google.com/?q=Petanca+Roma+Mexico+City',
+                timeAvailable: ['dinner', 'latenight'],
+                priceLevel: '$$',
+                bob_intel: ''
+            },
+            {
+                name: 'Salón Palomilla',
+                mainCategory: 'nightlife',
+                subCategory: 'Rooftop Bar',
+                type: 'Rooftop Bar',
+                description: 'Hidden rooftop via taco spot kitchen at Av. Yucatan 84c. Craft beer, mezcal, negronis from 220 MXN. Wood-fired food.',
+                address: 'Av. Yucatan 84c, Roma Norte',
+                lat: 19.4165,
+                lng: -99.1655,
+                distance: '0.9mi / 18 min walk from Sheraton',
+                hours: 'Tue-Sat 6pm-12am',
+                phone: '',
+                price: '220-350 MXN per drink',
+                google_maps: 'https://maps.google.com/?q=Salon+Palomilla+Roma+Norte+Mexico+City',
+                timeAvailable: ['dinner', 'latenight'],
+                priceLevel: '$$$',
+                bob_intel: ''
+            },
+            {
+                name: 'El Palenquito',
+                mainCategory: 'nightlife',
+                subCategory: 'Mezcaleria',
+                type: 'Mezcaleria / Cantina',
+                description: 'Artisanal Oaxacan mezcal in classic cantina vibe on Av. Álvaro Obregón. Across from Hotel Milan.',
+                address: 'Av. Álvaro Obregón, Roma',
+                lat: 19.4150,
+                lng: -99.1630,
+                distance: '0.9mi / 18 min walk from Sheraton',
+                hours: 'Mon-Sun 5pm-1am',
+                phone: '',
+                price: '150-280 MXN per drink',
+                google_maps: 'https://maps.google.com/?q=El+Palenquito+Roma+Mexico+City',
+                timeAvailable: ['dinner', 'latenight'],
+                priceLevel: '$$',
+                bob_intel: ''
+            }
+        ];
+
+        // Subcategory mappings
+        const subcategories = {
+            asian: ['Japanese', 'Korean', 'Chinese', 'Thai', 'Filipino', 'Vietnamese', 'Indian'],
+            latin: ['Mexican', 'Salvadoran', 'Argentinian', 'Colombian', 'Peruvian', 'Brazilian', 'Venezuelan'],
+            mediterranean: ['Greek', 'Turkish', 'Lebanese', 'Middle Eastern', 'Moroccan', 'Israeli'],
+            italian: ['Pizza', 'Pasta', 'Risotto', 'Seafood', 'Fine Dining', 'Trattoria'],
+            french: ['Bistro', 'Fine Dining', 'Bakery', 'Cafe', 'Crepes', 'Brasserie'],
+            american: ['Burgers', 'BBQ', 'Southern', 'Tex-Mex', 'Diners', 'Steakhouse', 'Wings'],
+            nightlife: ['Rock Bar', 'Jazz Bar', 'Jazz Club', 'Dive Bar', 'Cocktail Bar', 'High-End Cocktail Bar', 'Rooftop Bar', 'Casual Bar', 'Casual Bar & Tacos', 'Brewery / Casual Bar', 'Dance Club', 'Mezcaleria', 'Pulquería', 'Cantina', 'Speakeasy', 'Underground Venue'],
+            adult: ['Strip Club', 'Speakeasy'],
+            tourist: ['Archaeological Site', 'Artisan Market', 'Boat Ride', 'Food Market', 'Lucha Libre', 'Mariachi Square', 'Pharmacy', 'Street Vendors', 'Weed Zone'],
+            breakfast: ['Mexican Breakfast', 'Cafe', 'Cafes', 'Bakery', 'Deli', 'Late-Night Diner'],
+            street: ['Street Vendors']
+        };
+
+        let currentMainCategory = 'all';
+        let currentSubCategory = null;
+        let currentTimeFilter = null;
+        let currentPriceFilter = null;
+        let reviewStats = {}; // {spotName: {avgRating: 4.5, count: 12}}
+
+        // Fetch all reviews and calculate stats
+        async function loadReviewStats() {
+            try {
+                const response = await fetch('https://jsfdzfwlyclethssaffk.supabase.co/rest/v1/cdmx_comments?select=spot_name,rating', {
+                    headers: {
+                        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpzZmR6ZndseWNsZXRoc3NhZmZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5NDY2MDUsImV4cCI6MjA4NTUyMjYwNX0.GIFiRBikhq7JYiBAc6f5UgZPcreZ6qqgSLp2QpUqeKw',
+                        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpzZmR6ZndseWNsZXRoc3NhZmZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5NDY2MDUsImV4cCI6MjA4NTUyMjYwNX0.GIFiRBikhq7JYiBAc6f5UgZPcreZ6qqgSLp2QpUqeKw'
+                    }
+                });
+                const reviews = await response.json();
+                
+                // Calculate stats per spot
+                const statsBySpot = {};
+                reviews.forEach(review => {
+                    if (!statsBySpot[review.spot_name]) {
+                        statsBySpot[review.spot_name] = { total: 0, count: 0 };
+                    }
+                    statsBySpot[review.spot_name].total += review.rating;
+                    statsBySpot[review.spot_name].count += 1;
+                });
+                
+                // Calculate averages
+                for (const spotName in statsBySpot) {
+                    const stats = statsBySpot[spotName];
+                    reviewStats[spotName] = {
+                        avgRating: stats.total / stats.count,
+                        count: stats.count
+                    };
+                }
+                
+                renderSpots(); // Re-render with stats
+            } catch (error) {
+                console.error('Error loading review stats:', error);
+            }
+        }
+
+        // Initialize Supabase client for realtime
+        const supabaseClient = supabase.createClient(
+            'https://jsfdzfwlyclethssaffk.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpzZmR6ZndseWNsZXRoc3NhZmZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5NDY2MDUsImV4cCI6MjA4NTUyMjYwNX0.GIFiRBikhq7JYiBAc6f5UgZPcreZ6qqgSLp2QpUqeKw'
+        );
+
+        // Subscribe to realtime changes on reviews
+        const reviewsChannel = supabaseClient
+            .channel('cdmx_comments_changes')
+            .on('postgres_changes', 
+                { event: 'INSERT', schema: 'public', table: 'cdmx_comments' },
+                (payload) => {
+                    console.log('New review added:', payload.new);
+                    loadReviewStats(); // Reload stats and re-render
+                }
+            )
+            .subscribe();
+
+        // Create URL-safe slug from spot name
+        function slugify(text) {
+            return text.toLowerCase()
+                .replace(/[^\w\s-]/g, '') // Remove special chars
+                .replace(/\s+/g, '-')      // Replace spaces with -
+                .replace(/--+/g, '-')      // Replace multiple - with single -
+                .trim();
+        }
+
+        function renderSpots() {
+            const container = document.getElementById('spotsContainer');
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+
+            let filtered = spots;
+
+            // Filter by main category
+            if (currentMainCategory === 'bobspicks') {
+                filtered = filtered.filter(s => s.bob_intel && s.bob_intel.trim() !== '');
+            } else if (currentMainCategory !== 'all') {
+                filtered = filtered.filter(s => s.mainCategory === currentMainCategory);
+            }
+
+            // Filter by subcategory
+            if (currentSubCategory) {
+                filtered = filtered.filter(s => s.subCategory === currentSubCategory);
+            }
+
+            // Filter by time
+            if (currentTimeFilter) {
+                filtered = filtered.filter(s => s.timeAvailable && s.timeAvailable.includes(currentTimeFilter));
+            }
+
+            // Filter by price
+            if (currentPriceFilter) {
+                filtered = filtered.filter(s => s.priceLevel === currentPriceFilter);
+            }
+
+            // Search filter
+            if (searchTerm) {
+                filtered = filtered.filter(s => 
+                    s.name.toLowerCase().includes(searchTerm) ||
+                    (s.description && s.description.toLowerCase().includes(searchTerm)) ||
+                    (s.address && s.address.toLowerCase().includes(searchTerm))
+                );
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="loading">No spots found</div>';
+                return;
+            }
+
+            container.innerHTML = filtered.map((spot, index) => {
+                const stats = reviewStats[spot.name];
+                const stars = stats ? '★'.repeat(Math.round(stats.avgRating)) + '☆'.repeat(5 - Math.round(stats.avgRating)) : '';
+                const starsHTML = stats ? 
+                    '<div style="color: #fbbf24; font-size: 0.9rem; margin-top: 0.25rem;">' +
+                        stars + ' ' +
+                        '<span style="color: #8888a0; font-size: 0.85rem;">(' + stats.count + (stats.count === 1 ? ' review' : ' reviews') + ')</span>' +
+                    '</div>' : '';
+                const spotSlug = slugify(spot.name);
+                const hash = window.location.hash.replace('#spot=', '');
+                const isHighlighted = hash === spotSlug;
+                
+                return `
+                <div class="spot-card ${isHighlighted ? 'highlighted' : ''}" data-spot-id="${index}" id="spot-${spotSlug}">
+                    <div class="spot-name">${spot.name}</div>
+                    ${starsHTML}
+                    <div class="spot-category">${spot.subCategory || spot.mainCategory}</div>
+                    <div class="spot-badges">
+                        ${spot.timeAvailable && spot.timeAvailable.length > 0 ? 
+                            spot.timeAvailable.map(t => `<span class="badge badge-time">${t === 'breakfast' ? '🌅 Breakfast' : t === 'lunch' ? '🌞 Lunch' : t === 'dinner' ? '🌆 Dinner' : '🌙 Late Night'}</span>`).join('') 
+                            : ''}
+                        ${spot.priceLevel ? `<span class="badge badge-price">${spot.priceLevel}</span>` : ''}
+                    </div>
+                    ${spot.description ? `<div class="spot-description">${spot.description}</div>` : ''}
+                    <div class="spot-details">
+                        ${spot.address ? `<div class="spot-detail">📍 ${spot.address}</div>` : ''}
+                        ${spot.hours ? `<div class="spot-detail">🕐 ${spot.hours}</div>` : ''}
+                        ${spot.price ? `<div class="spot-detail">💰 ${spot.price}</div>` : ''}
+                    </div>
+                    ${spot.google_maps ? `<a href="${spot.google_maps}" target="_blank" class="maps-link">📍 Open in Google Maps</a>` : ''}
+                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                        <button class="reviews-btn" onclick="openReviewModal('${spot.name}', ${index})">💬 Reviews</button>
+                        <button class="reviews-btn" onclick="shareSpot('${spotSlug}', '${spot.name.replace(/'/g, "\\'")}')">🔗 Share</button>
+                    </div>
+                </div>
+            `;
+            }).join('');
+            
+            // Scroll to highlighted spot if hash exists
+            const hash = window.location.hash.replace('#spot=', '');
+            if (hash) {
+                setTimeout(() => {
+                    const element = document.getElementById('spot-' + hash);
+                    if (element) {
+                        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }, 100);
+            }
+        }
+
+        function showSubcategories(mainCat) {
+            const subCatContainer = document.getElementById('subCategories');
+            
+            if (mainCat === 'all' || !subcategories[mainCat]) {
+                subCatContainer.style.display = 'none';
+                subCatContainer.innerHTML = '';
+                currentSubCategory = null;
+                return;
+            }
+
+            subCatContainer.style.display = 'flex';
+            subCatContainer.innerHTML = subcategories[mainCat].map(sub => 
+                `<button class="filter-btn sub-filter" data-subcategory="${sub}">${sub}</button>`
+            ).join('');
+
+            // Add click handlers to subcategory buttons
+            subCatContainer.querySelectorAll('.sub-filter').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.sub-filter').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentSubCategory = btn.dataset.subcategory;
+                    renderSpots();
+                });
+            });
+        }
+
+        // Main category buttons
+        document.querySelectorAll('#mainCategories .filter-btn[data-category]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#mainCategories .filter-btn[data-category]').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentMainCategory = btn.dataset.category;
+                currentSubCategory = null;
+                showSubcategories(currentMainCategory);
+                renderSpots();
+            });
+        });
+
+        // Time filters
+        document.querySelectorAll('.time-filter').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (currentTimeFilter === btn.dataset.time) {
+                    // Deselect
+                    btn.classList.remove('active');
+                    currentTimeFilter = null;
+                } else {
+                    // Select
+                    document.querySelectorAll('.time-filter').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentTimeFilter = btn.dataset.time;
+                }
+                renderSpots();
+            });
+        });
+
+        // Price filters
+        document.querySelectorAll('.price-filter').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (currentPriceFilter === btn.dataset.price) {
+                    // Deselect
+                    btn.classList.remove('active');
+                    currentPriceFilter = null;
+                } else {
+                    // Select
+                    document.querySelectorAll('.price-filter').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentPriceFilter = btn.dataset.price;
+                }
+                renderSpots();
+            });
+        });
+
+        // Search
+        document.getElementById('searchBox').addEventListener('input', renderSpots);
+
+        // Review Modal Functions
+        let currentSpotName = '';
+        let currentSpotIndex = -1;
+        let selectedRating = 0;
+
+        // Star rating selection
+        document.querySelectorAll('.star').forEach(star => {
+            star.addEventListener('click', function() {
+                selectedRating = parseInt(this.dataset.rating);
+                document.getElementById('rating').value = selectedRating;
+                document.querySelectorAll('.star').forEach((s, i) => {
+                    if (i < selectedRating) {
+                        s.classList.add('active');
+                    } else {
+                        s.classList.remove('active');
+                    }
+                });
+            });
+        });
+
+        function shareSpot(slug, spotName) {
+            const url = window.location.origin + window.location.pathname + '#spot=' + slug;
+            navigator.clipboard.writeText(url).then(() => {
+                alert('✅ Link copied! Share: ' + url);
+            }).catch(() => {
+                // Fallback for older browsers
+                const textarea = document.createElement('textarea');
+                textarea.value = url;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                alert('✅ Link copied! Share: ' + url);
+            });
+        }
+
+        function openReviewModal(spotName, spotIndex) {
+            currentSpotName = spotName;
+            currentSpotIndex = spotIndex;
+            document.getElementById('modalSpotName').textContent = spotName;
+            document.getElementById('reviewModal').classList.add('active');
+            loadReviews(spotName);
+        }
+
+        function closeReviewModal() {
+            document.getElementById('reviewModal').classList.remove('active');
+            document.getElementById('reviewerName').value = '';
+            document.getElementById('rating').value = '';
+            document.getElementById('comment').value = '';
+            document.getElementById('tips').value = '';
+            document.getElementById('recommended').value = '';
+            document.getElementById('verified').checked = false;
+            selectedRating = 0;
+            document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
+        }
+
+        function containsProfanity(text) {
+            if (!text) return false;
+            const profanityList = [
+                'fuck', 'shit', 'bitch', 'ass', 'asshole', 'damn', 'cunt', 'dick', 'pussy', 
+                'cock', 'bastard', 'whore', 'slut', 'piss', 'nigger', 'nigga', 'fag', 'faggot',
+                'retard', 'rape', 'motherfucker', 'bullshit', 'puta', 'pendejo', 'chingada',
+                'verga', 'pinche', 'joder', 'mierda', 'coño', 'puto', 'cabron'
+            ];
+            const lowerText = text.toLowerCase();
+            return profanityList.some(word => {
+                const regex = new RegExp('\\b' + word + '\\b', 'i');
+                return regex.test(lowerText);
+            });
+        }
+
+        async function submitReview(event) {
+            event.preventDefault();
+            
+            const comment = document.getElementById('comment').value;
+            const tips = document.getElementById('tips').value;
+            const recommended = document.getElementById('recommended').value;
+            const reviewerName = document.getElementById('reviewerName').value;
+
+            // Check for profanity
+            if (containsProfanity(comment) || containsProfanity(tips) || 
+                containsProfanity(recommended) || containsProfanity(reviewerName)) {
+                alert('❌ Please keep your review family-friendly. Profanity is not allowed.');
+                return;
+            }
+            
+            const reviewData = {
+                spot_name: currentSpotName,
+                reviewer_name: reviewerName || 'Anonymous',
+                rating: parseInt(document.getElementById('rating').value),
+                comment: comment,
+                tips: tips || null,
+                recommended_items: recommended || null,
+                verified: document.getElementById('verified').checked,
+                created_at: new Date().toISOString()
+            };
+
+            try {
+                const response = await fetch('https://jsfdzfwlyclethssaffk.supabase.co/rest/v1/cdmx_comments', {
+                    method: 'POST',
+                    headers: {
+                        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpzZmR6ZndseWNsZXRoc3NhZmZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5NDY2MDUsImV4cCI6MjA4NTUyMjYwNX0.GIFiRBikhq7JYiBAc6f5UgZPcreZ6qqgSLp2QpUqeKw',
+                        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpzZmR6ZndseWNsZXRoc3NhZmZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5NDY2MDUsImV4cCI6MjA4NTUyMjYwNX0.GIFiRBikhq7JYiBAc6f5UgZPcreZ6qqgSLp2QpUqeKw',
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify(reviewData)
+                });
+
+                if (response.ok) {
+                    alert('✅ Review submitted! Thanks for sharing.');
+                    closeReviewModal();
+                    loadReviews(currentSpotName); // Reload reviews
+                } else {
+                    alert('❌ Error submitting review. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Error submitting review. Please try again.');
+            }
+        }
+
+        async function loadReviews(spotName) {
+            try {
+                const response = await fetch(`https://jsfdzfwlyclethssaffk.supabase.co/rest/v1/cdmx_comments?spot_name=eq.${encodeURIComponent(spotName)}&order=created_at.desc`, {
+                    headers: {
+                        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpzZmR6ZndseWNsZXRoc3NhZmZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5NDY2MDUsImV4cCI6MjA4NTUyMjYwNX0.GIFiRBikhq7JYiBAc6f5UgZPcreZ6qqgSLp2QpUqeKw',
+                        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpzZmR6ZndseWNsZXRoc3NhZmZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5NDY2MDUsImV4cCI6MjA4NTUyMjYwNX0.GIFiRBikhq7JYiBAc6f5UgZPcreZ6qqgSLp2QpUqeKw'
+                    }
+                });
+
+                const reviews = await response.json();
+                const container = document.getElementById('existingReviews');
+
+                if (reviews.length === 0) {
+                    container.innerHTML = '<p style="color: #8888a0; text-align: center;">No reviews yet. Be the first!</p>';
+                    return;
+                }
+
+                container.innerHTML = reviews.map(review => `
+                    <div class="review-item">
+                        <div class="review-header">
+                            <div>
+                                <div style="color: #f0f0f5; font-weight: 600; margin-bottom: 0.25rem;">${review.reviewer_name || 'Anonymous'}</div>
+                                <span class="review-stars">${'★'.repeat(review.rating)}${'☆'.repeat(5-review.rating)}</span>
+                            </div>
+                            ${review.verified ? '<span class="review-verified">✓ Verified</span>' : ''}
+                        </div>
+                        <div class="review-comment">${review.comment}</div>
+                        ${review.tips ? `<div class="review-tips">💡 ${review.tips}</div>` : ''}
+                        ${review.recommended_items ? `<div class="review-tips">👍 Try: ${review.recommended_items}</div>` : ''}
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading reviews:', error);
+                document.getElementById('existingReviews').innerHTML = '<p style="color: #8888a0;">Unable to load reviews</p>';
+            }
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('reviewModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeReviewModal();
+            }
+        });
+
+        // Load on DOM ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                renderSpots();
+                loadReviewStats();
+            });
+        } else {
+            renderSpots();
+            loadReviewStats();
+        }
+    </script>
+</body>
+</html>
