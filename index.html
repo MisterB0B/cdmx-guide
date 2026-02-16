@@ -1921,29 +1921,10 @@
         let currentFilter = 'all';
 
         // Load spots
-        async function loadSpots() {
-            // Load offline data immediately (tables are empty anyway)
-            console.log('Loading hardcoded spot data');
+        function loadSpots() {
+            // Load hardcoded data directly (synchronous)
             allSpots = initialSpots;
             renderSpots();
-
-            // Try to fetch from Supabase in background (for future user submissions)
-            if (supabase) {
-                try {
-                    const { data, error } = await supabase
-                        .from('cdmx_spots')
-                        .select('*')
-                        .order('name');
-
-                    if (!error && data && data.length > 0) {
-                        console.log('Loaded additional spots from database');
-                        allSpots = [...initialSpots, ...data];
-                        renderSpots();
-                    }
-                } catch (err) {
-                    console.warn('Could not fetch from database:', err.message);
-                }
-            }
         }
 
         // Render spots
