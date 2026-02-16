@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🇲🇽 CDMX Guide - Food, Music & Nightlife</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * {
             margin: 0;
@@ -12,31 +11,16 @@
             box-sizing: border-box;
         }
 
-        :root {
-            --bg: #0a0a0f;
-            --surface: #12121a;
-            --surface2: #1a1a25;
-            --border: #2a2a3a;
-            --purple: #a855f7;
-            --teal: #06d6a0;
-            --text: #f0f0f5;
-            --text-dim: #8888a0;
-            --red: #ef4444;
-            --yellow: #fbbf24;
-        }
-
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: var(--bg);
-            color: var(--text);
+            background: #0a0a0f;
+            color: #f0f0f5;
             line-height: 1.6;
-            overflow-x: hidden;
         }
 
-        /* Header */
         .header {
             background: linear-gradient(135deg, rgba(168,85,247,0.1), rgba(6,214,160,0.1));
-            border-bottom: 2px solid var(--border);
+            border-bottom: 2px solid #2a2a3a;
             padding: 2rem 1rem;
             text-align: center;
             position: sticky;
@@ -48,25 +32,19 @@
         .header h1 {
             font-size: 2rem;
             font-weight: 800;
-            background: linear-gradient(135deg, var(--purple), var(--teal));
+            background: linear-gradient(135deg, #a855f7, #06d6a0);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 0.5rem;
         }
 
         .header p {
-            color: var(--text-dim);
-            font-size: 0.95rem;
+            color: #8888a0;
+            margin-top: 0.5rem;
         }
 
-        .translate-widget {
-            margin-top: 0.75rem;
-        }
-
-        /* Filters */
         .filters {
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
+            background: #12121a;
+            border-bottom: 1px solid #2a2a3a;
             padding: 1rem;
             display: flex;
             flex-wrap: wrap;
@@ -76,495 +54,126 @@
             z-index: 99;
         }
 
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            padding: 0.75rem;
+            border: 1px solid #2a2a3a;
+            border-radius: 8px;
+            background: #1a1a25;
+            color: #f0f0f5;
+            font-size: 0.95rem;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #a855f7;
+        }
+
         .filter-btn {
             padding: 0.5rem 1rem;
-            border: 1px solid var(--border);
+            border: 1px solid #2a2a3a;
             border-radius: 8px;
             background: transparent;
-            color: var(--text-dim);
+            color: #8888a0;
             cursor: pointer;
             font-size: 0.9rem;
             transition: all 0.2s;
         }
 
         .filter-btn:hover {
-            border-color: var(--purple);
-            color: var(--purple);
+            border-color: #a855f7;
+            color: #a855f7;
         }
 
         .filter-btn.active {
-            background: var(--purple);
-            border-color: var(--purple);
-            color: var(--bg);
+            background: #a855f7;
+            border-color: #a855f7;
+            color: #0a0a0f;
             font-weight: 600;
         }
 
-        .search-box {
-            flex: 1;
-            min-width: 250px;
-            padding: 0.5rem 1rem;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            background: var(--bg);
-            color: var(--text);
-            font-size: 0.9rem;
-        }
-
-        .search-box:focus {
-            outline: none;
-            border-color: var(--purple);
-        }
-
-        /* Itinerary Section */
-        .itinerary-section {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 2rem 1rem 0;
-        }
-
-        .itinerary-title {
-            font-size: 1.8rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--purple), var(--teal));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
-
-        .itinerary-toggle {
-            text-align: center;
-            margin-bottom: 1rem;
-        }
-
-        .itinerary-toggle button {
-            padding: 0.6rem 1.5rem;
-            border: 1px solid var(--purple);
-            border-radius: 8px;
-            background: rgba(168,85,247,0.1);
-            color: var(--purple);
-            cursor: pointer;
-            font-size: 0.95rem;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-
-        .itinerary-toggle button:hover {
-            background: var(--purple);
-            color: var(--bg);
-        }
-
-        .itinerary-days {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .day-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.5rem;
-            transition: all 0.3s;
-        }
-
-        .day-card:hover {
-            border-color: var(--teal);
-            box-shadow: 0 4px 20px rgba(6,214,160,0.15);
-        }
-
-        .day-number {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--teal);
-            margin-bottom: 0.75rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .day-card ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .day-card li {
-            padding: 0.4rem 0;
-            color: var(--text-dim);
-            font-size: 0.9rem;
-            border-bottom: 1px solid rgba(42,42,58,0.5);
-        }
-
-        .day-card li:last-child {
-            border-bottom: none;
-        }
-
-        .day-card li .time {
-            color: var(--purple);
-            font-weight: 600;
-            margin-right: 0.5rem;
-        }
-
-        .day-card li .cost {
-            color: var(--teal);
-            font-weight: 600;
-            font-size: 0.85rem;
-        }
-
-        .day-total {
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 2px solid var(--border);
-            font-size: 1.05rem;
-            font-weight: 700;
-            color: var(--yellow);
-            text-align: right;
-        }
-
-        /* Spots Grid */
         .spots-container {
-            max-width: 1400px;
-            margin: 0 auto;
             padding: 2rem 1rem;
-        }
-
-        .category-section {
-            margin-bottom: 3rem;
-        }
-
-        .category-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--purple);
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid var(--border);
-        }
-
-        .spots-grid {
+            max-width: 1200px;
+            margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 1.5rem;
         }
 
         .spot-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
+            background: #12121a;
+            border: 1px solid #2a2a3a;
             border-radius: 12px;
             padding: 1.5rem;
             transition: all 0.3s;
-            cursor: pointer;
         }
 
         .spot-card:hover {
-            border-color: var(--purple);
-            box-shadow: 0 4px 20px rgba(168,85,247,0.2);
-            transform: translateY(-2px);
+            transform: translateY(-4px);
+            border-color: #a855f7;
+            box-shadow: 0 8px 24px rgba(168,85,247,0.2);
         }
 
         .spot-name {
-            font-size: 1.2rem;
+            font-size: 1.25rem;
             font-weight: 700;
-            color: var(--teal);
+            color: #f0f0f5;
             margin-bottom: 0.5rem;
         }
 
-        .spot-type {
+        .spot-category {
             display: inline-block;
             padding: 0.25rem 0.75rem;
             border-radius: 6px;
             background: rgba(168,85,247,0.1);
-            color: var(--purple);
-            font-size: 0.8rem;
-            margin-bottom: 0.75rem;
+            color: #a855f7;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
         }
 
         .spot-description {
-            color: var(--text-dim);
-            font-size: 0.9rem;
-            line-height: 1.5;
+            color: #8888a0;
+            font-size: 0.95rem;
             margin-bottom: 1rem;
         }
 
         .spot-details {
-            font-size: 0.85rem;
-            color: var(--text-dim);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: #8888a0;
         }
 
         .spot-detail {
-            margin-bottom: 0.5rem;
             display: flex;
-            align-items: start;
             gap: 0.5rem;
         }
 
-        .spot-detail .icon {
-            min-width: 20px;
-        }
-
-        .spot-actions {
-            display: flex;
-            gap: 0.5rem;
+        .maps-link {
+            display: inline-block;
             margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--border);
-        }
-
-        .btn {
             padding: 0.5rem 1rem;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            background: transparent;
-            color: var(--purple);
-            cursor: pointer;
-            font-size: 0.85rem;
-            transition: all 0.2s;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn:hover {
-            background: rgba(168,85,247,0.1);
-            border-color: var(--purple);
-        }
-
-        .btn.teal {
-            color: var(--teal);
-            border-color: rgba(6,214,160,0.3);
-        }
-
-        .btn.teal:hover {
             background: rgba(6,214,160,0.1);
-            border-color: var(--teal);
-        }
-
-        /* Rating */
-        .spot-rating {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-        }
-
-        .stars {
-            color: var(--yellow);
-        }
-
-        .rating-count {
-            color: var(--text-dim);
-            font-size: 0.85rem;
-        }
-
-        /* Add Spot Button */
-        .add-spot-fab {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--purple), var(--teal));
-            color: white;
-            font-size: 2rem;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 4px 20px rgba(168,85,247,0.4);
-            transition: all 0.3s;
-            z-index: 1000;
-        }
-
-        .add-spot-fab:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 30px rgba(168,85,247,0.6);
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 2000;
-            overflow-y: auto;
-            padding: 2rem 1rem;
-        }
-
-        .modal.active {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 2rem;
-            max-width: 600px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .modal-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--purple);
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            color: var(--text-dim);
-            font-size: 1.5rem;
-            cursor: pointer;
-            padding: 0;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .close-btn:hover {
-            color: var(--red);
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--text);
-            font-weight: 600;
-        }
-
-        .form-input,
-        .form-textarea,
-        .form-select {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border);
+            border: 1px solid #06d6a0;
             border-radius: 8px;
-            background: var(--bg);
-            color: var(--text);
-            font-size: 0.95rem;
+            color: #06d6a0;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.2s;
         }
 
-        .form-input:focus,
-        .form-textarea:focus,
-        .form-select:focus {
-            outline: none;
-            border-color: var(--purple);
+        .maps-link:hover {
+            background: rgba(6,214,160,0.2);
         }
 
-        .form-textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        .submit-btn {
-            width: 100%;
-            padding: 1rem;
-            border: none;
-            border-radius: 8px;
-            background: linear-gradient(135deg, var(--purple), var(--teal));
-            color: white;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(168,85,247,0.4);
-        }
-
-        .submit-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* Loading */
         .loading {
             text-align: center;
-            padding: 4rem 1rem;
-            color: var(--text-dim);
-        }
-
-        .loading-spinner {
-            border: 3px solid var(--border);
-            border-top: 3px solid var(--purple);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1rem;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 4rem 1rem;
-            color: var(--text-dim);
-        }
-
-        .empty-state .emoji {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 1.5rem;
-            }
-
-            .spots-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .itinerary-days {
-                grid-template-columns: 1fr;
-            }
-
-            .filters {
-                top: 100px;
-            }
-        }
-
-        /* Bob's Intel Badge */
-        .bob-intel {
-            background: linear-gradient(135deg, rgba(168,85,247,0.2), rgba(6,214,160,0.2));
-            border: 1px solid var(--purple);
-            border-radius: 8px;
-            padding: 0.75rem;
-            margin-top: 1rem;
-            font-size: 0.9rem;
-        }
-
-        .bob-intel strong {
-            color: var(--teal);
+            padding: 4rem;
+            color: #8888a0;
         }
     </style>
 </head>
@@ -572,1478 +181,92 @@
     <div class="header">
         <h1>🇲🇽 Mexico City Guide</h1>
         <p>Food, Music, Nightlife & Culture — Curated by locals and travelers</p>
-        <div class="translate-widget" id="google_translate_element"></div>
     </div>
 
     <div class="filters">
-        <input type="text" class="search-box" id="searchInput" placeholder="🔍 Search spots...">
+        <input type="text" class="search-box" id="searchBox" placeholder="🔍 Search spots...">
         <button class="filter-btn active" data-category="all">All</button>
         <button class="filter-btn" data-category="mexican">🌮 Mexican</button>
-        <button class="filter-btn" data-category="japanese">🍱 Japanese</button>
-        <button class="filter-btn" data-category="korean">🥘 Korean</button>
-        <button class="filter-btn" data-category="nightlife">🍺 Nightlife</button>
+        <button class="filter-btn" data-category="japanese">🍣 Japanese</button>
+        <button class="filter-btn" data-category="korean">🍜 Korean</button>
+        <button class="filter-btn" data-category="nightlife">🎵 Nightlife</button>
         <button class="filter-btn" data-category="tourist">🗺️ Tourist</button>
         <button class="filter-btn" data-category="adult">🔞 Adult 18+</button>
-        <button class="filter-btn" data-category="breakfast">☕ Breakfast</button>
-        <button class="filter-btn" data-category="street">🚶 Street Vendors</button>
-    </div>
-
-    <!-- Safety & Tips -->
-    <div class="itinerary-section" style="margin-top: 2rem;">
-        <h2 class="itinerary-title">💊 Safety & Survival Tips</h2>
-        <div class="itinerary-toggle">
-            <button onclick="document.getElementById('safetyTips').style.display = document.getElementById('safetyTips').style.display === 'none' ? 'grid' : 'none'">
-                Show / Hide Tips
-            </button>
-        </div>
-        <div class="itinerary-days" id="safetyTips" style="display: none;">
-            <div class="day-card">
-                <div class="day-number">🎪 EDC Mexico Survival</div>
-                <ul>
-                    <li><span class="time">⚠️ Food Warning:</span> <strong>DON'T eat the paletas (Mexican popsicles) at EDC.</strong> You WILL get the runs. Seriously.</li>
-                    <li><span class="time">OXXO Essentials:</span> Stock up before the festival:</li>
-                    <li style="margin-left: 2rem;">💊 Loperamide (Imodium) — stops diarrhea fast</li>
-                    <li style="margin-left: 2rem;">💊 Pepto-Bismol — stomach relief</li>
-                    <li style="margin-left: 2rem;">💧 Electrolit or Pedialyte — rehydration</li>
-                    <li style="margin-left: 2rem;">🍃 Activia yogurt drinks — probiotics</li>
-                    <li style="margin-left: 2rem;">💊 Sal de Uvas Picot — antacid fizzy powder (local remedy)</li>
-                    <li><span class="time">General:</span> Stick to sealed bottled water. Avoid street vendor ice. Hand sanitizer is your friend.</li>
-                </ul>
-            </div>
-            <div class="day-card">
-                <div class="day-number">🌮 Street Vendor Safety</div>
-                <ul>
-                    <li><span class="time">✅ SAFE Signs:</span></li>
-                    <li style="margin-left: 2rem;">• Long lines of locals (not just tourists)</li>
-                    <li style="margin-left: 2rem;">• Clean workstation</li>
-                    <li style="margin-left: 2rem;">• Separate money handler (one takes cash, one cooks)</li>
-                    <li style="margin-left: 2rem;">• Freshly cooked, steaming hot, made to order</li>
-                    <li style="margin-left: 2rem;">• Vendor specializes in one thing (tacos, tamales, etc.)</li>
-                    <li><span class="time">❌ AVOID:</span></li>
-                    <li style="margin-left: 2rem;">• Empty stands (unless recommended by locals)</li>
-                    <li style="margin-left: 2rem;">• Food sitting in the sun (especially mayo, ceviche)</li>
-                    <li style="margin-left: 2rem;">• Open self-serve salsa (bubbles = spoilage)</li>
-                    <li style="margin-left: 2rem;">• Pre-made food not reheated</li>
-                    <li style="margin-left: 2rem;">• Near trash piles or dirty ground</li>
-                    <li style="margin-left: 2rem;">• Off-peak hours (food's been sitting)</li>
-                    <li><span class="time">Pro Tip:</span> Bring hand sanitizer. Use small bills (vendors rarely have change for 500 MXN notes).</li>
-                </ul>
-            </div>
-            <div class="day-card">
-                <div class="day-number">🚕 Getting Around</div>
-                <ul>
-                    <li><span class="time">Uber:</span> Safest, cheapest. Works everywhere. Always confirm license plate before getting in.</li>
-                    <li><span class="time">Metro:</span> 5 MXN per ride. Fast but crowded. Watch for pickpockets.</li>
-                    <li><span class="time">Street Taxis:</span> Avoid unless you know the driver. Uber is safer.</li>
-                    <li><span class="time">Walking:</span> Zona Rosa, Roma, Condesa are safe during the day. Stick to main streets at night.</li>
-                    <li><span class="time">Late Night:</span> Always use Uber after 10pm. Don't walk alone in Centro after dark.</li>
-                </ul>
-            </div>
-            <div class="day-card">
-                <div class="day-number">💰 Money Tips</div>
-                <ul>
-                    <li><span class="time">Currency:</span> 1 USD ≈ 17-18 MXN (varies daily)</li>
-                    <li><span class="time">ATMs:</span> Use bank ATMs inside malls/banks, not street kiosks. Check for card skimmers.</li>
-                    <li><span class="time">Cash:</span> Always carry small bills (20, 50, 100 MXN). Vendors hate breaking 500s.</li>
-                    <li><span class="time">Credit Cards:</span> Widely accepted in restaurants/stores. Street vendors = cash only.</li>
-                    <li><span class="time">Tipping:</span> 10-15% at restaurants. Round up for Uber drivers. 10-20 MXN for street food.</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <!-- Rules & Regulations -->
-    <div class="itinerary-section" style="margin-top: 2rem;">
-        <h2 class="itinerary-title">⚖️ Rules & Regulations</h2>
-        <div class="itinerary-toggle">
-            <button onclick="document.getElementById('rulesRegs').style.display = document.getElementById('rulesRegs').style.display === 'none' ? 'grid' : 'none'">
-                Show / Hide Rules
-            </button>
-        </div>
-        <div class="itinerary-days" id="rulesRegs" style="display: none;">
-            <div class="day-card">
-                <div class="day-number">🌿 Cannabis Laws</div>
-                <ul>
-                    <li><span class="time">Legal Status:</span> Personal use is decriminalized (up to 5g). Public consumption tolerated in certain areas.</li>
-                    <li><span class="time">Tolerance Zones:</span></li>
-                    <li style="margin-left: 2rem;">🌳 <strong>Parque México</strong> (Condesa) — Most relaxed, locals smoke openly on benches</li>
-                    <li style="margin-left: 2rem;">🎨 <strong>Viveros de Coyoacán</strong> — Park with chill vibes, less touristy</li>
-                    <li style="margin-left: 2rem;">🎪 <strong>Xochimilco boats</strong> — Totally cool to smoke on your private boat</li>
-                    <li style="margin-left: 2rem;">🏛️ <strong>UNAM campus</strong> — University area, very laid-back</li>
-                    <li style="margin-left: 2rem;">🏞️ <strong>Chapultepec Park</strong> (quieter sections) — Less police presence</li>
-                    <li><span class="time">⚠️ AVOID:</span> Centro Histórico (touristy, more police), near government buildings, crowded tourist areas.</li>
-                    <li><span class="time">Buying:</span> No legal dispensaries yet. Street dealers in parks or ask bartenders at rock bars (Cueva de Lobos, etc.).</li>
-                    <li><span class="time">Reality:</span> Cops don't care unless you're being obnoxious. Be discreet, respectful, and you're fine.</li>
-                </ul>
-            </div>
-            <div class="day-card">
-                <div class="day-number">💊 Pharmacy Guide</div>
-                <ul>
-                    <li><span class="time">Major Chains:</span> Farmacias del Ahorro, Similares, Guadalajara, Benavides — everywhere.</li>
-                    <li><span class="time">✅ NO Prescription Needed:</span></li>
-                    <li style="margin-left: 2rem;">• Antibiotics (amoxicillin, azithromycin, ciprofloxacin)</li>
-                    <li style="margin-left: 2rem;">• Viagra, Cialis (way cheaper than US)</li>
-                    <li style="margin-left: 2rem;">• Insulin, diabetes meds</li>
-                    <li style="margin-left: 2rem;">• Most allergy meds, birth control</li>
-                    <li style="margin-left: 2rem;">• Stomach meds (omeprazole, Pepto, Imodium)</li>
-                    <li style="margin-left: 2rem;">• Topical creams (steroid, antifungal, antibiotic)</li>
-                    <li><span class="time">❌ Requires Prescription:</span></li>
-                    <li style="margin-left: 2rem;">• Controlled substances (Xanax, Valium, Adderall, painkillers)</li>
-                    <li style="margin-left: 2rem;">• Some strong antibiotics (depends on pharmacy)</li>
-                    <li><span class="time">Pro Tip:</span> Just describe symptoms to the pharmacist. They'll recommend something. Cash only at most pharmacies.</li>
-                    <li><span class="time">Border Warning:</span> Don't bring back controlled substances or large quantities without a US prescription. Antibiotics/Viagra = usually fine in personal amounts.</li>
-                </ul>
-            </div>
-            <div class="day-card">
-                <div class="day-number">🍺 Alcohol & Nightlife Laws</div>
-                <ul>
-                    <li><span class="time">Drinking Age:</span> 18+ (ID rarely checked unless you look 15)</li>
-                    <li><span class="time">Public Drinking:</span> Technically illegal but widely ignored. Don't be belligerent.</li>
-                    <li><span class="time">Bar Hours:</span> Most close 2am weekdays, 3-4am weekends. Some afterhours spots til 6am.</li>
-                    <li><span class="time">Alcohol Sales:</span> No restrictions (unlike some US states). Convenience stores sell 24/7.</li>
-                    <li><span class="time">Drunk Driving:</span> 0.08% BAC limit. Checkpoints common on weekends. Uber is cheap — don't risk it.</li>
-                </ul>
-            </div>
-            <div class="day-card">
-                <div class="day-number">🚨 General Dos & Don'ts</div>
-                <ul>
-                    <li><span class="time">✅ DO:</span></li>
-                    <li style="margin-left: 2rem;">• Learn basic Spanish ("hola," "gracias," "cuánto cuesta")</li>
-                    <li style="margin-left: 2rem;">• Tip 10-15% at restaurants, round up for Uber</li>
-                    <li style="margin-left: 2rem;">• Carry small bills (vendors hate breaking 500 MXN notes)</li>
-                    <li style="margin-left: 2rem;">• Use Uber (safest, cheapest transport)</li>
-                    <li style="margin-left: 2rem;">• Ask locals for recommendations</li>
-                    <li><span class="time">❌ DON'T:</span></li>
-                    <li style="margin-left: 2rem;">• Flash expensive jewelry/cameras in crowded areas</li>
-                    <li style="margin-left: 2rem;">• Walk alone in Centro after dark</li>
-                    <li style="margin-left: 2rem;">• Drink tap water (bottled only)</li>
-                    <li style="margin-left: 2rem;">• Haggle at sit-down restaurants (street vendors = negotiable)</li>
-                    <li style="margin-left: 2rem;">• Accept rides from unmarked taxis</li>
-                    <li style="margin-left: 2rem;">• Leave drinks unattended at clubs</li>
-                    <li><span class="time">Police:</span> Tourist police (green uniforms) are helpful. Regular cops = avoid unless necessary. Don't carry large amounts of cash if stopped.</li>
-                    <li><span class="time">Scams:</span> Fake police asking to "inspect your wallet," taxi meter "broken" (use Uber), street vendor short-changing. Trust your gut.</li>
-                </ul>
-            </div>
-            <div class="day-card">
-                <div class="day-number">📱 Staying Connected</div>
-                <ul>
-                    <li><span class="time">SIM Cards:</span> Telcel (best coverage), AT&T Mexico, Movistar. Buy at OXXO or airport (~200-400 MXN for 7-day tourist plan).</li>
-                    <li><span class="time">WiFi:</span> Free at most cafes, restaurants, malls. Ask for password ("contraseña de WiFi").</li>
-                    <li><span class="time">WhatsApp:</span> Everyone uses it. Download before you go.</li>
-                    <li><span class="time">Emergency Numbers:</span> 911 (police/ambulance/fire), Tourist Hotline: 078 (English-speaking help)</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <!-- Hangover Survival -->
-    <div class="itinerary-section" style="margin-top: 2rem;">
-        <h2 class="itinerary-title">🤕 Hangover Survival</h2>
-        <div class="itinerary-toggle">
-            <button onclick="document.getElementById('hangoverSurvival').style.display = document.getElementById('hangoverSurvival').style.display === 'none' ? 'grid' : 'none'">
-                Show / Hide Hangover Cures
-            </button>
-        </div>
-        <div class="itinerary-days" id="hangoverSurvival" style="display: none;">
-            <div class="day-card">
-                <div class="day-number">🍳 Chilaquiles (Classic Mexican Hangover Cure)</div>
-                <ul>
-                    <li><span class="time">🍳 Lalo!</span> — <strong>Best in the city</strong></li>
-                    <li style="margin-left: 2rem;">Crispy chips, green salsa, chicken. Organic ingredients.</li>
-                    <li style="margin-left: 2rem;">📍 Zacatecas 173, Roma Norte</li>
-                    <li style="margin-left: 2rem;">⚠️ Expect waits on weekends</li>
-                    <li style="margin-left: 2rem;">🗺️ <a href="https://www.google.com/maps/search/?api=1&query=Lalo+Zacatecas+173+Roma+Norte" target="_blank" style="color: var(--teal);">Google Maps</a></li>
-                    <li><span class="time">🍳 La Esquina del Chilaquil</span> — <strong>Street stall legend</strong></li>
-                    <li style="margin-left: 2rem;">Chilaquiles tortas (60-70 MXN). Milanesa or cochinita pibil, salsa verde/rojo.</li>
-                    <li style="margin-left: 2rem;">Cheap, heavy, fast.</li>
-                    <li style="margin-left: 2rem;">📍 Alfonso Reyes 139, Condesa</li>
-                    <li style="margin-left: 2rem;">🕐 8am-12pm only</li>
-                    <li style="margin-left: 2rem;">🗺️ <a href="https://www.google.com/maps/search/?api=1&query=La+Esquina+del+Chilaquil+Alfonso+Reyes+139+Condesa" target="_blank" style="color: var(--teal);">Google Maps</a></li>
-                    <li><span class="time">🍳 Fonda Margarita</span></li>
-                    <li style="margin-left: 2rem;">Chilaquiles with cecina (grilled beef). Cozy, cheap.</li>
-                    <li style="margin-left: 2rem;">🗺️ <a href="https://www.google.com/maps/search/?api=1&query=Fonda+Margarita+CDMX" target="_blank" style="color: var(--teal);">Google Maps</a></li>
-                </ul>
-            </div>
-            <div class="day-card">
-                <div class="day-number">🍲 Pozole (Soup Cure)</div>
-                <ul>
-                    <li><span class="time">🍲 El Pozole de Moctezuma</span> — <strong>Iconic since 1947</strong></li>
-                    <li style="margin-left: 2rem;">Guerrero-style pozole. Huge portions.</li>
-                    <li style="margin-left: 2rem;">📍 Moctezuma 12, Guerrero</li>
-                    <li style="margin-left: 2rem;">🕐 Mon-Sat 2-7pm (check Sun hours)</li>
-                    <li style="margin-left: 2rem;">🗺️ <a href="https://www.google.com/maps/search/?api=1&query=El+Pozole+de+Moctezuma+Moctezuma+12+Guerrero" target="_blank" style="color: var(--teal);">Google Maps</a></li>
-                    <li><span class="time">🍲 Casa Licha</span></li>
-                    <li style="margin-left: 2rem;">Top-rated pozole, chalupas on the side.</li>
-                    <li style="margin-left: 2rem;">🗺️ <a href="https://www.google.com/maps/search/?api=1&query=Casa+Licha+CDMX" target="_blank" style="color: var(--teal);">Google Maps</a></li>
-                    <li><span class="time">🍲 La Casa de Toño</span> (already added to main list)</li>
-                    <li style="margin-left: 2rem;">Chain with solid pozole. Quick service, open early.</li>
-                    <li><span class="time">🍲 La Perla Tapatía</span></li>
-                    <li style="margin-left: 2rem;">White pozole with pork (Jalisco style).</li>
-                    <li style="margin-left: 2rem;">📍 Azcapotzalco 706-B</li>
-                    <li style="margin-left: 2rem;">🕐 Sun 8am-5:30pm (perfect hangover timing)</li>
-                    <li style="margin-left: 2rem;">🗺️ <a href="https://www.google.com/maps/search/?api=1&query=La+Perla+Tapata+Azcapotzalco+706" target="_blank" style="color: var(--teal);">Google Maps</a></li>
-                </ul>
-            </div>
-            <div class="day-card">
-                <div class="day-number">🍲 Menudo (Tripe Soup)</div>
-                <ul>
-                    <li><span class="time">🍲 Menudo y Pancita De Jamaica</span> — <strong>Local favorite</strong></li>
-                    <li style="margin-left: 2rem;">Classic menudo, spicy tripe broth. Cash only.</li>
-                    <li style="margin-left: 2rem;">📍 Prolongacion Roa Bárcenas & Torno, Venustiano Carranza (near Jamaica)</li>
-                    <li style="margin-left: 2rem;">🕐 Opens early (~7-8am)</li>
-                    <li style="margin-left: 2rem;">🗺️ <a href="https://www.google.com/maps/search/?api=1&query=Menudo+Pancita+De+Jamaica+CDMX" target="_blank" style="color: var(--teal);">Google Maps</a></li>
-                </ul>
-            </div>
-            <div class="day-card">
-                <div class="day-number">🥤 Juice / Nutrients</div>
-                <ul>
-                    <li><span class="time">🥤 As Happy as Larry</span></li>
-                    <li style="margin-left: 2rem;">Fresh juices, smoothies, activated charcoal drinks.</li>
-                    <li style="margin-left: 2rem;">Delivery available.</li>
-                    <li style="margin-left: 2rem;">🗺️ <a href="https://www.google.com/maps/search/?api=1&query=As+Happy+as+Larry+CDMX" target="_blank" style="color: var(--teal);">Google Maps</a></li>
-                </ul>
-            </div>
-            <div class="day-card">
-                <div class="day-number">🚚 Delivery for Hangovers</div>
-                <ul>
-                    <li><span class="time">🚚 La Casa de Toño</span> — Pozole delivery</li>
-                    <li><span class="time">🚚 El Califa</span> — Tacos when you can't move</li>
-                    <li><span class="time">🚚 As Happy as Larry</span> — Juice delivery</li>
-                </ul>
-            </div>
-            <div class="day-card">
-                <div class="day-number">💊 OXXO / 7-Eleven Essentials</div>
-                <ul>
-                    <li><span class="time">💊 Loperamide (Imodium)</span> — If you ate something sketchy</li>
-                    <li><span class="time">💧 Electrolit / Pedialyte</span> — Rehydrate</li>
-                    <li><span class="time">🧂 Suero oral</span> — Cheap electrolytes</li>
-                    <li><span class="time">🍃 Activia yogurt drinks</span> — Probiotics</li>
-                    <li><span class="time">💊 Sal de Uvas Picot</span> — Fizzy antacid (local remedy)</li>
-                    <li><span class="time">☕ Coffee + Gatorade</span> — Caffeine + hydration combo</li>
-                </ul>
-            </div>
-            <div class="day-card">
-                <div class="day-number">💉 Pharmacy (No Prescription)</div>
-                <ul>
-                    <li><span class="time">💉 IV drip services</span> — Some pharmacies offer hangover IV drips (ask at Farmacias del Ahorro or Similares)</li>
-                    <li><span class="time">💊 Vitamin B complex</span> — Energy boost</li>
-                    <li><span class="time">💊 Pain meds</span> — Ibuprofen, paracetamol (acetaminophen)</li>
-                    <li><span class="time">💊 Anti-nausea</span> — Dramamine, ginger capsules</li>
-                </ul>
-            </div>
-        </div>
     </div>
 
     <div class="spots-container" id="spotsContainer">
-        <div class="loading">
-            <div class="loading-spinner"></div>
-            <p>Loading spots...</p>
-        </div>
+        <div class="loading">Loading spots...</div>
     </div>
-
-    <button class="add-spot-fab" id="addSpotBtn">+</button>
-
-    <!-- Add Spot Modal -->
-    <div class="modal" id="addSpotModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">✨ Add a Spot</h2>
-                <button class="close-btn" id="closeModalBtn">×</button>
-            </div>
-            <form id="addSpotForm">
-                <div class="form-group">
-                    <label class="form-label">Name *</label>
-                    <input type="text" class="form-input" id="spotName" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Category *</label>
-                    <select class="form-select" id="spotCategory" required>
-                        <option value="mexican">Mexican</option>
-                        <option value="japanese">Japanese</option>
-                        <option value="korean">Korean</option>
-                        <option value="nightlife">Nightlife</option>
-                        <option value="tourist">Tourist</option>
-                        <option value="adult">Adult 18+</option>
-                        <option value="breakfast">Breakfast</option>
-                        <option value="street">Street Vendor</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Description</label>
-                    <textarea class="form-textarea" id="spotDescription"></textarea>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Address</label>
-                    <input type="text" class="form-input" id="spotAddress">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Hours</label>
-                    <input type="text" class="form-input" id="spotHours" placeholder="e.g., Mon-Fri 10am-10pm">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Phone</label>
-                    <input type="text" class="form-input" id="spotPhone">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Price Range</label>
-                    <input type="text" class="form-input" id="spotPrice" placeholder="e.g., 200-500 MXN">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Your Take (Optional)</label>
-                    <textarea class="form-textarea" id="spotIntel" placeholder="Local tips, what to try, best times to visit..."></textarea>
-                </div>
-                <button type="submit" class="submit-btn">Submit Spot</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Google Translate -->
-    <script type="text/javascript">
-        function googleTranslateElementInit() {
-            new google.translate.TranslateElement({
-                pageLanguage: 'en',
-                includedLanguages: 'en,es,ja,ko,fr,de,pt,zh-CN',
-                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-            }, 'google_translate_element');
-        }
-    </script>
-    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
     <script>
-        // Supabase Init
-        const SUPABASE_URL = 'https://jsfdzfwlyclethssaffk.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpzZmR6ZndseWNsZXRoc3NhZmZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5NDY2MDUsImV4cCI6MjA4NTUyMjYwNX0.GIFiRBikhq7JYiBAc6f5UgZPcreZ6qqgSLp2QpUqeKw';
-        
-        let supabase = null;
-        try {
-            if (window.supabase && window.supabase.createClient) {
-                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-            }
-        } catch (err) {
-            console.warn('Supabase client init failed, using offline data:', err);
-        }
-
-        // All spots data (from spots-data.js)
-        const initialSpots = [
-            // ========== JAPANESE ==========
-            {
-                name: 'Taishu Teppan Sango',
-                category: 'japanese',
-                type: 'Teppanyaki',
-                description: 'Okonomiyaki, teppanyaki, izakaya. Small spot, gets busy.',
-                address: 'Río Pánuco 128, Col. Cuauhtémoc',
-                distance: '10 min walk from Sheraton',
-                hours: 'Tue-Sun 1pm-10pm, Closed Mon',
-                phone: '',
-                price: '~1,800 MXN for 2 people',
-                google_maps: 'https://maps.google.com/?q=Taishu+Teppan+Sango+Mexico+City',
-                bob_intel: 'Bob tried to go 2/14/26 but it was full. Backup = WANWAN Sakaba.'
-            },
-            {
-                name: 'WANWAN Sakaba',
-                category: 'japanese',
-                type: 'Izakaya',
-                description: 'Traditional izakaya with ramen and fried dishes.',
-                address: 'Londres 209, Juárez',
-                distance: '8 min walk from Sheraton',
-                hours: 'Mon-Sat 1pm-11pm, Sun 1pm-9pm',
-                phone: '',
-                price: '~1,800 MXN for 2 people',
-                google_maps: 'https://maps.google.com/?q=WANWAN+Sakaba+Londres+209+Juarez+Mexico+City',
-                bob_intel: 'Bob went here 2/14/26 when Sango was full. Had sushi + ramen, 1,795 MXN total. Good backup option.'
-            },
-            {
-                name: 'Kura Izakaya',
-                category: 'japanese',
-                type: 'Izakaya',
-                description: 'Japanese-run izakaya. Pork belly, premium sashimi, full menu.',
-                address: 'Colima 378, Roma Norte',
-                distance: '15 min walk from Sheraton',
-                hours: 'Mon-Sat 1pm-11pm, Sun 1pm-6pm',
-                phone: '',
-                price: '400-600 MXN',
-                google_maps: 'https://maps.google.com/?q=Kura+Izakaya+Colima+378+Roma+Norte+Mexico+City',
-                bob_intel: ''
-            },
-            {
-                name: 'Rokai',
-                category: 'japanese',
-                type: 'Ramen',
-                description: 'Top ramen spot. Tonkotsu, miso, shoyu. Gyoza, karaage.',
-                address: 'Medellín 101, Roma Norte',
-                distance: '15 min walk from Sheraton',
-                hours: 'Mon-Sat 1pm-10pm, Sun 1pm-9pm',
-                phone: '',
-                price: '200-350 MXN',
-                google_maps: 'https://maps.google.com/?q=Rokai+Medellin+101+Roma+Norte+Mexico+City',
-                bob_intel: ''
-            },
-            {
-                name: 'Kioko',
-                category: 'japanese',
-                type: 'Japanese',
-                description: 'Upscale spot. Wagyu, sashimi, omakase. Great for date night.',
-                address: 'Michoacán 25, Condesa',
-                distance: '20 min walk from Sheraton',
-                hours: 'Tue-Sat 2pm-11pm, Sun 2pm-10pm',
-                phone: '',
-                price: '800-1,200 MXN',
-                google_maps: 'https://maps.google.com/?q=Kioko+Michoacan+25+Condesa+Mexico+City',
-                bob_intel: ''
-            },
-            {
-                name: 'C.O.M.E',
-                category: 'japanese',
-                type: 'Yakitori',
-                description: 'Budget yakitori, udon, mochi. Lunch specials ~90 MXN.',
-                address: 'Coahuila 143, Roma Sur',
-                distance: '15 min walk from Sheraton',
-                hours: 'Mon-Sat 12pm-9pm, Closed Sun',
-                phone: '',
-                price: '90-200 MXN',
-                google_maps: 'https://maps.google.com/?q=COME+Coahuila+143+Roma+Sur+Mexico+City',
-                bob_intel: ''
-            },
-            // ========== KOREAN ==========
-            {
-                name: 'Kpop BBQ',
-                category: 'korean',
-                type: 'Korean BBQ',
-                description: 'All-you-can-eat KBBQ. Beef, pork, chicken. Banchan, soju.',
-                address: 'Insurgentes Sur 349, Hipódromo',
-                distance: '20 min walk / 8 min Uber',
-                hours: 'Mon-Sun 1pm-11pm',
-                phone: '+52 55 5264 8905',
-                price: '350-450 MXN AYCE',
-                google_maps: 'https://maps.google.com/?q=Kpop+BBQ+Insurgentes+Sur+349+Hipodromo+Mexico+City',
-                bob_intel: ''
-            },
-            {
-                name: 'Seoul Town',
-                category: 'korean',
-                type: 'Korean BBQ',
-                description: 'Authentic KBBQ, banchan station, private booths.',
-                address: 'Dinamarca 106, Juárez',
-                distance: '15 min walk from Sheraton',
-                hours: 'Mon-Sun 1pm-11pm',
-                phone: '+52 55 5525 0022',
-                price: '400-600 MXN',
-                google_maps: 'https://maps.google.com/?q=Seoul+Town+Dinamarca+106+Juarez+Mexico+City',
-                bob_intel: ''
-            },
-            {
-                name: 'Gogiyo',
-                category: 'korean',
-                type: 'Korean BBQ',
-                description: 'Korean-run spot. Premium cuts, kimchi pancake, bibimbap.',
-                address: 'Amsterdam 246, Hipódromo Condesa',
-                distance: '25 min walk / 10 min Uber',
-                hours: 'Tue-Sun 2pm-11pm, Closed Mon',
-                phone: '',
-                price: '500-700 MXN',
-                google_maps: 'https://maps.google.com/?q=Gogiyo+Amsterdam+246+Hipodromo+Condesa+Mexico+City',
-                bob_intel: ''
-            },
-            {
-                name: 'Mukbang Korean Restaurant',
-                category: 'korean',
-                type: 'Korean',
-                description: 'Full Korean menu. Bulgogi, jjigae, tteokbokki.',
-                address: 'Tlaxcala 173, Hipódromo',
-                distance: '20 min walk / 8 min Uber',
-                hours: 'Tue-Sun 1pm-10pm, Closed Mon',
-                phone: '',
-                price: '200-400 MXN',
-                google_maps: 'https://maps.google.com/?q=Mukbang+Tlaxcala+173+Hipodromo+Mexico+City',
-                bob_intel: ''
-            },
-            {
-                name: 'Hanu Korean Restaurant',
-                category: 'korean',
-                type: 'Korean',
-                description: 'Casual Korean spot. Gimbap, ramyeon, fried chicken.',
-                address: 'Jalapa 97, Roma Norte',
-                distance: '18 min walk from Sheraton',
-                hours: 'Wed-Mon 2pm-10pm, Closed Tue',
-                phone: '',
-                price: '150-300 MXN',
-                google_maps: 'https://maps.google.com/?q=Hanu+Jalapa+97+Roma+Norte+Mexico+City',
-                bob_intel: ''
-            },
-            // ========== NIGHTLIFE ==========
+        const spots = [
             {
                 name: 'Cueva de Lobos',
                 category: 'nightlife',
-                type: 'Rock Bar',
                 description: 'Rock bar with live bands, signature cocktails (Lobo Especial).',
                 address: 'C. Génova 30, Juárez',
-                distance: '5 min walk from Sheraton',
                 hours: 'Mon-Wed & Sun 10am-2am, Thu-Sat 8am-2am',
-                phone: '+52 55 5507 2186',
                 price: '150-250 MXN drinks',
-                google_maps: 'https://maps.google.com/?q=Cueva+de+Lobos+Genova+30+Juarez+Mexico+City',
-                bob_intel: 'Bob\'s #1 rock bar. End an epic day here OR go to Queen\'s. Your call.'
+                google_maps: 'https://www.google.com/maps/search/?api=1&query=Cueva+de+Lobos+Genova+30+Juarez+Mexico+City'
             },
             {
-                name: 'Pulquería Los Insurgentes',
-                category: 'nightlife',
-                type: 'Pulquería',
-                description: '4-story pulque bar with rooftop terrace, DJs, dance floor. Great for first-time pulque.',
-                address: 'Av. Insurgentes Sur 226, Roma Norte',
-                distance: '10 min Uber from Sheraton',
-                hours: 'Fri 9am-11pm, Sat-Sun 9am-6pm (late nights vary)',
-                phone: '+52 55 5207 0917',
-                price: '60-120 MXN pulque',
-                google_maps: 'https://maps.google.com/?q=Pulqueria+Los+Insurgentes+Mexico+City',
-                bob_intel: 'Cool spot for first-time pulque. Poppin on weekends, chill on weekdays.'
-            },
-            {
-                name: 'Jazzatlán Capital',
-                category: 'nightlife',
-                type: 'Jazz Bar',
-                description: 'Live jazz and flamenco. Intimate, date-night vibe.',
-                address: 'Zona Rosa',
-                distance: '8 min walk from Sheraton',
-                hours: 'Wed-Sat 8pm-2am',
-                phone: '',
-                price: '200-400 MXN',
-                google_maps: 'https://maps.google.com/?q=Jazzatlan+Capital+Zona+Rosa+Mexico+City',
-                bob_intel: ''
-            },
-            {
-                name: 'Multiforo Alicia',
-                category: 'nightlife',
-                type: 'Underground Venue',
-                description: 'Underground punk, metal, indie shows. Dive bar aesthetic.',
-                address: 'Cuauhtémoc 91-A, Centro',
-                distance: '15 min Uber',
-                hours: 'Event-based (Thu-Sat usually)',
-                phone: '+52 55 5510 2164',
-                price: '100-300 MXN cover',
-                google_maps: 'https://maps.google.com/?q=Multiforo+Alicia+Centro+Mexico+City',
-                bob_intel: ''
-            },
-            {
-                name: 'La Perla',
-                category: 'nightlife',
-                type: 'Dive Bar',
-                description: 'Old-school cantina. Live mariachi, norteño, rock. Cash only.',
-                address: 'República de Cuba 44, Centro',
-                distance: '15 min Uber',
-                hours: 'Mon-Sat 1pm-1am, Closed Sun',
-                phone: '',
-                price: '80-150 MXN drinks',
-                google_maps: 'https://maps.google.com/?q=La+Perla+Republica+de+Cuba+44+Centro+Mexico+City',
-                bob_intel: ''
-            },
-            {
-                name: 'Vaquita Bar',
-                category: 'nightlife',
-                type: 'Dance Club',
-                description: 'Party club. Open bar packages, DJ, dance floor.',
-                address: 'Insurgentes Sur, Zona Rosa',
-                distance: '10 min walk from Sheraton',
-                hours: 'Thu-Sat 10pm-4am',
-                phone: '',
-                price: '400-600 MXN open bar',
-                google_maps: 'https://maps.google.com/?q=Vaquita+Bar+Zona+Rosa+Mexico+City',
-                bob_intel: ''
-            },
-            // ========== ADULT 18+ ==========
-            {
-                name: 'Queen\'s',
-                category: 'adult',
-                type: 'Strip Club',
-                description: 'Upscale strip club. VIP sections, bottle service.',
-                address: 'Hamburgo, Juárez',
-                distance: '12 min walk from Sheraton',
-                hours: 'Mon-Sat 9pm-4am',
-                phone: '',
-                price: '500-1,500 MXN entry + drinks',
-                google_maps: 'https://maps.google.com/?q=Queens+Hamburgo+Juarez+Mexico+City',
-                bob_intel: 'Bob\'s pick for strip clubs. Can be the finale of an epic Teotihuacan → Xochimilco → Mariachi day.'
-            },
-            {
-                name: 'Cabaret Show Girls',
-                category: 'adult',
-                type: 'Strip Club',
-                description: 'Multi-level club, private rooms, full bar.',
-                address: 'Londres, Juárez',
-                distance: '10 min walk from Sheraton',
-                hours: 'Mon-Sat 8pm-4am',
-                phone: '',
-                price: '400-1,000 MXN',
-                google_maps: 'https://maps.google.com/?q=Cabaret+Show+Girls+Londres+Juarez+Mexico+City',
-                bob_intel: ''
-            },
-            {
-                name: 'Las Adelitas',
-                category: 'adult',
-                type: 'Strip Club',
-                description: 'Mid-tier, more relaxed vibe than upscale spots.',
-                address: 'Insurgentes Sur',
-                distance: '15 min Uber',
-                hours: 'Daily 6pm-3am',
-                phone: '',
-                price: '300-700 MXN',
-                google_maps: 'https://maps.google.com/?q=Las+Adelitas+Insurgentes+Sur+Mexico+City',
-                bob_intel: ''
-            },
-            {
-                name: 'Bar Oriente',
-                category: 'adult',
-                type: 'Strip Club',
-                description: 'Budget option. More dive bar than club.',
-                address: 'Centro',
-                distance: '15 min Uber',
-                hours: 'Daily 4pm-2am',
-                phone: '',
-                price: '150-400 MXN',
-                google_maps: '',
-                bob_intel: 'Seedy tier. Not for everyone.'
-            },
-            {
-                name: 'Parque México',
-                category: 'adult',
-                type: 'Weed Zone',
-                description: 'Condesa park. Chill vibe, people smoke openly. Cops don\'t care.',
-                address: 'Av. México, Condesa',
-                distance: '20 min walk / 10 min Uber',
-                hours: 'All day',
-                phone: '',
-                price: '',
-                google_maps: 'https://maps.google.com/?q=Parque+Mexico+Condesa+Mexico+City',
-                bob_intel: 'Most tolerant spot. Bring your own.'
-            },
-            {
-                name: 'Zona Rosa',
-                category: 'adult',
-                type: 'Weed Zone',
-                description: 'Gay district. Bars, clubs. People smoke on patios.',
-                address: 'Zona Rosa',
-                distance: '5 min walk from Sheraton',
-                hours: '',
-                phone: '',
-                price: '',
-                google_maps: '',
-                bob_intel: 'Pretty chill. Stay on main streets at night.'
-            },
-            {
-                name: 'Roma Norte Side Streets',
-                category: 'adult',
-                type: 'Weed Zone',
-                description: 'Bohemian neighborhood. People smoke on bar patios, side streets.',
-                address: 'Roma Norte',
-                distance: '15 min walk / 10 min Uber',
-                hours: '',
-                phone: '',
-                price: '',
-                google_maps: '',
-                bob_intel: 'Laid-back area. Just be discreet.'
-            },
-            // ========== BREAKFAST ==========
-            {
-                name: 'Madre Café',
-                category: 'breakfast',
-                type: 'Breakfast/Brunch',
-                description: 'Cozy breakfast spot, great coffee, pastries.',
-                address: 'Roma Norte',
-                distance: '',
-                hours: 'Mon-Sun 8am-5pm',
-                phone: '',
-                price: '150-250 MXN',
-                google_maps: '',
-                bob_intel: 'Part of Bob\'s 5-day itinerary.'
-            },
-            // ========== MEXICAN ==========
-            {
-                name: 'Máximo Bistrot',
-                category: 'mexican',
-                type: 'Fine Dining',
-                description: 'Upscale contemporary Mexican cuisine.',
-                address: 'Álvaro Obregón 65 Bis, Roma Norte',
-                distance: '',
-                hours: 'Mon-Sat 1pm-11pm, Closed Sun',
-                phone: '',
-                price: '800-1,500 MXN',
-                google_maps: 'https://maps.google.com/?q=Maximo+Bistrot+Alvaro+Obregon+65+Bis+Roma+Norte+Mexico+City',
-                bob_intel: 'Part of Bob\'s 5-day itinerary. High-end dinner spot.'
-            },
-            {
-                name: 'La Docena',
-                category: 'mexican',
-                type: 'Oyster Bar',
-                description: 'Fresh oysters, seafood cocktails, beachside vibe.',
-                address: 'Álvaro Obregón 31, Roma Norte',
-                distance: '',
-                hours: 'Daily 12pm-midnight',
-                phone: '',
-                price: '400-800 MXN',
-                google_maps: 'https://maps.google.com/?q=La+Docena+Alvaro+Obregon+31+Roma+Norte+Mexico+City',
-                bob_intel: 'Part of Bob\'s 5-day itinerary. Great for lunch/happy hour.'
-            },
-            {
-                name: 'Limosneros',
-                category: 'mexican',
-                type: 'Contemporary Mexican',
-                description: 'Creative Mexican dishes, historic Centro location.',
-                address: 'Ignacio Allende 3, Centro Histórico',
-                distance: '',
-                hours: 'Tue-Sat 1pm-11pm, Sun 1pm-6pm',
-                phone: '',
-                price: '500-900 MXN',
-                google_maps: 'https://maps.google.com/?q=Limosneros+Ignacio+Allende+3+Centro+Historico+Mexico+City',
-                bob_intel: 'Part of Bob\'s 5-day itinerary.'
-            },
-            {
-                name: 'La Gruta',
-                category: 'mexican',
-                type: 'Cave Restaurant',
-                description: 'Cave restaurant near Teotihuacan pyramids. Traditional Mexican food.',
-                address: 'Near Teotihuacan',
-                distance: '1 hour from CDMX',
-                hours: 'Daily 8am-7pm',
-                phone: '',
-                price: '300-600 MXN',
-                google_maps: 'https://maps.google.com/?q=La+Gruta+Teotihuacan+Mexico',
-                bob_intel: 'Part of Bob\'s 5-day itinerary. Stop here after visiting the pyramids.'
-            },
-            // ========== TOURIST ==========
-            {
-                name: 'La Ciudadela Market',
-                category: 'tourist',
-                type: 'Artisan Market',
-                description: 'Massive artisan market. Textiles, pottery, leather, souvenirs.',
-                address: 'Balderas, Centro',
-                distance: '15 min Uber',
-                hours: 'Daily 9am-7pm',
-                phone: '',
-                price: 'Varies (haggle)',
-                google_maps: 'https://maps.google.com/?q=La+Ciudadela+Market+Mexico+City',
-                bob_intel: 'Part of Bob\'s 5-day itinerary. Best market for souvenirs.'
-            },
-            {
-                name: 'La Merced Market',
-                category: 'tourist',
-                type: 'Food Market',
-                description: 'Enormous food market. Fresh produce, spices, street food.',
-                address: 'Anillo de Circunvalación, Centro',
-                distance: '20 min Uber',
-                hours: 'Daily 6am-6pm',
-                phone: '',
-                price: 'Budget-friendly',
-                google_maps: 'https://maps.google.com/?q=La+Merced+Market+Mexico+City',
-                bob_intel: 'Part of Bob\'s 5-day itinerary. Locals\' market, bring cash.'
-            },
-            {
-                name: 'Arena México',
-                category: 'tourist',
-                type: 'Lucha Libre',
-                description: 'Iconic wrestling arena. Friday night matches, masks, Dos Equis.',
-                address: '189 Calle Dr. Lavista, Doctores',
-                distance: '15 min Uber',
-                hours: 'Shows Fridays 8:30pm',
-                phone: '',
-                price: '100-400 MXN tickets',
-                google_maps: 'https://maps.google.com/?q=Arena+Mexico+189+Calle+Dr+Lavista+Doctores+Mexico+City',
-                bob_intel: 'Part of Bob\'s 5-day itinerary. Get ringside seats, buy a mask.'
-            },
-            {
-                name: 'Xochimilco Canals',
-                category: 'tourist',
-                type: 'Boat Ride',
-                description: 'Colorful trajinera boats. Bring drinks, speaker, snacks. Mariachi boats (avoid or embrace).',
-                address: 'Embarcadero Nativitas or Embarcadero Fernando Celada',
-                distance: '1 hour from Centro',
-                hours: 'Daily 9am-6pm',
-                phone: '',
-                price: '500-800 MXN per boat (holds 10-15 people)',
-                google_maps: 'https://maps.google.com/?q=Xochimilco+Nativitas+Embarcadero+Mexico+City',
-                bob_intel: 'Bring your own drinks/speaker. Phone flashlight in bottle = instant ambience. Mariachi boats will hound you — negotiate or say no.'
-            },
-            {
-                name: 'Teotihuacan Pyramids',
-                category: 'tourist',
-                type: 'Archaeological Site',
-                description: 'Ancient pyramids. Climb Pyramid of the Sun. Get there early (opens 9am).',
-                address: 'San Juan Teotihuacán, Estado de México',
-                distance: '1 hour from Centro',
-                hours: 'Daily 9am-5pm',
-                phone: '',
-                price: '80 MXN entry',
-                google_maps: 'https://maps.google.com/?q=Teotihuacan+Pyramids+Mexico',
-                bob_intel: 'Best option: ask Sheraton concierge for English-speaking private tour guide. Better than online tours. Go early, avoid noon heat. Lunch at La Gruta after.'
-            },
-            {
-                name: 'Plaza Garibaldi',
-                category: 'tourist',
-                type: 'Mariachi Square',
-                description: 'Mariachi central. Live music, tequila bars, pulquerías. Gets rowdy at night.',
-                address: 'Plaza Garibaldi, Centro',
-                distance: '15 min Uber',
-                hours: 'Best after 8pm',
-                phone: '',
-                price: '100-200 MXN per mariachi song',
-                google_maps: 'https://maps.google.com/?q=Plaza+Garibaldi+Mexico+City',
-                bob_intel: 'Can be the end of an epic day: Teotihuacan → lunch → Xochimilco → mariachi square → Queen\'s OR Cueva de Lobos. Bring cash, negotiate mariachi prices.'
-            },
-            {
-                name: 'Farmacias Similares',
-                category: 'tourist',
-                type: 'Pharmacy',
-                description: 'Budget pharmacy chain. OTC meds, some antibiotics/ED pills without prescription.',
-                address: 'Everywhere (red/yellow signs)',
-                distance: '',
-                hours: 'Many 24hr',
-                phone: '',
-                price: 'Cheap',
-                google_maps: '',
-                bob_intel: 'Azithromycin, Ciprofloxacin available OTC. ED pills too. Still illegal to import to US.'
-            },
-            {
-                name: 'Farmacias del Ahorro',
-                category: 'tourist',
-                type: 'Pharmacy',
-                description: 'Another big chain. Similar selection to Similares.',
-                address: 'Everywhere (green signs)',
-                distance: '',
-                hours: 'Many 24hr',
-                phone: '',
-                price: 'Cheap',
-                google_maps: '',
-                bob_intel: ''
-            },
-            // ========== STREET VENDORS ==========
-            {
-                name: 'Tacos Don Güero',
-                category: 'street',
-                type: 'Tacos',
-                description: '24-hour taco stand. Al pastor, asada, suadero.',
-                address: 'Various locations (mobile stands)',
-                distance: '',
-                hours: '24 hours',
-                phone: '',
-                price: '15-25 MXN per taco',
-                google_maps: '',
-                bob_intel: 'Street tacos = safe if cooked fresh + lots of customers. Avoid stands with no line.'
-            },
-            {
-                name: 'El Califa',
-                category: 'street',
-                type: 'Tacos',
-                description: 'Famous taco chain. Gaonera, costilla, campechano.',
-                address: 'Multiple locations (Zona Rosa, Condesa)',
-                distance: '',
-                hours: 'Til 4:30am',
-                phone: '',
-                price: '40-60 MXN per taco',
-                google_maps: 'https://maps.google.com/?q=El+Califa+Zona+Rosa+Mexico+City',
-                bob_intel: 'Open late, touristy but solid quality.'
-            },
-            {
-                name: 'Elotes & Esquites Vendors',
-                category: 'street',
-                type: 'Corn',
-                description: 'Grilled corn (elotes) or corn in a cup (esquites). Mayo, cheese, chili, lime.',
-                address: 'Everywhere (parks, plazas, street corners)',
-                distance: '',
-                hours: 'Afternoons/evenings',
-                phone: '',
-                price: '30-50 MXN',
-                google_maps: '',
-                bob_intel: 'Super safe. Cooked in front of you. Skip if corn looks old/dry.'
-            },
-            {
-                name: 'Tamales Vendors',
-                category: 'street',
-                type: 'Tamales',
-                description: 'Morning vendors with steaming carts. Rajas, mole, dulce.',
-                address: 'Metro stations, plazas (mornings)',
-                distance: '',
-                hours: '6am-11am',
-                phone: '',
-                price: '15-30 MXN per tamale',
-                google_maps: '',
-                bob_intel: 'Breakfast staple. Safe if steaming hot.'
-            },
-            {
-                name: 'Churros Vendors',
-                category: 'street',
-                type: 'Dessert',
-                description: 'Fresh churros with chocolate or cajeta.',
-                address: 'Parks, plazas, near churches',
-                distance: '',
-                hours: 'Afternoons/evenings',
-                phone: '',
-                price: '20-40 MXN',
-                google_maps: '',
-                bob_intel: 'Best after dinner. Crispy outside, soft inside.'
-            },
-            {
-                name: 'Café El Popular',
-                category: 'nightlife',
-                type: 'Late-Night Diner',
-                description: '24/7 diner serving full meals + drinks. Cash only, unpretentious. Perfect for after-hours.',
-                address: 'Centro Histórico',
-                distance: '15 min Uber',
-                hours: '24 hours',
-                phone: '',
-                price: '100-200 MXN',
-                google_maps: 'https://maps.google.com/?q=Cafe+El+Popular+Centro+Historico+Mexico+City',
-                bob_intel: 'Cash only. Classic late-night spot when everything else closes.'
-            },
-            {
-                name: 'Hanky Panky',
-                category: 'nightlife',
-                type: 'Speakeasy',
-                description: 'Hidden speakeasy. Nervous door approach, cocktails til sunrise.',
-                address: 'Turín 40, Juárez',
-                distance: '10 min walk from Sheraton',
-                hours: 'Mon-Sat 7pm-2am',
-                phone: '',
-                price: '200-400 MXN cocktails',
-                google_maps: 'https://maps.google.com/?q=Hanky+Panky+Turin+40+Juarez+Mexico+City',
-                bob_intel: ''
-            },
-            {
-                name: 'Centro de Salud',
-                category: 'nightlife',
-                type: 'Dive Bar',
-                description: 'Grungy rock/metal/alt venue. Berlin vibes, local scene.',
-                address: 'Centro Histórico',
-                distance: '15 min Uber',
-                hours: 'Thu-Sat 9pm-3am',
-                phone: '',
-                price: '100-250 MXN',
-                google_maps: 'https://maps.google.com/?q=Centro+de+Salud+bar+Mexico+City',
-                bob_intel: ''
-            },
-            {
-                name: 'Zinco Jazz Club',
-                category: 'nightlife',
-                type: 'Jazz Club',
-                description: '1930s bank vault converted to jazz club. Retro vibe, cocktails, food.',
-                address: 'Motolinía 20, Centro Histórico',
-                distance: '15 min Uber',
-                hours: 'Wed-Sat 9pm-2am',
-                phone: '',
-                price: '300-500 MXN',
-                google_maps: 'https://maps.google.com/?q=Zinco+Jazz+Club+Motolinia+Centro+Mexico+City',
-                bob_intel: ''
-            },
-            {
-                name: 'Cantina La No. 20',
-                category: 'nightlife',
-                type: 'Cantina',
-                description: 'Traditional cantina across from Sheraton. Late-night tacos, tequila.',
-                address: 'Near Paseo de la Reforma',
-                distance: '4 min walk from Sheraton',
-                hours: 'Late night',
-                phone: '',
-                price: '80-150 MXN',
-                google_maps: '',
-                bob_intel: 'Right across the street from Sheraton. Classic spot.'
-            },
-            {
-                name: 'Embarcadero Cuemanco',
-                category: 'tourist',
-                type: 'Boat Launch',
-                description: 'Quieter, more ecological Xochimilco embarcadero. Deeper canals, less touristy.',
-                address: 'Periférico Sur Adolfo Ruíz Cortines, Xochimilco, 16034 CDMX',
-                distance: '1 hour from Centro',
-                hours: 'Daily 8am-8pm',
-                phone: '',
-                price: '500-800 MXN per boat',
-                google_maps: 'https://maps.google.com/?q=Embarcadero+Cuemanco+Xochimilco+CDMX',
-                bob_intel: 'More nature-focused, less party vibe than Nativitas.'
-            },
-            // ========== MEXICAN/FUSION (Bob's Research 2/15) ==========
-            {
-                name: 'El Autentico Pato Manila',
-                category: 'mexican',
-                type: 'Filipino-Mexican Fusion',
-                description: 'Filipino-Mexican fusion. Famous duck tacos, unique cross-cultural menu.',
-                address: 'Querétaro 225, Roma Norte',
-                distance: '0.7mi / 16 min walk from Sheraton',
-                hours: 'Mon 12pm-11:30pm | Tue-Wed 1:30-9:30pm | Thu-Sat 1:30pm-12:30am | Sun 1:30-8:30pm',
-                phone: '+52 55 5138 9611',
-                price: '200-400 MXN',
-                google_maps: 'https://maps.google.com/?q=El+Autentico+Pato+Manila+Queretaro+225+Roma+Norte+Mexico+City',
-                bob_intel: 'Filipino-Mexican fusion — rare find. Duck tacos are the move.'
-            },
-            {
-                name: 'Masala y Maíz',
-                category: 'mexican',
-                type: 'Indian-Mexican Fusion',
-                description: 'Indian x Mexican fusion. Michelin listed. Creative tasting menus blending spices and corn.',
-                address: 'Marsella 72, Juárez',
-                distance: '0.4mi / 8 min walk from Sheraton',
-                hours: 'Daily 12-6pm (closed Tue)',
-                phone: '+52 55 6227 9468',
-                price: '500-900 MXN',
-                google_maps: 'https://maps.google.com/?q=Masala+y+Maiz+Marsella+72+Juarez+Mexico+City',
-                bob_intel: 'Michelin listed. Only 8 min walk — easy lunch spot.'
-            },
-            {
-                name: 'Expendio de Maíz (Sin Nombre)',
-                category: 'mexican',
-                type: 'Traditional Mexican',
-                description: 'No menu, no sign, cash only. Heirloom corn tortillas made fresh. The real deal.',
-                address: 'Roma Norte (no posted address)',
-                distance: '0.9mi / 20 min walk from Sheraton',
-                hours: 'Irregular — check locally',
-                phone: '',
-                price: '~$12 USD / ~200 MXN per person',
-                google_maps: 'https://maps.google.com/?q=Expendio+de+Maiz+Sin+Nombre+Roma+Norte+Mexico+City',
-                bob_intel: 'Cash only. No sign outside. Worth the hunt — best tortillas in the city.'
-            },
-            {
-                name: 'Contramar',
-                category: 'mexican',
-                type: 'Iconic Seafood',
-                description: 'Iconic CDMX seafood restaurant. Famous tuna tostadas and grilled red/green snapper.',
-                address: 'Durango 200, Roma Norte',
-                distance: '~1mi from Sheraton',
-                hours: 'Tue-Sun 9am-6:30pm, Closed Mon',
-                phone: '+52 55 5514 9217',
-                price: '500-1,000 MXN',
-                google_maps: 'https://maps.google.com/?q=Contramar+Durango+200+Roma+Norte+Mexico+City',
-                bob_intel: 'One of the most famous restaurants in CDMX. Go early — lines get long.'
-            },
-            {
-                name: 'El Huequito',
-                category: 'mexican',
-                type: 'Tacos al Pastor',
-                description: 'Best tacos al pastor since 1959. CDMX institution.',
-                address: 'Ayuntamiento 21, Centro Histórico',
-                distance: '~2mi from Sheraton',
-                hours: 'Mon-Sun 9:30am-11pm',
-                phone: '+52 55 5518 3313',
-                price: '50-150 MXN',
-                google_maps: 'https://maps.google.com/?q=El+Huequito+Ayuntamiento+21+Centro+Mexico+City',
-                bob_intel: 'Since 1959. The OG tacos al pastor spot.'
-            },
-            {
-                name: 'Rosetta',
-                category: 'mexican',
-                type: 'Fine Dining Italian-Mexican',
-                description: 'Fine dining Italian-Mexican by Chef Elena Reygadas. Beautiful Roma Norte townhouse setting.',
-                address: 'Colima 166, Roma Norte',
-                distance: '~0.8mi from Sheraton',
-                hours: 'Mon-Sat 1pm-11pm (check for reservations)',
-                phone: '',
-                price: '800-1,500 MXN',
-                google_maps: 'https://maps.google.com/?q=Rosetta+Colima+166+Roma+Norte+Mexico+City',
-                bob_intel: 'Chef Elena Reygadas — one of the best chefs in Latin America. Reserve ahead.'
-            },
-            {
-                name: 'Páramo',
-                category: 'mexican',
-                type: 'Mezcal Bar & Tacos',
-                description: 'Mezcal cocktails + tacos. Great late-night spot with creative drinks.',
-                address: 'Av. Yucatán 84, Roma Norte',
-                distance: '0.9mi / 20 min walk from Sheraton',
-                hours: 'Daily 2pm-1:30am',
-                phone: '+52 55 5941 5125',
-                price: '200-500 MXN',
-                google_maps: 'https://maps.google.com/?q=Paramo+Yucatan+84+Roma+Norte+Mexico+City',
-                bob_intel: 'Good mezcal spot. Open late — solid for after-dinner drinks + tacos.'
-            },
-            {
-                name: 'Agüita Fría',
-                category: 'mexican',
-                type: 'Seasonal Mexican',
-                description: 'Seasonal, chef-driven Mexican cuisine. Small plates, inventive menu.',
-                address: 'Roma Norte area',
-                distance: '0.5mi / 10 min walk from Sheraton',
-                hours: 'Check locally',
-                phone: '',
-                price: '300-600 MXN',
-                google_maps: 'https://maps.google.com/?q=Aguita+Fria+Roma+Norte+Mexico+City',
-                bob_intel: 'Chef-driven seasonal spot. Close to hotel — easy walkable lunch.'
-            },
-            {
-                name: 'El Corazón del Mar',
-                category: 'mexican',
-                type: 'Seafood / Ceviche',
-                description: 'Creative ceviches, aguachiles, octopus. Fresh and inventive seafood.',
-                address: 'Valladolid 91, Roma Norte',
-                distance: '0.8mi / 17 min walk from Sheraton',
-                hours: 'Mon-Thu 12-10pm | Fri-Sat 12pm-12am | Sun 12-8pm',
-                phone: '',
-                price: '300-600 MXN',
-                google_maps: 'https://maps.google.com/?q=El+Corazon+del+Mar+Valladolid+91+Roma+Norte+Mexico+City',
-                bob_intel: 'Great ceviche and aguachile spot in Roma Norte.'
-            },
-            {
-                name: 'El Pez Azul',
-                category: 'mexican',
-                type: 'Fish Tacos',
-                description: 'Fish + shrimp tacos with great margaritas. Baja-style seafood.',
-                address: 'Citlaltépetl 40-A, Condesa',
-                distance: '1.2mi / 24 min walk from Sheraton',
-                hours: 'Mon-Fri 11:30am-7:30pm | Sat 11:30am-5pm, Closed Sun',
-                phone: '',
-                price: '150-350 MXN',
-                google_maps: 'https://maps.google.com/?q=El+Pez+Azul+Citlaltepetl+40-A+Condesa+Mexico+City',
-                bob_intel: 'Baja-style fish tacos in Condesa. Solid casual lunch.'
-            },
-            {
-                name: 'Mercado de Medellín',
-                category: 'mexican',
-                type: 'Traditional Market',
-                description: 'Traditional market with street food, fresh produce, and local flavors. Great for exploring.',
-                address: 'Medellín, Roma Norte',
-                distance: '1.2mi / 25 min walk from Sheraton',
-                hours: 'Daily ~7am-6pm',
-                phone: '',
-                price: '50-200 MXN',
-                google_maps: 'https://maps.google.com/?q=Mercado+de+Medellin+Roma+Norte+Mexico+City',
-                bob_intel: 'Great market for street food and local produce. Walk around and sample.'
-            },
-            // === HIGH-END COCKTAIL BARS ===
-            {
-                name: 'Handshake Speakeasy',
-                category: 'nightlife',
-                type: 'High-End Cocktail Bar',
-                description: '#2 bar in the world. Reservations required via OpenTable. Hidden entrance, world-class cocktails.',
-                address: 'Amberes 65, Juárez (Zona Rosa)',
-                distance: '2.5mi / 12 min Uber from Sheraton',
-                hours: 'Tue-Sat 7pm-2am',
-                phone: '',
-                price: '300-500 MXN per cocktail',
-                google_maps: 'https://maps.google.com/?q=Handshake+Speakeasy+Amberes+65+Mexico+City',
-                bob_intel: 'Book on OpenTable well in advance. #2 bar in the world — don\'t miss it.'
-            },
-            {
-                name: 'Licorería Limantour',
-                category: 'nightlife',
-                type: 'High-End Cocktail Bar',
-                description: 'Award-winning craft cocktails and innovative mixology. Consistently ranked among world\'s best bars.',
-                address: 'Álvaro Obregón 106, Roma Norte',
-                distance: '1.0mi / 20 min walk from Sheraton',
-                hours: 'Mon-Sat 1pm-2am, Sun 1pm-12am',
-                phone: '',
-                price: '200-350 MXN per cocktail',
-                google_maps: 'https://maps.google.com/?q=Licoreria+Limantour+Alvaro+Obregon+Roma+Norte+Mexico+City',
-                bob_intel: 'World-class cocktail bar. Walk-ins OK but can get packed — go early or weeknight.'
-            },
-            {
-                name: 'Parker & Lenox',
-                category: 'nightlife',
-                type: 'High-End Cocktail Bar',
-                description: 'Hidden speakeasy with jazz vibes and craft cocktails. Prohibition-era atmosphere in Centro Histórico.',
-                address: 'Milán 14, Juárez',
-                distance: '2.3mi / 10 min Uber from Sheraton',
-                hours: 'Wed-Sat 8pm-2am',
-                phone: '',
-                price: '250-400 MXN per cocktail',
-                google_maps: 'https://maps.google.com/?q=Parker+%26+Lenox+Milan+14+Mexico+City',
-                bob_intel: 'Hidden speakeasy — look for the unmarked door. Jazz vibes and excellent drinks.'
-            },
-            {
-                name: 'Xaman Bar',
-                category: 'nightlife',
-                type: 'High-End Cocktail Bar',
-                description: 'High-end cocktails with modern Mexican flavors. Indigenous ingredients meet contemporary mixology.',
-                address: 'Gral. Prim 95, Juárez',
-                distance: '2.4mi / 11 min Uber from Sheraton',
-                hours: 'Tue-Sat 6pm-2am',
-                phone: '',
-                price: '250-400 MXN per cocktail',
-                google_maps: 'https://maps.google.com/?q=Xaman+Bar+General+Prim+Mexico+City',
-                bob_intel: 'Modern Mexican cocktails using indigenous ingredients. Unique and worth the visit.'
-            },
-            // === ROOFTOP BARS ===
-            {
-                name: 'Terraza Cha Cha Chá ⭐',
-                category: 'nightlife',
-                type: 'Rooftop Bar',
-                description: 'Bob\'s Pick! Sunset views over Monumento a la Revolución. Craft beers, tequila, and mezcal in a chill rooftop setting.',
-                address: 'Near Monumento a la Revolución, Tabacalera',
-                distance: '2.8mi / 12 min Uber from Sheraton',
-                hours: 'Mon-Sun 1pm-12am',
-                phone: '',
-                price: '~150 MXN per drink',
-                google_maps: 'https://maps.google.com/?q=Terraza+Cha+Cha+Cha+Monumento+Revolucion+Mexico+City',
-                bob_intel: '⭐ Bob\'s Pick — Go for sunset. Views over Monumento a la Revolución are incredible. Craft beers and mezcal ~150 MXN.'
-            },
-            {
-                name: 'Cityzen Rooftop Kitchen',
-                category: 'nightlife',
-                type: 'Rooftop Bar',
-                description: 'Sofitel hotel rooftop with views of Angel of Independence and Chapultepec Castle. Weekend DJs.',
-                address: 'Paseo de la Reforma 465, Cuauhtémoc (Sofitel Hotel)',
-                distance: '3.0mi / 13 min Uber from Sheraton',
-                hours: 'Mon-Sun 1pm-12am',
-                phone: '',
-                price: '250-450 MXN per drink',
-                google_maps: 'https://maps.google.com/?q=Cityzen+Rooftop+Kitchen+Sofitel+Paseo+de+la+Reforma+Mexico+City',
-                bob_intel: 'Upscale rooftop at the Sofitel. Angel + Chapultepec Castle views. Weekend DJs make it a scene.'
-            },
-            {
-                name: 'Nivel 40 SkyBar',
-                category: 'nightlife',
-                type: 'Rooftop Bar',
-                description: '40th floor of Torre Latinoamericana. 360° panoramic views of Zócalo, Cathedral, and Palacio de Bellas Artes.',
-                address: 'Eje Central Lázaro Cárdenas 2, Centro Histórico (Torre Latinoamericana, 40th floor)',
-                distance: '3.5mi / 15 min Uber from Sheraton',
-                hours: 'Fri-Sun 1pm-11pm',
-                phone: '',
-                price: '200-400 MXN per drink',
-                google_maps: 'https://maps.google.com/?q=Nivel+40+SkyBar+Torre+Latinoamericana+Mexico+City',
-                bob_intel: '40th floor — 360° views of Zócalo, Cathedral, Bellas Artes. Only open Fri-Sun. Worth the trip.'
-            },
-            {
-                name: 'Balmori Roofbar',
-                category: 'nightlife',
-                type: 'Rooftop Bar',
-                description: 'Retractable roof with expert cocktails, Mexican wines, and craft beers in Roma Norte.',
-                address: 'Zacatecas 139, Roma Norte',
-                distance: '1.3mi / 25 min walk from Sheraton',
-                hours: 'Mon-Wed 5pm-12am, Thu-Sat 5pm-2am, Sun 1pm-8pm',
-                phone: '',
-                price: '180-350 MXN per drink',
-                google_maps: 'https://maps.google.com/?q=Balmori+Roofbar+Zacatecas+139+Roma+Norte+Mexico+City',
-                bob_intel: 'Retractable roof — great rain or shine. Expert cocktails and Mexican wines. Walking distance in Roma.'
-            },
-            // === ITALIAN ===
-            {
-                name: 'Sartoria ⭐',
-                category: 'mexican',
-                type: 'Italian Restaurant',
-                description: 'Bob\'s Pick! Handmade pasta and Italian done right in CDMX. Fresh ingredients, authentic technique.',
-                address: 'Orizaba 42, Roma Norte',
-                distance: '1.1mi / 22 min walk from Sheraton',
-                hours: 'Mon-Sat 1pm-11pm, Sun 1pm-6pm',
-                phone: '',
-                price: '250-500 MXN per dish',
-                google_maps: 'https://maps.google.com/?q=Sartoria+Orizaba+Roma+Norte+Mexico+City',
-                bob_intel: '⭐ Bob says "really good" — Handmade pasta, Italian done right. Don\'t skip this one.'
-            },
-            // === ASIAN FUSION ===
-            {
-                name: 'Imbiss',
+                name: 'Taishu Teppan Sango',
                 category: 'japanese',
-                type: 'Asian Fusion',
-                description: 'NY bistro energy with seasonal menu, great cocktails, and a small intimate space.',
-                address: 'Colima 145, Roma Norte',
-                distance: '1.2mi / 24 min walk from Sheraton',
-                hours: 'Tue-Sat 1pm-11pm, Sun 1pm-6pm',
-                phone: '',
-                price: '200-400 MXN per dish',
-                google_maps: 'https://maps.google.com/?q=Imbiss+Colima+Roma+Norte+Mexico+City',
-                bob_intel: 'NY bistro vibes — seasonal menu, great cocktails, intimate space. Book ahead, it\'s small.'
+                description: 'Okonomiyaki, teppanyaki, izakaya. Small spot, gets busy.',
+                address: 'Río Pánuco 128, Col. Cuauhtémoc',
+                hours: 'Tue-Sun 1pm-10pm, Closed Mon',
+                price: '800-1,200 MXN',
+                google_maps: 'https://www.google.com/maps/search/?api=1&query=Taishu+Teppan+Sango+Rio+Panuco+128+Mexico+City'
             },
             {
-                name: 'Takotl Roma Norte',
-                category: 'japanese',
-                type: 'Asian Fusion Tacos',
-                description: 'Asian fusion tacos — the salmon taco is the signature dish. 4.9★ with 685 reviews.',
-                address: 'Roma Norte',
-                distance: '1.0mi / 20 min walk from Sheraton',
-                hours: 'Mon-Sun 12pm-10pm',
-                phone: '',
-                price: '80-180 MXN per taco',
-                google_maps: 'https://maps.google.com/?q=Takotl+Roma+Norte+Mexico+City',
-                bob_intel: '4.9★ with 685 reviews — the salmon taco is legendary. Asian fusion tacos done right.'
-            },
-            {
-                name: 'MOG Bistro',
-                category: 'japanese',
-                type: 'Asian Fusion',
-                description: 'Asian fusion sushi, ramen, and sake cocktails. Full bar with creative Japanese-Mexican fusion.',
-                address: 'Frontera 168, Roma Norte',
-                distance: '1.1mi / 22 min walk from Sheraton',
+                name: 'Kpop BBQ',
+                category: 'korean',
+                description: 'All-you-can-eat KBBQ. Beef, pork, chicken. Banchan, soju.',
+                address: 'Insurgentes Sur 349, Hipódromo',
                 hours: 'Mon-Sun 1pm-11pm',
-                phone: '',
-                price: '180-350 MXN per dish',
-                google_maps: 'https://maps.google.com/?q=MOG+Bistro+Frontera+168+Roma+Norte+Mexico+City',
-                bob_intel: 'Sushi, ramen, and sake cocktails — solid Asian fusion in Roma Norte. Open daily.'
-            },
-            {
-                name: 'Daikoku',
-                category: 'japanese',
-                type: 'Ramen / Japanese',
-                description: 'OG ramen spot with unique rice-free maki. Spacious setting in Condesa.',
-                address: 'Michoacán 25, Condesa',
-                distance: '1.8mi / 8 min Uber from Sheraton',
-                hours: 'Mon-Sun 1pm-10pm',
-                phone: '',
-                price: '150-300 MXN per dish',
-                google_maps: 'https://maps.google.com/?q=Daikoku+Michoacan+25+Condesa+Mexico+City',
-                bob_intel: 'OG ramen spot — try the rice-free maki, it\'s unique. Spacious and chill in Condesa.'
-            },
-            // === SEAFOOD ===
-            {
-                name: 'Avenida La Tizona',
-                category: 'mexican',
-                type: 'Seafood',
-                description: 'Sinaloa-style seafood tacos, ceviche, fish tostadas, and seared tuna tacos. 4.6★ with 330+ reviews.',
-                address: 'Roma Norte',
-                distance: '1.0mi / 20 min walk from Sheraton',
-                hours: 'Mon-Sun 11am-7pm',
-                phone: '',
-                price: '80-200 MXN per dish',
-                google_maps: 'https://maps.google.com/?q=Avenida+La+Tizona+Roma+Norte+Mexico+City',
-                bob_intel: '4.6★ — Sinaloa-style seafood. Fish tostadas and seared tuna tacos are the move.'
-            },
-            // === CASUAL BARS ===
-            {
-                name: 'Felina',
-                category: 'nightlife',
-                type: 'Casual Bar & Tacos',
-                description: 'Tacos and cocktails with indoor/outdoor seating. Good vibes in South Condesa.',
-                address: 'South Condesa',
-                distance: '2.0mi / 9 min Uber from Sheraton',
-                hours: 'Mon-Sun 1pm-12am',
-                phone: '',
-                price: '100-250 MXN',
-                google_maps: 'https://maps.google.com/?q=Felina+Condesa+Mexico+City',
-                bob_intel: 'Tacos + cocktails combo — good vibes, indoor/outdoor. Chill spot in South Condesa.'
-            },
-            {
-                name: 'La Roma Brewing',
-                category: 'nightlife',
-                type: 'Brewery / Casual Bar',
-                description: 'Spacious brewery with wide beer variety. Indoor/outdoor seating, great for groups.',
-                address: 'Roma Norte',
-                distance: '1.0mi / 20 min walk from Sheraton',
-                hours: 'Mon-Sun 1pm-12am',
-                phone: '',
-                price: '80-200 MXN per beer',
-                google_maps: 'https://maps.google.com/?q=La+Roma+Brewing+Roma+Norte+Mexico+City',
-                bob_intel: 'Spacious brewery — wide beer selection, indoor/outdoor. Perfect for groups.'
+                price: '350-450 MXN AYCE',
+                google_maps: 'https://www.google.com/maps/search/?api=1&query=Kpop+BBQ+Insurgentes+Sur+349+Hipodromo+Mexico+City'
             }
         ];
 
-        let allSpots = [];
         let currentFilter = 'all';
 
-        // Load spots
-        function loadSpots() {
-            // Load hardcoded data directly (synchronous)
-            allSpots = initialSpots;
-            renderSpots();
-        }
-
-        // Render spots
         function renderSpots() {
             const container = document.getElementById('spotsContainer');
-            const searchInput = document.getElementById('searchInput');
-            const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
 
-            let filtered = allSpots;
+            let filtered = spots;
 
-            // Filter by category
             if (currentFilter !== 'all') {
                 filtered = filtered.filter(s => s.category === currentFilter);
             }
 
-            // Filter by search
             if (searchTerm) {
                 filtered = filtered.filter(s => 
                     s.name.toLowerCase().includes(searchTerm) ||
                     (s.description && s.description.toLowerCase().includes(searchTerm)) ||
-                    (s.type && s.type.toLowerCase().includes(searchTerm)) ||
-                    (s.bob_intel && s.bob_intel.toLowerCase().includes(searchTerm))
+                    (s.address && s.address.toLowerCase().includes(searchTerm))
                 );
             }
 
             if (filtered.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="emoji">🤷</div>
-                        <p>No spots found. Be the first to add one!</p>
-                    </div>
-                `;
+                container.innerHTML = '<div class="loading">No spots found</div>';
                 return;
             }
 
-            // Group by category with display order
-            const categoryOrder = ['mexican', 'japanese', 'korean', 'breakfast', 'street', 'nightlife', 'tourist', 'adult'];
-            const grouped = {};
-            filtered.forEach(spot => {
-                if (!grouped[spot.category]) grouped[spot.category] = [];
-                grouped[spot.category].push(spot);
-            });
-
-            const categoryNames = {
-                mexican: 'Mexican',
-                japanese: 'Japanese',
-                korean: 'Korean',
-                nightlife: 'Nightlife',
-                tourist: 'Tourist & Useful',
-                adult: 'Adult 18+',
-                breakfast: 'Breakfast',
-                street: 'Street Vendors'
-            };
-
-            let html = '';
-            categoryOrder.forEach(cat => {
-                if (!grouped[cat]) return;
-                html += `
-                    <div class="category-section">
-                        <h2 class="category-title">${getCategoryEmoji(cat)} ${categoryNames[cat] || cat}</h2>
-                        <div class="spots-grid">
-                            ${grouped[cat].map(spot => renderSpotCard(spot)).join('')}
-                        </div>
-                    </div>
-                `;
-            });
-
-            // Any categories not in the order
-            Object.keys(grouped).forEach(cat => {
-                if (!categoryOrder.includes(cat)) {
-                    html += `
-                        <div class="category-section">
-                            <h2 class="category-title">${getCategoryEmoji(cat)} ${categoryNames[cat] || cat.charAt(0).toUpperCase() + cat.slice(1)}</h2>
-                            <div class="spots-grid">
-                                ${grouped[cat].map(spot => renderSpotCard(spot)).join('')}
-                            </div>
-                        </div>
-                    `;
-                }
-            });
-
-            container.innerHTML = html;
-        }
-
-        function renderSpotCard(spot) {
-            return `
+            container.innerHTML = filtered.map(spot => `
                 <div class="spot-card">
                     <div class="spot-name">${spot.name}</div>
-                    ${spot.type ? `<span class="spot-type">${spot.type}</span>` : ''}
+                    <div class="spot-category">${spot.category}</div>
                     ${spot.description ? `<div class="spot-description">${spot.description}</div>` : ''}
                     <div class="spot-details">
-                        ${spot.address ? `<div class="spot-detail"><span class="icon">📍</span>${spot.address}</div>` : ''}
-                        ${spot.distance ? `<div class="spot-detail"><span class="icon">🚶</span>${spot.distance}</div>` : ''}
-                        ${spot.hours ? `<div class="spot-detail"><span class="icon">🕐</span>${spot.hours}</div>` : ''}
-                        ${spot.phone ? `<div class="spot-detail"><span class="icon">📞</span>${spot.phone}</div>` : ''}
-                        ${spot.price ? `<div class="spot-detail"><span class="icon">💰</span>${spot.price}</div>` : ''}
+                        ${spot.address ? `<div class="spot-detail">📍 ${spot.address}</div>` : ''}
+                        ${spot.hours ? `<div class="spot-detail">🕐 ${spot.hours}</div>` : ''}
+                        ${spot.price ? `<div class="spot-detail">💰 ${spot.price}</div>` : ''}
                     </div>
-                    ${spot.bob_intel ? `<div class="bob-intel"><strong>🧠 Bob's Intel:</strong> ${spot.bob_intel}</div>` : ''}
-                    <div class="spot-actions">
-                        ${spot.google_maps ? `<a href="${spot.google_maps}" target="_blank" class="btn">🗺️ Map</a>` : ''}
-                        ${spot.phone ? `<a href="tel:${spot.phone}" class="btn teal">📞 Call</a>` : ''}
-                    </div>
+                    ${spot.google_maps ? `<a href="${spot.google_maps}" target="_blank" class="maps-link">📍 Open in Google Maps</a>` : ''}
                 </div>
-            `;
-        }
-
-        function getCategoryEmoji(cat) {
-            const emojis = {
-                mexican: '🌮',
-                japanese: '🍱',
-                korean: '🥘',
-                chinese: '🥢',
-                nightlife: '🍺',
-                tourist: '🗺️',
-                adult: '🔞',
-                breakfast: '☕',
-                street: '🚶'
-            };
-            return emojis[cat] || '🍴';
+            `).join('');
         }
 
         // Filter buttons
@@ -2057,74 +280,13 @@
         });
 
         // Search
-        document.getElementById('searchInput').addEventListener('input', renderSpots);
+        document.getElementById('searchBox').addEventListener('input', renderSpots);
 
-        // Modal
-        document.getElementById('addSpotBtn').addEventListener('click', () => {
-            document.getElementById('addSpotModal').classList.add('active');
-        });
-
-        document.getElementById('closeModalBtn').addEventListener('click', () => {
-            document.getElementById('addSpotModal').classList.remove('active');
-        });
-
-        document.getElementById('addSpotModal').addEventListener('click', (e) => {
-            if (e.target.id === 'addSpotModal') {
-                document.getElementById('addSpotModal').classList.remove('active');
-            }
-        });
-
-        // Form submit
-        document.getElementById('addSpotForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const submitBtn = e.target.querySelector('.submit-btn');
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Submitting...';
-
-            const newSpot = {
-                name: document.getElementById('spotName').value,
-                category: document.getElementById('spotCategory').value,
-                description: document.getElementById('spotDescription').value,
-                address: document.getElementById('spotAddress').value,
-                hours: document.getElementById('spotHours').value,
-                phone: document.getElementById('spotPhone').value,
-                price: document.getElementById('spotPrice').value,
-                bob_intel: document.getElementById('spotIntel').value,
-                created_at: new Date().toISOString()
-            };
-
-            try {
-                if (!supabase) {
-                    throw new Error('Database not available. Please try again later.');
-                }
-
-                const { data, error } = await supabase
-                    .from('cdmx_spots')
-                    .insert([newSpot])
-                    .select();
-
-                if (error) throw error;
-
-                allSpots.push(data[0]);
-                renderSpots();
-                document.getElementById('addSpotModal').classList.remove('active');
-                document.getElementById('addSpotForm').reset();
-                alert('✅ Spot added! Thanks for contributing!');
-            } catch (err) {
-                console.error('Error adding spot:', err);
-                alert('❌ ' + (err.message || 'Error adding spot. Please try again.'));
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Submit Spot';
-            }
-        });
-
-        // Init - wait for DOM to be ready
+        // Load on DOM ready
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', loadSpots);
+            document.addEventListener('DOMContentLoaded', renderSpots);
         } else {
-            loadSpots();
+            renderSpots();
         }
     </script>
 </body>
