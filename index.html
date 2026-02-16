@@ -408,6 +408,7 @@
         <div id="mainCategories" style="display: flex; flex-wrap: wrap; gap: 0.5rem; width: 100%;">
             <button class="filter-btn active" data-category="all">All</button>
             <button class="filter-btn" data-category="bobspicks">⭐ Bob's Picks</button>
+            <button class="filter-btn" id="nearMeBtn">📍 Near Me</button>
             <button class="filter-btn" data-category="asian">🥢 Asian</button>
             <button class="filter-btn" data-category="latin">🌮 Latin American</button>
             <button class="filter-btn" data-category="mediterranean">🫒 Mediterranean</button>
@@ -1715,6 +1716,54 @@
         let currentSubCategory = null;
         let currentTimeFilter = null;
         let currentPriceFilter = null;
+        let nearMeActive = false;
+        let userLocation = null;
+
+        // Haversine distance formula (returns km)
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Earth radius in km
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+
+        // Near Me button handler
+        document.getElementById('nearMeBtn').addEventListener('click', function() {
+            if (nearMeActive) {
+                // Turn off Near Me
+                nearMeActive = false;
+                userLocation = null;
+                this.classList.remove('active');
+                renderSpots();
+            } else {
+                // Request location
+                if (navigator.geolocation) {
+                    this.textContent = '📍 Getting location...';
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            userLocation = {
+                                lat: position.coords.latitude,
+                                lng: position.coords.longitude
+                            };
+                            nearMeActive = true;
+                            document.getElementById('nearMeBtn').classList.add('active');
+                            document.getElementById('nearMeBtn').textContent = '📍 Near Me';
+                            renderSpots();
+                        },
+                        (error) => {
+                            alert('❌ Location permission denied. Enable location to use Near Me.');
+                            document.getElementById('nearMeBtn').textContent = '📍 Near Me';
+                        }
+                    );
+                } else {
+                    alert('❌ Geolocation not supported by your browser.');
+                }
+            }
+        });
 
         function renderSpots() {
             const container = document.getElementById('spotsContainer');
@@ -1753,6 +1802,27 @@
                 );
             }
 
+            // Calculate distances and sort if Near Me is active
+            if (nearMeActive && userLocation) {
+                // Sheraton Maria Isabel coordinates as reference for most spots
+                const sheratonLat = 19.4260;
+                const sheratonLng = -99.1670;
+                
+                filtered.forEach(spot => {
+                    // Use Sheraton as approximate location for spots near it
+                    // In future, add actual lat/lng to each spot
+                    spot.calculatedDistance = calculateDistance(
+                        userLocation.lat,
+                        userLocation.lng,
+                        sheratonLat,
+                        sheratonLng
+                    );
+                });
+                
+                // Sort by distance
+                filtered.sort((a, b) => a.calculatedDistance - b.calculatedDistance);
+            }
+
             if (filtered.length === 0) {
                 container.innerHTML = '<div class="loading">No spots found</div>';
                 return;
@@ -1763,6 +1833,8 @@
                     <div class="spot-name">${spot.name}</div>
                     <div class="spot-category">${spot.subCategory || spot.mainCategory}</div>
                     <div class="spot-badges">
+                        ${nearMeActive && spot.calculatedDistance !== undefined ? 
+                            `<span class="badge badge-time">📍 ${spot.calculatedDistance.toFixed(1)} km</span>` : ''}
                         ${spot.timeAvailable && spot.timeAvailable.length > 0 ? 
                             spot.timeAvailable.map(t => `<span class="badge badge-time">${t === 'breakfast' ? '🌅 Breakfast' : t === 'lunch' ? '🌞 Lunch' : t === 'dinner' ? '🌆 Dinner' : '🌙 Late Night'}</span>`).join('') 
                             : ''}
