@@ -1827,6 +1827,43 @@
         let currentSubCategory = null;
         let currentTimeFilter = null;
         let currentPriceFilter = null;
+        let reviewStats = {}; // {spotName: {avgRating: 4.5, count: 12}}
+
+        // Fetch all reviews and calculate stats
+        async function loadReviewStats() {
+            try {
+                const response = await fetch('https://jsfdzfwlyclethssaffk.supabase.co/rest/v1/cdmx_comments?select=spot_name,rating', {
+                    headers: {
+                        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpzZmR6ZndseWNsZXRoc3NhZmZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5NDY2MDUsImV4cCI6MjA4NTUyMjYwNX0.GIFiRBikhq7JYiBAc6f5UgZPcreZ6qqgSLp2QpUqeKw',
+                        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpzZmR6ZndseWNsZXRoc3NhZmZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5NDY2MDUsImV4cCI6MjA4NTUyMjYwNX0.GIFiRBikhq7JYiBAc6f5UgZPcreZ6qqgSLp2QpUqeKw'
+                    }
+                });
+                const reviews = await response.json();
+                
+                // Calculate stats per spot
+                const statsBySpot = {};
+                reviews.forEach(review => {
+                    if (!statsBySpot[review.spot_name]) {
+                        statsBySpot[review.spot_name] = { total: 0, count: 0 };
+                    }
+                    statsBySpot[review.spot_name].total += review.rating;
+                    statsBySpot[review.spot_name].count += 1;
+                });
+                
+                // Calculate averages
+                for (const spotName in statsBySpot) {
+                    const stats = statsBySpot[spotName];
+                    reviewStats[spotName] = {
+                        avgRating: stats.total / stats.count,
+                        count: stats.count
+                    };
+                }
+                
+                renderSpots(); // Re-render with stats
+            } catch (error) {
+                console.error('Error loading review stats:', error);
+            }
+        }
 
         function renderSpots() {
             const container = document.getElementById('spotsContainer');
@@ -1870,9 +1907,19 @@
                 return;
             }
 
-            container.innerHTML = filtered.map((spot, index) => `
+            container.innerHTML = filtered.map((spot, index) => {
+                const stats = reviewStats[spot.name];
+                const stars = stats ? '★'.repeat(Math.round(stats.avgRating)) + '☆'.repeat(5 - Math.round(stats.avgRating)) : '';
+                const starsHTML = stats ? 
+                    '<div style="color: #fbbf24; font-size: 0.9rem; margin-top: 0.25rem;">' +
+                        stars + ' ' +
+                        '<span style="color: #8888a0; font-size: 0.85rem;">(' + stats.count + (stats.count === 1 ? ' review' : ' reviews') + ')</span>' +
+                    '</div>' : '';
+                
+                return `
                 <div class="spot-card" data-spot-id="${index}">
                     <div class="spot-name">${spot.name}</div>
+                    ${starsHTML}
                     <div class="spot-category">${spot.subCategory || spot.mainCategory}</div>
                     <div class="spot-badges">
                         ${spot.timeAvailable && spot.timeAvailable.length > 0 ? 
@@ -1889,7 +1936,8 @@
                     ${spot.google_maps ? `<a href="${spot.google_maps}" target="_blank" class="maps-link">📍 Open in Google Maps</a>` : ''}
                     <button class="reviews-btn" onclick="openReviewModal('${spot.name}', ${index})">💬 Reviews</button>
                 </div>
-            `).join('');
+            `;
+            }).join('');
         }
 
         function showSubcategories(mainCat) {
@@ -2119,9 +2167,13 @@
 
         // Load on DOM ready
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', renderSpots);
+            document.addEventListener('DOMContentLoaded', () => {
+                renderSpots();
+                loadReviewStats();
+            });
         } else {
             renderSpots();
+            loadReviewStats();
         }
     </script>
 </body>
