@@ -406,6 +406,58 @@
             font-size: 0.9rem;
             font-style: italic;
         }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #a855f7, #06d6a0);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(168,85,247,0.4);
+            transition: all 0.3s;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(168,85,247,0.6);
+        }
+
+        .fab:active {
+            transform: scale(0.95);
+        }
+
+        /* Select styling */
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            background: #1a1a25;
+            border: 1px solid #2a2a3a;
+            border-radius: 8px;
+            color: #f0f0f5;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #a855f7;
+        }
+
+        select option {
+            background: #1a1a25;
+            color: #f0f0f5;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -511,6 +563,98 @@
             </div>
         </div>
     </div>
+
+    <!-- Add Spot Modal -->
+    <div class="modal" id="addSpotModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>✨ Add a New Spot</h2>
+                <button class="close-btn" onclick="closeAddSpotModal()">&times;</button>
+            </div>
+            
+            <form id="addSpotForm" onsubmit="submitNewSpot(event)">
+                <div class="form-group">
+                    <label>Spot Name *</label>
+                    <input type="text" name="spotName" placeholder="e.g., Tacos El Padrino" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Category *</label>
+                    <select name="category" required>
+                        <option value="">Select category...</option>
+                        <option value="mexican">Mexican</option>
+                        <option value="asian">Asian</option>
+                        <option value="latin">Latin American</option>
+                        <option value="italian">Italian</option>
+                        <option value="french">French</option>
+                        <option value="mediterranean">Mediterranean</option>
+                        <option value="american">American</option>
+                        <option value="european">European</option>
+                        <option value="vegan">Vegan/Vegetarian</option>
+                        <option value="seafood">Seafood</option>
+                        <option value="nightlife">Nightlife</option>
+                        <option value="breakfast">Breakfast/Cafe</option>
+                        <option value="tourist">Tourist Attraction</option>
+                        <option value="street">Street Food</option>
+                        <option value="adult">Adult (18+)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Subcategory (optional)</label>
+                    <input type="text" name="subcategory" placeholder="e.g., Tacos, Sushi, Cocktail Bar...">
+                </div>
+
+                <div class="form-group">
+                    <label>Description *</label>
+                    <textarea name="description" placeholder="What makes this place special?" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Address *</label>
+                    <input type="text" name="address" placeholder="Full address with neighborhood" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Neighborhood</label>
+                    <input type="text" name="neighborhood" placeholder="e.g., Roma Norte, Polanco, Condesa...">
+                </div>
+
+                <div class="form-group">
+                    <label>Hours (optional)</label>
+                    <input type="text" name="hours" placeholder="e.g., Daily 1pm-11pm">
+                </div>
+
+                <div class="form-group">
+                    <label>Phone (optional)</label>
+                    <input type="text" name="phone" placeholder="+52 55 1234 5678">
+                </div>
+
+                <div class="form-group">
+                    <label>Price Level *</label>
+                    <select name="priceLevel" required>
+                        <option value="">Select price...</option>
+                        <option value="$">$ (< 200 MXN)</option>
+                        <option value="$$">$$ (200-500 MXN)</option>
+                        <option value="$$$">$$$ (500-1000 MXN)</option>
+                        <option value="$$$$">$$$$ (1000+ MXN)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Your Name (optional)</label>
+                    <input type="text" name="submittedBy" placeholder="Leave blank for anonymous">
+                </div>
+
+                <button type="submit" class="submit-btn">Submit Spot for Review</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <button class="fab" onclick="openAddSpotModal()" title="Add a new spot">
+        <span style="font-size: 2rem; line-height: 1;">+</span>
+    </button>
 
     <script>
         const spots = [
@@ -16350,6 +16494,73 @@
         document.getElementById('reviewModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeReviewModal();
+            }
+        });
+
+        // Add Spot Modal Functions
+        function openAddSpotModal() {
+            document.getElementById('addSpotModal').classList.add('active');
+        }
+
+        function closeAddSpotModal() {
+            document.getElementById('addSpotModal').classList.remove('active');
+            document.getElementById('addSpotForm').reset();
+        }
+
+        async function submitNewSpot(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const spotData = {
+                spot_name: formData.get('spotName'),
+                category: formData.get('category'),
+                subcategory: formData.get('subcategory'),
+                description: formData.get('description'),
+                address: formData.get('address'),
+                neighborhood: formData.get('neighborhood'),
+                hours: formData.get('hours'),
+                phone: formData.get('phone'),
+                price_level: formData.get('priceLevel'),
+                submitted_by: formData.get('submittedBy') || 'Anonymous',
+                status: 'pending',
+                created_at: new Date().toISOString()
+            };
+
+            // Check for profanity
+            const fieldsToCheck = [spotData.spot_name, spotData.description, spotData.submitted_by];
+            if (fieldsToCheck.some(field => field && containsProfanity(field))) {
+                alert('❌ Please keep submissions family-friendly. Profanity is not allowed.');
+                return;
+            }
+
+            try {
+                const response = await fetch('https://jsfdzfwlyclethssaffk.supabase.co/rest/v1/cdmx_pending_spots', {
+                    method: 'POST',
+                    headers: {
+                        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpzZmR6ZndseWNsZXRoc3NhZmZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5NDY2MDUsImV4cCI6MjA4NTUyMjYwNX0.GIFiRBikhq7JYiBAc6f5UgZPcreZ6qqgSLp2QpUqeKw',
+                        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpzZmR6ZndseWNsZXRoc3NhZmZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5NDY2MDUsImV4cCI6MjA4NTUyMjYwNX0.GIFiRBikhq7JYiBAc6f5UgZPcreZ6qqgSLp2QpUqeKw',
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify(spotData)
+                });
+
+                if (response.ok) {
+                    alert('✅ Thanks! Your spot has been submitted for review.');
+                    closeAddSpotModal();
+                } else {
+                    alert('❌ Error submitting spot. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Error submitting spot. Please try again.');
+            }
+        }
+
+        // Close add spot modal when clicking outside
+        document.getElementById('addSpotModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeAddSpotModal();
             }
         });
 
