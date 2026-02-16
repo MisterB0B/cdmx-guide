@@ -408,7 +408,6 @@
         <div id="mainCategories" style="display: flex; flex-wrap: wrap; gap: 0.5rem; width: 100%;">
             <button class="filter-btn active" data-category="all">All</button>
             <button class="filter-btn" data-category="bobspicks">⭐ Bob's Picks</button>
-            <button class="filter-btn" id="nearMeBtn">📍 Sort by Distance</button>
             <button class="filter-btn" data-category="asian">🥢 Asian</button>
             <button class="filter-btn" data-category="latin">🌮 Latin American</button>
             <button class="filter-btn" data-category="mediterranean">🫒 Mediterranean</button>
@@ -1828,55 +1827,6 @@
         let currentSubCategory = null;
         let currentTimeFilter = null;
         let currentPriceFilter = null;
-        let nearMeActive = false;
-        let userLocation = null;
-
-        // Haversine distance formula (returns km)
-        function calculateDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371; // Earth radius in km
-            const dLat = (lat2 - lat1) * Math.PI / 180;
-            const dLon = (lon2 - lon1) * Math.PI / 180;
-            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                      Math.sin(dLon/2) * Math.sin(dLon/2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-            return R * c;
-        }
-
-        // Sort by Distance button handler
-        document.getElementById('nearMeBtn').addEventListener('click', function() {
-            if (nearMeActive) {
-                // Turn off distance sorting
-                nearMeActive = false;
-                userLocation = null;
-                this.classList.remove('active');
-                this.textContent = '📍 Sort by Distance';
-                renderSpots();
-            } else {
-                // Request location for distance sorting
-                if (navigator.geolocation) {
-                    this.textContent = '📍 Getting location...';
-                    navigator.geolocation.getCurrentPosition(
-                        (position) => {
-                            userLocation = {
-                                lat: position.coords.latitude,
-                                lng: position.coords.longitude
-                            };
-                            nearMeActive = true;
-                            this.classList.add('active');
-                            this.textContent = '📍 Sort by Distance';
-                            renderSpots();
-                        },
-                        (error) => {
-                            alert('❌ Location permission denied. Enable location to use Sort by Distance.');
-                            this.textContent = '📍 Sort by Distance';
-                        }
-                    );
-                } else {
-                    alert('❌ Geolocation not supported by your browser.');
-                }
-            }
-        });
 
         function renderSpots() {
             const container = document.getElementById('spotsContainer');
@@ -1915,57 +1865,6 @@
                 );
             }
 
-            // Calculate distances and sort if Near Me is active
-            if (nearMeActive && userLocation) {
-                // Approximate neighborhood coordinates
-                const neighborhoodCoords = {
-                    'Sheraton': [19.4260, -99.1670],
-                    'Cuauhtémoc': [19.4260, -99.1550],
-                    'Juárez': [19.4280, -99.1640],
-                    'Juarez': [19.4280, -99.1640],
-                    'Roma Norte': [19.4155, -99.1630],
-                    'Roma Sur': [19.4100, -99.1630],
-                    'Condesa': [19.4125, -99.1720],
-                    'Centro': [19.4340, -99.1330],
-                    'Polanco': [19.4360, -99.1950],
-                    'Zona Rosa': [19.4250, -99.1620],
-                    'default': [19.4260, -99.1670] // Sheraton area
-                };
-                
-                filtered.forEach(spot => {
-                    let spotLat, spotLng;
-                    
-                    // Use exact coordinates if available
-                    if (spot.lat && spot.lng) {
-                        spotLat = spot.lat;
-                        spotLng = spot.lng;
-                    } else {
-                        // Fall back to neighborhood approximation
-                        let coords = neighborhoodCoords['default'];
-                        if (spot.address) {
-                            for (let [hood, latLng] of Object.entries(neighborhoodCoords)) {
-                                if (spot.address.includes(hood)) {
-                                    coords = latLng;
-                                    break;
-                                }
-                            }
-                        }
-                        spotLat = coords[0];
-                        spotLng = coords[1];
-                    }
-                    
-                    spot.calculatedDistance = calculateDistance(
-                        userLocation.lat,
-                        userLocation.lng,
-                        spotLat,
-                        spotLng
-                    );
-                });
-                
-                // Sort by distance
-                filtered.sort((a, b) => a.calculatedDistance - b.calculatedDistance);
-            }
-
             if (filtered.length === 0) {
                 container.innerHTML = '<div class="loading">No spots found</div>';
                 return;
@@ -1976,8 +1875,6 @@
                     <div class="spot-name">${spot.name}</div>
                     <div class="spot-category">${spot.subCategory || spot.mainCategory}</div>
                     <div class="spot-badges">
-                        ${nearMeActive && spot.calculatedDistance !== undefined ? 
-                            `<span class="badge badge-time">📍 ${spot.calculatedDistance.toFixed(1)} km</span>` : ''}
                         ${spot.timeAvailable && spot.timeAvailable.length > 0 ? 
                             spot.timeAvailable.map(t => `<span class="badge badge-time">${t === 'breakfast' ? '🌅 Breakfast' : t === 'lunch' ? '🌞 Lunch' : t === 'dinner' ? '🌆 Dinner' : '🌙 Late Night'}</span>`).join('') 
                             : ''}
