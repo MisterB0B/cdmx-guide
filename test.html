@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>CDMX Test</title>
+</head>
+<body style="background: #000; color: #fff; padding: 20px;">
+    <h1>CDMX Guide - Debug Test</h1>
+    <div id="output">JavaScript not running...</div>
+    <script>
+        document.getElementById('output').innerHTML = 'JavaScript IS running! Spots loading...';
+        
+        const spots = [
+            {name: 'Test Restaurant 1', category: 'mexican'},
+            {name: 'Test Bar 2', category: 'nightlife'}
+        ];
+        
+        document.getElementById('output').innerHTML = 
+            '<h2>Found ' + spots.length + ' spots:</h2>' +
+            spots.map(s => '<p>' + s.name + ' (' + s.category + ')</p>').join('');
+    </script>
+</body>
+</html>
