@@ -407,6 +407,7 @@
             font-style: italic;
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <div class="header">
@@ -1875,6 +1876,24 @@
                 console.error('Error loading review stats:', error);
             }
         }
+
+        // Initialize Supabase client for realtime
+        const supabaseClient = supabase.createClient(
+            'https://jsfdzfwlyclethssaffk.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpzZmR6ZndseWNsZXRoc3NhZmZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5NDY2MDUsImV4cCI6MjA4NTUyMjYwNX0.GIFiRBikhq7JYiBAc6f5UgZPcreZ6qqgSLp2QpUqeKw'
+        );
+
+        // Subscribe to realtime changes on reviews
+        const reviewsChannel = supabaseClient
+            .channel('cdmx_comments_changes')
+            .on('postgres_changes', 
+                { event: 'INSERT', schema: 'public', table: 'cdmx_comments' },
+                (payload) => {
+                    console.log('New review added:', payload.new);
+                    loadReviewStats(); // Reload stats and re-render
+                }
+            )
+            .subscribe();
 
         // Create URL-safe slug from spot name
         function slugify(text) {
