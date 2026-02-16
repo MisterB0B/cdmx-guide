@@ -1922,41 +1922,27 @@
 
         // Load spots
         async function loadSpots() {
-            // Guaranteed fallback after 2 seconds
-            const fallbackTimer = setTimeout(() => {
-                if (allSpots.length === 0) {
-                    console.log('Timeout - loading offline data');
-                    allSpots = initialSpots;
-                    renderSpots();
+            // Load offline data immediately (tables are empty anyway)
+            console.log('Loading hardcoded spot data');
+            allSpots = initialSpots;
+            renderSpots();
+
+            // Try to fetch from Supabase in background (for future user submissions)
+            if (supabase) {
+                try {
+                    const { data, error } = await supabase
+                        .from('cdmx_spots')
+                        .select('*')
+                        .order('name');
+
+                    if (!error && data && data.length > 0) {
+                        console.log('Loaded additional spots from database');
+                        allSpots = [...initialSpots, ...data];
+                        renderSpots();
+                    }
+                } catch (err) {
+                    console.warn('Could not fetch from database:', err.message);
                 }
-            }, 2000);
-
-            // If Supabase isn't available, use offline data immediately
-            if (!supabase) {
-                clearTimeout(fallbackTimer);
-                console.log('Using offline spot data (Supabase not available)');
-                allSpots = initialSpots;
-                renderSpots();
-                return;
-            }
-
-            try {
-                const { data, error } = await supabase
-                    .from('cdmx_spots')
-                    .select('*')
-                    .order('name');
-
-                clearTimeout(fallbackTimer);
-
-                if (error) throw error;
-
-                allSpots = data && data.length > 0 ? data : initialSpots;
-                renderSpots();
-            } catch (err) {
-                clearTimeout(fallbackTimer);
-                console.warn('Using offline spot data (Supabase error):', err.message);
-                allSpots = initialSpots;
-                renderSpots();
             }
         }
 
