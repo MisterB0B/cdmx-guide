@@ -1750,13 +1750,22 @@
                                 lng: position.coords.longitude
                             };
                             nearMeActive = true;
-                            document.getElementById('nearMeBtn').classList.add('active');
-                            document.getElementById('nearMeBtn').textContent = '📍 Near Me';
+                            
+                            // Reset to "All" category and clear other filters
+                            currentMainCategory = 'all';
+                            currentSubCategory = null;
+                            document.querySelectorAll('#mainCategories .filter-btn[data-category]').forEach(b => b.classList.remove('active'));
+                            document.querySelector('#mainCategories .filter-btn[data-category="all"]').classList.add('active');
+                            document.getElementById('subCategories').style.display = 'none';
+                            document.getElementById('subCategories').innerHTML = '';
+                            
+                            this.classList.add('active');
+                            this.textContent = '📍 Near Me';
                             renderSpots();
                         },
                         (error) => {
                             alert('❌ Location permission denied. Enable location to use Near Me.');
-                            document.getElementById('nearMeBtn').textContent = '📍 Near Me';
+                            this.textContent = '📍 Near Me';
                         }
                     );
                 } else {
@@ -1879,9 +1888,14 @@
         }
 
         // Main category buttons
-        document.querySelectorAll('#mainCategories .filter-btn').forEach(btn => {
+        document.querySelectorAll('#mainCategories .filter-btn[data-category]').forEach(btn => {
             btn.addEventListener('click', () => {
-                document.querySelectorAll('#mainCategories .filter-btn').forEach(b => b.classList.remove('active'));
+                // Turn off Near Me if active
+                nearMeActive = false;
+                userLocation = null;
+                document.getElementById('nearMeBtn').classList.remove('active');
+                
+                document.querySelectorAll('#mainCategories .filter-btn[data-category]').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 currentMainCategory = btn.dataset.category;
                 currentSubCategory = null;
