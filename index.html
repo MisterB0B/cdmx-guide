@@ -113,6 +113,17 @@
             box-shadow: 0 8px 24px rgba(168,85,247,0.2);
         }
 
+        .spot-card.highlighted {
+            border-color: #06d6a0;
+            box-shadow: 0 0 20px rgba(6,214,160,0.4);
+            animation: highlight-pulse 2s ease-in-out;
+        }
+
+        @keyframes highlight-pulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(6,214,160,0.4); }
+            50% { box-shadow: 0 0 40px rgba(6,214,160,0.6); }
+        }
+
         .spot-name {
             font-size: 1.25rem;
             font-weight: 700;
@@ -1865,6 +1876,15 @@
             }
         }
 
+        // Create URL-safe slug from spot name
+        function slugify(text) {
+            return text.toLowerCase()
+                .replace(/[^\w\s-]/g, '') // Remove special chars
+                .replace(/\s+/g, '-')      // Replace spaces with -
+                .replace(/--+/g, '-')      // Replace multiple - with single -
+                .trim();
+        }
+
         function renderSpots() {
             const container = document.getElementById('spotsContainer');
             const searchTerm = document.getElementById('searchBox').value.toLowerCase();
@@ -1915,9 +1935,12 @@
                         stars + ' ' +
                         '<span style="color: #8888a0; font-size: 0.85rem;">(' + stats.count + (stats.count === 1 ? ' review' : ' reviews') + ')</span>' +
                     '</div>' : '';
+                const spotSlug = slugify(spot.name);
+                const hash = window.location.hash.replace('#spot=', '');
+                const isHighlighted = hash === spotSlug;
                 
                 return `
-                <div class="spot-card" data-spot-id="${index}">
+                <div class="spot-card ${isHighlighted ? 'highlighted' : ''}" data-spot-id="${index}" id="spot-${spotSlug}">
                     <div class="spot-name">${spot.name}</div>
                     ${starsHTML}
                     <div class="spot-category">${spot.subCategory || spot.mainCategory}</div>
@@ -1934,10 +1957,24 @@
                         ${spot.price ? `<div class="spot-detail">💰 ${spot.price}</div>` : ''}
                     </div>
                     ${spot.google_maps ? `<a href="${spot.google_maps}" target="_blank" class="maps-link">📍 Open in Google Maps</a>` : ''}
-                    <button class="reviews-btn" onclick="openReviewModal('${spot.name}', ${index})">💬 Reviews</button>
+                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                        <button class="reviews-btn" onclick="openReviewModal('${spot.name}', ${index})">💬 Reviews</button>
+                        <button class="reviews-btn" onclick="shareSpot('${spotSlug}', '${spot.name.replace(/'/g, "\\'")}')">🔗 Share</button>
+                    </div>
                 </div>
             `;
             }).join('');
+            
+            // Scroll to highlighted spot if hash exists
+            const hash = window.location.hash.replace('#spot=', '');
+            if (hash) {
+                setTimeout(() => {
+                    const element = document.getElementById('spot-' + hash);
+                    if (element) {
+                        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }, 100);
+            }
         }
 
         function showSubcategories(mainCat) {
@@ -2034,6 +2071,22 @@
                 });
             });
         });
+
+        function shareSpot(slug, spotName) {
+            const url = window.location.origin + window.location.pathname + '#spot=' + slug;
+            navigator.clipboard.writeText(url).then(() => {
+                alert('✅ Link copied! Share: ' + url);
+            }).catch(() => {
+                // Fallback for older browsers
+                const textarea = document.createElement('textarea');
+                textarea.value = url;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                alert('✅ Link copied! Share: ' + url);
+            });
+        }
 
         function openReviewModal(spotName, spotIndex) {
             currentSpotName = spotName;
