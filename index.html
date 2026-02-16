@@ -134,6 +134,33 @@
             margin-bottom: 1rem;
         }
 
+        .spot-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-time {
+            background: rgba(6,214,160,0.1);
+            color: #06d6a0;
+            border: 1px solid rgba(6,214,160,0.3);
+        }
+
+        .badge-price {
+            background: rgba(251,191,36,0.1);
+            color: #fbbf24;
+            border: 1px solid rgba(251,191,36,0.3);
+        }
+
         .spot-description {
             color: #8888a0;
             font-size: 0.95rem;
@@ -200,6 +227,22 @@
             <button class="filter-btn" data-category="street">🌮 Street Vendors</button>
         </div>
         <div id="subCategories" style="display: none; flex-wrap: wrap; gap: 0.5rem; width: 100%; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid #2a2a3a;"></div>
+        
+        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; width: 100%; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid #2a2a3a;">
+            <div style="color: #8888a0; font-size: 0.85rem; font-weight: 600; padding: 0.5rem 0; width: 100%;">Time:</div>
+            <button class="filter-btn time-filter" data-time="breakfast">🌅 Breakfast</button>
+            <button class="filter-btn time-filter" data-time="lunch">🌞 Lunch</button>
+            <button class="filter-btn time-filter" data-time="dinner">🌆 Dinner</button>
+            <button class="filter-btn time-filter" data-time="latenight">🌙 Late Night</button>
+        </div>
+        
+        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; width: 100%; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid #2a2a3a;">
+            <div style="color: #8888a0; font-size: 0.85rem; font-weight: 600; padding: 0.5rem 0; width: 100%;">Price:</div>
+            <button class="filter-btn price-filter" data-price="$">$ (< 200 MXN)</button>
+            <button class="filter-btn price-filter" data-price="$$">$$ (200-500 MXN)</button>
+            <button class="filter-btn price-filter" data-price="$$$">$$$ (500-1000 MXN)</button>
+            <button class="filter-btn price-filter" data-price="$$$$">$$$$ (1000+ MXN)</button>
+        </div>
     </div>
 
     <div class="spots-container" id="spotsContainer">
@@ -1292,6 +1335,8 @@
 
         let currentMainCategory = 'all';
         let currentSubCategory = null;
+        let currentTimeFilter = null;
+        let currentPriceFilter = null;
 
         function renderSpots() {
             const container = document.getElementById('spotsContainer');
@@ -1307,6 +1352,16 @@
             // Filter by subcategory
             if (currentSubCategory) {
                 filtered = filtered.filter(s => s.subCategory === currentSubCategory);
+            }
+
+            // Filter by time
+            if (currentTimeFilter) {
+                filtered = filtered.filter(s => s.timeAvailable && s.timeAvailable.includes(currentTimeFilter));
+            }
+
+            // Filter by price
+            if (currentPriceFilter) {
+                filtered = filtered.filter(s => s.priceLevel === currentPriceFilter);
             }
 
             // Search filter
@@ -1327,6 +1382,12 @@
                 <div class="spot-card">
                     <div class="spot-name">${spot.name}</div>
                     <div class="spot-category">${spot.subCategory || spot.mainCategory}</div>
+                    <div class="spot-badges">
+                        ${spot.timeAvailable && spot.timeAvailable.length > 0 ? 
+                            spot.timeAvailable.map(t => `<span class="badge badge-time">${t === 'breakfast' ? '🌅 Breakfast' : t === 'lunch' ? '🌞 Lunch' : t === 'dinner' ? '🌆 Dinner' : '🌙 Late Night'}</span>`).join('') 
+                            : ''}
+                        ${spot.priceLevel ? `<span class="badge badge-price">${spot.priceLevel}</span>` : ''}
+                    </div>
                     ${spot.description ? `<div class="spot-description">${spot.description}</div>` : ''}
                     <div class="spot-details">
                         ${spot.address ? `<div class="spot-detail">📍 ${spot.address}</div>` : ''}
@@ -1372,6 +1433,40 @@
                 currentMainCategory = btn.dataset.category;
                 currentSubCategory = null;
                 showSubcategories(currentMainCategory);
+                renderSpots();
+            });
+        });
+
+        // Time filters
+        document.querySelectorAll('.time-filter').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (currentTimeFilter === btn.dataset.time) {
+                    // Deselect
+                    btn.classList.remove('active');
+                    currentTimeFilter = null;
+                } else {
+                    // Select
+                    document.querySelectorAll('.time-filter').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentTimeFilter = btn.dataset.time;
+                }
+                renderSpots();
+            });
+        });
+
+        // Price filters
+        document.querySelectorAll('.price-filter').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (currentPriceFilter === btn.dataset.price) {
+                    // Deselect
+                    btn.classList.remove('active');
+                    currentPriceFilter = null;
+                } else {
+                    // Select
+                    document.querySelectorAll('.price-filter').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentPriceFilter = btn.dataset.price;
+                }
                 renderSpots();
             });
         });
