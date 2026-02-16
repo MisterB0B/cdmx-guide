@@ -199,6 +199,202 @@
             padding: 4rem;
             color: #8888a0;
         }
+
+        /* Review Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal-content {
+            background: #12121a;
+            border: 1px solid #2a2a3a;
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            color: #a855f7;
+            font-size: 1.5rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #8888a0;
+            font-size: 2rem;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0;
+        }
+
+        .close-btn:hover {
+            color: #f0f0f5;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: #f0f0f5;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-group input[type="text"],
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: #1a1a25;
+            border: 1px solid #2a2a3a;
+            border-radius: 8px;
+            color: #f0f0f5;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #a855f7;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .star-rating {
+            display: flex;
+            gap: 0.5rem;
+            font-size: 2rem;
+        }
+
+        .star {
+            cursor: pointer;
+            color: #2a2a3a;
+            transition: color 0.2s;
+        }
+
+        .star:hover,
+        .star.active {
+            color: #fbbf24;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: #a855f7;
+            border: none;
+            border-radius: 8px;
+            color: #0a0a0f;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: #9333ea;
+        }
+
+        .reviews-btn {
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background: rgba(168,85,247,0.1);
+            border: 1px solid #a855f7;
+            border-radius: 8px;
+            color: #a855f7;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .reviews-btn:hover {
+            background: rgba(168,85,247,0.2);
+        }
+
+        .existing-reviews {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #2a2a3a;
+        }
+
+        .review-item {
+            background: #1a1a25;
+            border: 1px solid #2a2a3a;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .review-stars {
+            color: #fbbf24;
+        }
+
+        .review-verified {
+            background: rgba(6,214,160,0.1);
+            color: #06d6a0;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        .review-comment {
+            color: #f0f0f5;
+            margin-bottom: 0.5rem;
+        }
+
+        .review-tips {
+            color: #8888a0;
+            font-size: 0.9rem;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -244,6 +440,56 @@
 
     <div class="spots-container" id="spotsContainer">
         <div class="loading">Loading spots...</div>
+    </div>
+
+    <!-- Review Modal -->
+    <div class="modal" id="reviewModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalSpotName">Add Review</h2>
+                <button class="close-btn" onclick="closeReviewModal()">&times;</button>
+            </div>
+            
+            <form onsubmit="submitReview(event)">
+                <div class="form-group">
+                    <label>Rating</label>
+                    <div class="star-rating" id="starRating">
+                        <span class="star" data-rating="1">★</span>
+                        <span class="star" data-rating="2">★</span>
+                        <span class="star" data-rating="3">★</span>
+                        <span class="star" data-rating="4">★</span>
+                        <span class="star" data-rating="5">★</span>
+                    </div>
+                    <input type="hidden" id="rating" name="rating" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Your Review</label>
+                    <textarea id="comment" name="comment" placeholder="Share your experience..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Quick Tips (optional)</label>
+                    <input type="text" id="tips" name="tips" placeholder="e.g., Try the tacos, arrive early, cash only...">
+                </div>
+
+                <div class="form-group">
+                    <label>Recommended Items (optional)</label>
+                    <input type="text" id="recommended" name="recommended" placeholder="e.g., Spicy tuna roll, House margarita...">
+                </div>
+
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="verified" name="verified">
+                    <label for="verified">✓ I've been here</label>
+                </div>
+
+                <button type="submit" class="submit-btn">Submit Review</button>
+            </form>
+
+            <div class="existing-reviews" id="existingReviews">
+                <!-- Reviews will load here -->
+            </div>
+        </div>
     </div>
 
     <script>
@@ -1504,8 +1750,8 @@
                 return;
             }
 
-            container.innerHTML = filtered.map(spot => `
-                <div class="spot-card">
+            container.innerHTML = filtered.map((spot, index) => `
+                <div class="spot-card" data-spot-id="${index}">
                     <div class="spot-name">${spot.name}</div>
                     <div class="spot-category">${spot.subCategory || spot.mainCategory}</div>
                     <div class="spot-badges">
@@ -1521,6 +1767,7 @@
                         ${spot.price ? `<div class="spot-detail">💰 ${spot.price}</div>` : ''}
                     </div>
                     ${spot.google_maps ? `<a href="${spot.google_maps}" target="_blank" class="maps-link">📍 Open in Google Maps</a>` : ''}
+                    <button class="reviews-btn" onclick="openReviewModal('${spot.name}', ${index})">💬 Reviews</button>
                 </div>
             `).join('');
         }
@@ -1599,6 +1846,124 @@
 
         // Search
         document.getElementById('searchBox').addEventListener('input', renderSpots);
+
+        // Review Modal Functions
+        let currentSpotName = '';
+        let currentSpotIndex = -1;
+        let selectedRating = 0;
+
+        // Star rating selection
+        document.querySelectorAll('.star').forEach(star => {
+            star.addEventListener('click', function() {
+                selectedRating = parseInt(this.dataset.rating);
+                document.getElementById('rating').value = selectedRating;
+                document.querySelectorAll('.star').forEach((s, i) => {
+                    if (i < selectedRating) {
+                        s.classList.add('active');
+                    } else {
+                        s.classList.remove('active');
+                    }
+                });
+            });
+        });
+
+        function openReviewModal(spotName, spotIndex) {
+            currentSpotName = spotName;
+            currentSpotIndex = spotIndex;
+            document.getElementById('modalSpotName').textContent = spotName;
+            document.getElementById('reviewModal').classList.add('active');
+            loadReviews(spotName);
+        }
+
+        function closeReviewModal() {
+            document.getElementById('reviewModal').classList.remove('active');
+            document.getElementById('rating').value = '';
+            document.getElementById('comment').value = '';
+            document.getElementById('tips').value = '';
+            document.getElementById('recommended').value = '';
+            document.getElementById('verified').checked = false;
+            selectedRating = 0;
+            document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
+        }
+
+        async function submitReview(event) {
+            event.preventDefault();
+            
+            const reviewData = {
+                spot_name: currentSpotName,
+                rating: parseInt(document.getElementById('rating').value),
+                comment: document.getElementById('comment').value,
+                tips: document.getElementById('tips').value || null,
+                recommended_items: document.getElementById('recommended').value || null,
+                verified: document.getElementById('verified').checked,
+                created_at: new Date().toISOString()
+            };
+
+            try {
+                const response = await fetch('https://jsfdzfwlyclethssaffk.supabase.co/rest/v1/cdmx_comments', {
+                    method: 'POST',
+                    headers: {
+                        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpzZmR6ZndseWNsZXRoc3NhZmZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5NDY2MDUsImV4cCI6MjA4NTUyMjYwNX0.GIFiRBikhq7JYiBAc6f5UgZPcreZ6qqgSLp2QpUqeKw',
+                        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpzZmR6ZndseWNsZXRoc3NhZmZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5NDY2MDUsImV4cCI6MjA4NTUyMjYwNX0.GIFiRBikhq7JYiBAc6f5UgZPcreZ6qqgSLp2QpUqeKw',
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify(reviewData)
+                });
+
+                if (response.ok) {
+                    alert('✅ Review submitted! Thanks for sharing.');
+                    closeReviewModal();
+                    loadReviews(currentSpotName); // Reload reviews
+                } else {
+                    alert('❌ Error submitting review. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Error submitting review. Please try again.');
+            }
+        }
+
+        async function loadReviews(spotName) {
+            try {
+                const response = await fetch(`https://jsfdzfwlyclethssaffk.supabase.co/rest/v1/cdmx_comments?spot_name=eq.${encodeURIComponent(spotName)}&order=created_at.desc`, {
+                    headers: {
+                        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpzZmR6ZndseWNsZXRoc3NhZmZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5NDY2MDUsImV4cCI6MjA4NTUyMjYwNX0.GIFiRBikhq7JYiBAc6f5UgZPcreZ6qqgSLp2QpUqeKw',
+                        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpzZmR6ZndseWNsZXRoc3NhZmZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5NDY2MDUsImV4cCI6MjA4NTUyMjYwNX0.GIFiRBikhq7JYiBAc6f5UgZPcreZ6qqgSLp2QpUqeKw'
+                    }
+                });
+
+                const reviews = await response.json();
+                const container = document.getElementById('existingReviews');
+
+                if (reviews.length === 0) {
+                    container.innerHTML = '<p style="color: #8888a0; text-align: center;">No reviews yet. Be the first!</p>';
+                    return;
+                }
+
+                container.innerHTML = reviews.map(review => `
+                    <div class="review-item">
+                        <div class="review-header">
+                            <span class="review-stars">${'★'.repeat(review.rating)}${'☆'.repeat(5-review.rating)}</span>
+                            ${review.verified ? '<span class="review-verified">✓ Verified</span>' : ''}
+                        </div>
+                        <div class="review-comment">${review.comment}</div>
+                        ${review.tips ? `<div class="review-tips">💡 ${review.tips}</div>` : ''}
+                        ${review.recommended_items ? `<div class="review-tips">👍 Try: ${review.recommended_items}</div>` : ''}
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading reviews:', error);
+                document.getElementById('existingReviews').innerHTML = '<p style="color: #8888a0;">Unable to load reviews</p>';
+            }
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('reviewModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeReviewModal();
+            }
+        });
 
         // Load on DOM ready
         if (document.readyState === 'loading') {
