@@ -408,7 +408,7 @@
         <div id="mainCategories" style="display: flex; flex-wrap: wrap; gap: 0.5rem; width: 100%;">
             <button class="filter-btn active" data-category="all">All</button>
             <button class="filter-btn" data-category="bobspicks">⭐ Bob's Picks</button>
-            <button class="filter-btn" id="nearMeBtn">📍 Near Me</button>
+            <button class="filter-btn" id="nearMeBtn">📍 Sort by Distance</button>
             <button class="filter-btn" data-category="asian">🥢 Asian</button>
             <button class="filter-btn" data-category="latin">🌮 Latin American</button>
             <button class="filter-btn" data-category="mediterranean">🫒 Mediterranean</button>
@@ -1731,16 +1731,17 @@
             return R * c;
         }
 
-        // Near Me button handler
+        // Sort by Distance button handler
         document.getElementById('nearMeBtn').addEventListener('click', function() {
             if (nearMeActive) {
-                // Turn off Near Me
+                // Turn off distance sorting
                 nearMeActive = false;
                 userLocation = null;
                 this.classList.remove('active');
+                this.textContent = '📍 Sort by Distance';
                 renderSpots();
             } else {
-                // Request location
+                // Request location for distance sorting
                 if (navigator.geolocation) {
                     this.textContent = '📍 Getting location...';
                     navigator.geolocation.getCurrentPosition(
@@ -1750,22 +1751,13 @@
                                 lng: position.coords.longitude
                             };
                             nearMeActive = true;
-                            
-                            // Reset to "All" category and clear other filters
-                            currentMainCategory = 'all';
-                            currentSubCategory = null;
-                            document.querySelectorAll('#mainCategories .filter-btn[data-category]').forEach(b => b.classList.remove('active'));
-                            document.querySelector('#mainCategories .filter-btn[data-category="all"]').classList.add('active');
-                            document.getElementById('subCategories').style.display = 'none';
-                            document.getElementById('subCategories').innerHTML = '';
-                            
                             this.classList.add('active');
-                            this.textContent = '📍 Near Me';
+                            this.textContent = '📍 Sort by Distance';
                             renderSpots();
                         },
                         (error) => {
-                            alert('❌ Location permission denied. Enable location to use Near Me.');
-                            this.textContent = '📍 Near Me';
+                            alert('❌ Location permission denied. Enable location to use Sort by Distance.');
+                            this.textContent = '📍 Sort by Distance';
                         }
                     );
                 } else {
@@ -1890,11 +1882,6 @@
         // Main category buttons
         document.querySelectorAll('#mainCategories .filter-btn[data-category]').forEach(btn => {
             btn.addEventListener('click', () => {
-                // Turn off Near Me if active
-                nearMeActive = false;
-                userLocation = null;
-                document.getElementById('nearMeBtn').classList.remove('active');
-                
                 document.querySelectorAll('#mainCategories .filter-btn[data-category]').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 currentMainCategory = btn.dataset.category;
