@@ -509,6 +509,8 @@
                 type: 'Teppanyaki',
                 description: 'Okonomiyaki, teppanyaki, izakaya. Small spot, gets busy.',
                 address: 'Río Pánuco 128, Col. Cuauhtémoc',
+                lat: 19.4265,
+                lng: -99.1555,
                 distance: '10 min walk from Sheraton',
                 hours: 'Tue-Sun 1pm-10pm, Closed Mon',
                 phone: '',
@@ -525,6 +527,8 @@
                 type: 'Izakaya',
                 description: 'Traditional izakaya with ramen and fried dishes.',
                 address: 'Londres 209, Juárez',
+                lat: 19.4285,
+                lng: -99.1640,
                 distance: '8 min walk from Sheraton',
                 hours: 'Mon-Sat 1pm-11pm, Sun 1pm-9pm',
                 phone: '',
@@ -541,6 +545,8 @@
                 type: 'Izakaya',
                 description: 'Japanese-run izakaya. Pork belly, premium sashimi, full menu.',
                 address: 'Colima 378, Roma Norte',
+                lat: 19.4150,
+                lng: -99.1625,
                 distance: '15 min walk from Sheraton',
                 hours: 'Mon-Sat 1pm-11pm, Sun 1pm-6pm',
                 phone: '',
@@ -557,6 +563,8 @@
                 type: 'Ramen',
                 description: 'Top ramen spot. Tonkotsu, miso, shoyu. Gyoza, karaage.',
                 address: 'Medellín 101, Roma Norte',
+                lat: 19.4155,
+                lng: -99.1630,
                 distance: '15 min walk from Sheraton',
                 hours: 'Mon-Sat 1pm-10pm, Sun 1pm-9pm',
                 phone: '',
@@ -1821,22 +1829,32 @@
                 };
                 
                 filtered.forEach(spot => {
-                    // Try to match neighborhood from address
-                    let coords = neighborhoodCoords['default'];
-                    if (spot.address) {
-                        for (let [hood, latLng] of Object.entries(neighborhoodCoords)) {
-                            if (spot.address.includes(hood)) {
-                                coords = latLng;
-                                break;
+                    let spotLat, spotLng;
+                    
+                    // Use exact coordinates if available
+                    if (spot.lat && spot.lng) {
+                        spotLat = spot.lat;
+                        spotLng = spot.lng;
+                    } else {
+                        // Fall back to neighborhood approximation
+                        let coords = neighborhoodCoords['default'];
+                        if (spot.address) {
+                            for (let [hood, latLng] of Object.entries(neighborhoodCoords)) {
+                                if (spot.address.includes(hood)) {
+                                    coords = latLng;
+                                    break;
+                                }
                             }
                         }
+                        spotLat = coords[0];
+                        spotLng = coords[1];
                     }
                     
                     spot.calculatedDistance = calculateDistance(
                         userLocation.lat,
                         userLocation.lng,
-                        coords[0],
-                        coords[1]
+                        spotLat,
+                        spotLng
                     );
                 });
                 
